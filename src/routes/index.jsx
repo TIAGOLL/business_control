@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom'
-import '../globals.css'
 
 //Autenticação
 import SignIn from '../pages/Autenticação/SignIn/index';

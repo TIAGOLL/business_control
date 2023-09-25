@@ -4,20 +4,18 @@ import { Lock, User } from 'lucide-react';
 //imports react/next
 import { useEffect, useState } from 'react';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import IfLoading from '../../../icons/IfLoading';
 import { HanddleLoading } from '../../../redux/slices/loading';
+import { inputStyle, labelStyle } from './../../../styles/index.css';
 
 function SignIn() {
-  // estilos do campos para o código ficar mais clean
-  const styleLabel = 'cursor-text absolute left-10 top-1 bottom-0 font-normal text-gray-600 text-lg transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-2 peer-focus:-top-7 peer-focus:text-t-main peer-focus:text-lg peer-focus:m-0 peer-focus:font-semibold peer-read-only:-top-7 peer-read-only:text-t-main peer-read-only:font-semibold peer-read-only:text-lg peer-read-only:m-0 peer-valid:-top-7 peer-valid:text-t-main peer-valid:font-semibold peer-valid:text-lg peer-valid:m-0'
-  const styleInput = 'pl-4 rounded-xl peer h-10 w-full border-b-2 border-gray-300 text-gray-900 placeholder-transparent focus:outline-none focus:border-blue-500'
-
+ 
   const dispatch = useDispatch()
   //hooks
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const loading = getState(state => state.loading)
+  const [loading, setLoading] = useState(useSelector(state => state.loading.loading))
 
   useEffect(() => {
     dispatch(HanddleLoading(true))
@@ -36,15 +34,15 @@ function SignIn() {
               <div className='flex flex-col w-full'>
                 <div className='flex relative w-full space-x-2 items-center justify-center'>
                   <User strokeWidth={2} width={30} height={30} />
-                  <input required onChange={e => setEmail(e.target.value)} value={email} id='email' className={styleInput} type='text' />
-                  <label htmlFor='email' className={styleLabel}>Email</label>
+                  <input required onChange={e => setEmail(e.target.value)} value={email} id='email' className={inputStyle} type='text' />
+                  <label htmlFor='email' className={labelStyle}>Email</label>
                 </div>
               </div>
               <div className='flex flex-col w-full'>
                 <div className='flex relative w-full space-x-2 items-center justify-center'>
                   <Lock strokeWidth={2} width={30} height={30} />
-                  <input required onChange={e => setPassword(e.target.value)} value={password} id='password' className={styleInput} type='password' />
-                  <label htmlFor='password' className={styleLabel}>Senha</label>
+                  <input required onChange={e => setPassword(e.target.value)} value={password} id='password' className={inputStyle} type='password' />
+                  <label htmlFor='password' className={labelStyle}>Senha</label>
                 </div>
               </div>
             </div>
