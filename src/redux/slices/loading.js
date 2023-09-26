@@ -1,20 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export const slice = createSlice({
+export const loadingSlice = createSlice({
   name: 'loading',
   initialState: {
-    loading: false,
+    value: false,
   },
   reducers: {
-    HanddleLoading: (state, { payload }) => {
-      state.loading = payload;
+    HanddleLoading: ({ value }, { payload }) => {
+      return value = payload;
     },
   },
 });
 
 
-export const { HanddleLoading } = slice.actions;
+export const { HanddleLoading } = loadingSlice.actions; // contadorSlice.actions contém todas as actions criadas.
 
-export const isLoading = state => state.loading;
+export default loadingSlice.reducer; // aqui está o reducer, que deve ser indexado ao Store
 
-export default slice.reducer;

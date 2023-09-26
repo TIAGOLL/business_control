@@ -1,4 +1,4 @@
-//imports icones 
+//imports icones
 import { Lock, User } from 'lucide-react';
 
 //imports react/next
@@ -10,18 +10,15 @@ import { HanddleLoading } from '../../../redux/slices/loading';
 import { inputStyle, labelStyle } from './../../../styles/index.css';
 
 function SignIn() {
- 
+
   const dispatch = useDispatch()
   //hooks
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(useSelector(state => state.loading.loading))
-
+  const [loading, setLoading] = useState(useSelector(state => state.loading.value))
+  console.log(loading)
   useEffect(() => {
-    dispatch(HanddleLoading(true))
-    setTimeout(() => {
-      dispatch(HanddleLoading(false))
-    }, 3000);
+    dispatch(HanddleLoading(false))
   }, [])
 
   return (
