@@ -9,10 +9,12 @@ import Register from '../pages/Autenticação/Register';
 import Dashboard from '../pages/Dashboard';
 
 //Produto
-import Product from '../pages/Product';
-import ProductById from '../pages/Product/[ProductById]';
-import CreateProduct from '../pages/Product/CreateProduct';
+import Products from '../pages/Products';
+import ProductsById from '../pages/Products/[ProductsById]';
 
+//Requests
+import Requests from '../pages/Requests';
+import RequestsById from '../pages/Requests/[RequestsById]';
 
 
 
@@ -27,10 +29,14 @@ function RoutesApp() {
       <Route path='/dashboard' element={<Dashboard />} />
 
       {/* Produto */}
-      <Route path='/dashboard/product' element={<Product />} />
-      <Route path='/dashboard/product/:id' element={<ProductById />} />
-      <Route path='/dashboard/product/create' element={<CreateProduct />} />
+      <Route path='/dashboard/products' element={<Products />} />
+      <Route path='/dashboard/products/:id' element={<ProductsById />} />
+      <Route path='/dashboard/products/create' element={<ProductsById />} />
 
+      {/* Pedidos de compra */}
+      <Route path='/dashboard/requests' element={<Requests />} />
+      <Route path='/dashboard/requests/:id' element={<RequestsById />} />
+      <Route path='/dashboard/requests/create' element={<RequestsById />} />
     </Routes>
   )
 }

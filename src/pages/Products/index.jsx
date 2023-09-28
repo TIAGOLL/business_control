@@ -1,25 +1,28 @@
 import { useEffect } from "react";
-import SideBar from "../../components/SideBar";
-import { container } from "../../styles/styles.css";
-import { ChangePage } from "../../redux/slices/activePage";
 import { useDispatch } from "react-redux";
-
+import { container } from "../../styles/styles.css";
+import SideBar from "../../components/SideBar";
+import { ChangePage } from "../../redux/slices/activePage";
 
 
 // ToDo
-// [ ] - Faturamento
-// [ ] - Lucro
-// [ ] - Porcentagem de Lucro
-// [ ] - Capital
+
+// [ ] - Nome
+// [ ] - Codigo
+// [ ] - Preço de venda
+// [ ] - Preço de compra
+// [ ] - % de lucro
+// [ ] - Quantidade
+// [ ] -
 // [ ] -
 
 
-function Dashboard() {
+function Products() {
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(ChangePage('dashboard'))
+    dispatch(ChangePage('products'))
   }, [])
 
   return (
@@ -29,4 +32,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Products;
