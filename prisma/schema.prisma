@@ -1,4 +1,17 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  url      = env("REACT_APP_DATABASE_URL")
+}
+
+model teste {
+  id            Int     @id
+  nome          String? @db.VarChar(45)
+  preco_venda   Int
+  qtd           Int
+  preco_compra  Int
+  porcent_lucro Int
 }

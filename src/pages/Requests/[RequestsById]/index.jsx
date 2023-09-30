@@ -1,4 +1,4 @@
-import { container } from "../../../styles/styles.css";
+import { container } from "../../../styles/global.css";
 
 function RequestsById() {
   return (

@@ -1,7 +1,7 @@
-import { ShoppingCart, PackageSearch, Power, BarChartBig } from "lucide-react";
+import { BarChartBig, PackageSearch, Power, ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { sideBar } from "../styles/styles.css";
+import { sideBar } from "./styles.css";
 
 
 const SideBar = () => {
@@ -10,15 +10,15 @@ const SideBar = () => {
 
 
   function desconnectUser() {
-    localStorage.removeItem('@ticketsPRO');
-    navigate('/')
+    // localStorage.removeItem('@ticketsPRO');
+    // navigate('/')
   }
 
   const { page } = useSelector(state => state.page)
 
   return (
     <>
-      <aside className="h-screen w-20 flex flex-col absolute left-0 text-zinc-300 group hover:transition-all hover:w-2/12">
+      <aside className="h-screen w-20 flex flex-col relative left-0 text-zinc-300 group hover:transition-all hover:w-2/12">
         <div className="flex w-full flex-col h-full relative bg-slate-800 py-6">
           <nav className="space-y-8 text-lg">
             <div className="justify-center text-center flex flex-col items-center mb-20">
