@@ -5,7 +5,6 @@ import { ChangePage } from "../../redux/slices/activePage";
 import { container } from "../../styles/global.css";
 import Header from "../../components/Header";
 import ProductCard from "../../components/ProductCard";
-import { prisma } from './../../connDB/index';
 
 // ToDo
 
@@ -13,27 +12,6 @@ import { prisma } from './../../connDB/index';
 // [   ] - Lista de produtos
 // [   ] -
 // [   ] -
-
-export const getserverSideProps = () => {
-  const data = prisma.teste.findMany(
-    {
-      select: {
-        id: true,
-        nome: true,
-        preco_venda: true,
-        qtd: true,
-        preco_compra: true,
-        porcent_lucro: true,
-      }
-    }
-  )
-  console.log(data)
-  return {
-    props: {
-      data
-    }
-  }
-}
 
 
 function Products({ data }) {
