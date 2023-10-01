@@ -3,14 +3,20 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "18"
+  },
   "scripts": {
-    "dev": "tsx src/server.js"
+    "dev": "tsx src/server.js",
+    "build": "tsup src",
+    "start": "node dist/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.3.1",
     "fastify": "^4.23.2",
+    "tsup": "^7.2.0",
     "tsx": "^3.13.0"
   },
   "devDependencies": {
