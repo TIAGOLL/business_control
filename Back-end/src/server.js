@@ -1,45 +1,11 @@
-import fastify from "fastify";
-import { PrismaClient } from "@prisma/client";
+import express from "express";
 
-const app = fastify();
+import { router } from "./routes";
 
-const prisma = new PrismaClient();
+const app = express();
 
-app.get("/products", async () => {
-    const products = await prisma.product.findMany(
-        {
-            where: {id: 0}
-        }
-    );
+app.use(express.json());
 
-    return { products }
-});
+app.use(router);
 
-app.post("/products/create", async (req) => {
-    const { id, nome, preco_venda, qtd, preco_compra, porcent_lucro } = req.body;
-
-    const product = await prisma.product.create({
-        data: {
-            id,
-            nome,
-            preco_venda,
-            qtd,
-            preco_compra,
-            porcent_lucro
-        }
-    });
-
-    return { product }
-});
-
-app.listen({
-    port: process.env.PORT ? Number(process.env.PORT) : 3000,
-    host: '0.0.0.0'
-})
-    .then(() => { 
-        console.log("Server is running on port 3000");
-    })
-    .catch((err) => {
-        console.log(err);
-        process.exit(1);
-    });
+app.listen(3030, () => console.log("Server is running on port 3030!"));

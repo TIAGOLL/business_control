@@ -5,6 +5,7 @@ import { ChangePage } from "../../redux/slices/activePage";
 import { container } from "../../styles/global.css";
 import Header from "../../components/Header";
 import ProductCard from "../../components/ProductCard";
+import axios from "axios";
 
 // ToDo
 
@@ -14,14 +15,27 @@ import ProductCard from "../../components/ProductCard";
 // [   ] -
 
 
-function Products({ data }) {
+function Products() {
   const dispatch = useDispatch()
 
   const [products, setProducts] = useState([])
 
+  async function loadProducts() {
+    const response = await axios.get('http://localhost:3030/products')
+      .then(res => {
+        return setProducts(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    const data = await response.json()
+    console.log(data)
+    setProducts(data)
+  }
 
   useEffect(() => {
     dispatch(ChangePage('products'))
+    loadProducts()
   }, [])
 
   return (
@@ -33,7 +47,7 @@ function Products({ data }) {
         <div className="p-16 flex w-full h-full">
           <ProductCard />
         </div>
-        {
+        {products &&
           products.map((product) => (
             <div>
               <div>
