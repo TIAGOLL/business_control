@@ -22,15 +22,14 @@ function Products() {
 
   async function loadProducts() {
     const response = await axios.get('http://localhost:3030/products')
+
       .then(res => {
-        return setProducts(res.data);
+        setProducts(res.data);
       })
+
       .catch(err => {
         console.log(err);
       });
-    const data = await response.json()
-    console.log(data)
-    setProducts(data)
   }
 
   useEffect(() => {
@@ -44,28 +43,13 @@ function Products() {
 
       <section className="w-full">
         <Header />
-        <div className="p-16 flex w-full h-full">
-          <ProductCard />
+        <div className="p-16 flex w-full h-full gap-4">
+          {
+            products.map(({ id, ...rest }) => (
+              <ProductCard key={id} id={id} {...rest} />
+            ))
+          }
         </div>
-        {products &&
-          products.map((product) => (
-            <div>
-              <div>
-                {product.nome}
-              </div>
-              <div>
-                {product.preco_venda}
-              </div>
-              <div>
-                {product.qtd}
-              </div>
-              <div>
-                {product.preco_compra}
-              </div>
-            </div>
-          )
-          )
-        }
       </section>
     </div>
   );

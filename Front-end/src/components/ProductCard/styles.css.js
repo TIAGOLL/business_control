@@ -3,7 +3,7 @@ const productCard = {
 
   image: 'w-40 rounded-xl',
 
-  tittle: 'text-2xl font-semibold text-gray-700',
+  tittle: 'text-2xl font-semibold text-gray-700 pt-2',
 
   info: 'flex w-full items-center justify-center p-1 gap-1',
 

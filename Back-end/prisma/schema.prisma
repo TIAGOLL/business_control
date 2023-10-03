@@ -15,3 +15,8 @@ model product {
   preco_compra  Int
   porcent_lucro Int
 }
+
+model categorias {
+  id   Int     @id @default(autoincrement())
+  nome String? @db.VarChar(45)
+}

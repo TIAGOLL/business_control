@@ -31,12 +31,10 @@ function RoutesApp() {
       {/* Produto */}
       <Route path='/dashboard/products' element={<Products />} />
       <Route path='/dashboard/products/:id' element={<ProductsById />} />
-      <Route path='/dashboard/products/create' element={<ProductsById />} />
 
       {/* Pedidos de compra */}
       <Route path='/dashboard/requests' element={<Requests />} />
       <Route path='/dashboard/requests/:id' element={<RequestsById />} />
-      <Route path='/dashboard/requests/create' element={<RequestsById />} />
     </Routes>
   )
 }

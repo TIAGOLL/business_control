@@ -11,6 +11,7 @@ export default {
 
             return res.json(products);
         } catch (error) {
+            
             return res.json(error);
         }
     },
