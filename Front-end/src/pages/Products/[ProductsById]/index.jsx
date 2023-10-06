@@ -3,7 +3,6 @@ import { ArrowBigLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formStyle } from "../../../styles/global.css";
-import { Fingerprint } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { ChangePage } from "../../../redux/slices/activePage";
 import { toast } from "react-toastify";
@@ -21,9 +20,9 @@ import { toast } from "react-toastify";
 function ProductsById() {
 
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   const { page } = useSelector(state => state.page)
-  const dispatch = useDispatch();
 
   const [idProduto, setIdProduto] = useState('');
   const [nome, setNome] = useState('');
@@ -32,7 +31,6 @@ function ProductsById() {
   const [qtd, setQtd] = useState('');
   const [porcent_lucro, setPorcentLucro] = useState('');
   const [categoria, setCategoria] = useState('');
-
 
   const [categoriasData, setCategoriasData] = useState([]);
 
@@ -45,10 +43,11 @@ function ProductsById() {
         setPrecoVenda(res.data.preco_venda);
         setQtd(res.data.qtd);
         setPorcentLucro(res.data.porcent_lucro);
+        setCategoria(res.data.categoria);
       })
       .catch(err => {
         console.log(err);
-      });
+      })
   }
 
   async function loadCategorias() {
@@ -71,7 +70,7 @@ function ProductsById() {
         .catch(err => {
           console.log(err);
         });
-    } else {
+    } else if (page === 'productsbyid') {
       updateProduct()
         .then(res => {
           console.log(res);
@@ -92,6 +91,7 @@ function ProductsById() {
         preco_venda: preco_venda,
         qtd: qtd,
         porcent_lucro: porcent_lucro,
+        categoria: categoria
       })
         .then(res => {
           console.log(res);
@@ -104,14 +104,15 @@ function ProductsById() {
 
     async function createProduct() {
       const list = {
+        id,
         nome: nome,
         preco_compra: preco_compra,
         preco_venda: preco_venda,
         qtd: qtd,
         porcent_lucro: porcent_lucro,
+        categoria: categoria
       }
 
-      console.log(list)
       axios.post(`http://localhost:3030/products`, list)
         .then(res => {
           console.log(res);
@@ -136,7 +137,7 @@ function ProductsById() {
   }, []);
 
   return (
-    <div className='w-screen h-screen flex items-center justify-center bg-zinc-400'>
+    <div className='w-full h-full py-10 flex items-center justify-center bg-zinc-400'>
       <div className='flex flex-col items-center bg-zinc-100 w-4/12 justify-center rounded-xl py-6 space-y-8 shadow-lg shadow-zinc-800 border-3'>
         <div className='relative top-5 left-14 flex items-start justify-start w-full' >
           <a href={'/dashboard/products'}>

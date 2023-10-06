@@ -17,18 +17,18 @@ export default {
     },
 
     async createProduct(req, res) {
-        const { id, nome, preco_venda, qtd, preco_compra, porcent_lucro } = req.body;
+        const { id, nome, preco_venda, qtd, preco_compra, porcent_lucro, categorie } = req.body;
 
         try {
             console.log('trying');
             const product = await prisma.product.create({
                 data: {
-                    id,
+                    id: parseInt(id),
                     nome,
-                    preco_venda,
-                    qtd,
-                    preco_compra,
-                    porcent_lucro
+                    preco_venda: parseFloat(preco_venda),
+                    qtd: parseInt(qtd),
+                    preco_compra: parseFloat(preco_compra),
+                    porcent_lucro: parseFloat(porcent_lucro)
                 }
             })
                 .then((product) => {

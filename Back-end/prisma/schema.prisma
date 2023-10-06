@@ -8,12 +8,13 @@ datasource db {
 }
 
 model product {
-  id            Int     @id
+  id            Int     @unique @default(autoincrement())
   nome          String? @db.VarChar(45)
   preco_venda   Int
   qtd           Int
   preco_compra  Int
   porcent_lucro Int
+  categoria     String  @db.VarChar(45)
 }
 
 model categorias {
