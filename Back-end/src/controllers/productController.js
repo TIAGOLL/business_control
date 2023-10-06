@@ -17,18 +17,16 @@ export default {
     },
 
     async createProduct(req, res) {
-        const { id, nome, preco_venda, qtd, preco_compra, porcent_lucro } = req.body;
+        const { name, quantity, inTransit, category_id } = req.body;
 
         try {
             console.log('trying');
             const product = await prisma.product.create({
                 data: {
-                    id,
-                    nome,
-                    preco_venda,
-                    qtd,
-                    preco_compra,
-                    porcent_lucro
+                    name,
+                    quantity,
+                    inTransit,
+                    category_id
                 }
             })
                 .then((product) => {

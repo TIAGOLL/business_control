@@ -5,11 +5,11 @@ const prisma = new PrismaClient();
 export default {
 
     //funcionando
-    async findAllCategories(req, res) {
+    async findAllCategorys(req, res) {
         try {
-            const categorias = await prisma.categorias.findMany();
+            const categorys = await prisma.category.findMany();
 
-            return res.json(categorias);
+            return res.json(categorys);
         } catch (error) {
             return res.json(error);
         }
