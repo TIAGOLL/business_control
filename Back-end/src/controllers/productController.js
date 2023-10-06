@@ -4,15 +4,34 @@ const prisma = new PrismaClient();
 
 export default {
 
-    //funcionando
     async findAllProducts(req, res) {
         try {
             const products = await prisma.product.findMany();
 
             return res.json(products);
         } catch (error) {
-            
             return res.json(error);
+        }
+    },
+
+
+    async findProductById(req, res) {
+        const { id } = req.params;
+
+        try {
+            const product = await prisma.product.findUnique(
+                {
+                    where: {
+                        id: parseInt(id)
+                    }
+                }
+            );
+
+            res.sendStatus(200);
+            return res.json(product);
+
+        } catch (error) {
+            return res.json(error.message);
         }
     },
 
@@ -21,52 +40,42 @@ export default {
 
         try {
             console.log('trying');
-            const product = await prisma.product.create({
+            await prisma.product.create({
                 data: {
                     name,
-                    quantity,
-                    inTransit,
-                    category_id
+                    quantity: parseInt(quantity),
+                    inTransit: parseInt(inTransit),
+                    category_id: parseInt(category_id)
                 }
             })
-                .then((product) => {
-                    console.log('then');
-                    return product;
-                })
-                .catch((error) => {
-                    console.log('catch');
-                    console.log(error);
-                    return error;
-                });
-
-            return res.json(product);
 
         } catch (error) {
-            return console.log(res.json(error))
+            console.log(error.message)
+            return res.json(error.message);
         }
     },
 
 
     async updateProduct(req, res) {
-        const { id, nome, preco_venda, qtd, preco_compra, porcent_lucro } = req.body;
+        const { name, quantity, inTransit, category_id } = req.body;
+        const { id } = req.params;
 
         try {
-            const product = await prisma.product.update({
+            await prisma.product.update({
                 where: {
-                    id
+                    id: parseInt(id)
                 },
                 data: {
-                    nome,
-                    preco_venda,
-                    qtd,
-                    preco_compra,
-                    porcent_lucro
+                    name,
+                    quantity: parseInt(quantity),
+                    inTransit: parseInt(inTransit),
+                    category_id: parseInt(category_id)
                 }
-            });
+            })
 
-            return res.json(product);
         } catch (error) {
-            return res.json(error);
+            console.log(error.message)
+            return res.json(error.message);
         }
     },
 
@@ -75,45 +84,21 @@ export default {
         const { id } = req.params;
 
         try {
-            const product = await prisma.product.delete({
+            await prisma.product.delete({
                 where: {
-                    id
+                    id: parseInt(id)
                 }
+            })
+            .catch((error) => {
+                console.log(error.message);
+                return res.json(error.message);
             });
 
-            return res.json(product);
+            return res.sendStatus(200);
         } catch (error) {
-            return res.json(error);
+            return res.json(error.message);
         }
     },
 
 
-    //funcionando
-    async findProductById(req, res) {
-        let { id } = req.params;
-        id = parseInt(id);
-
-        try {
-            const product = await prisma.product.findUnique({
-                where: {
-                    id
-                }
-            })
-                .then((product) => {
-                    console.log('then');
-                    console.log(product);
-                    return product;
-                })
-                .catch((error) => {
-                    console.log('catch');
-                    console.log(error);
-                });
-
-            return res.json(product);
-
-        } catch (error) {
-            console.log(error)
-            return res.json(error);
-        }
-    }
 }
