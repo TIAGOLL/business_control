@@ -1,5 +1,4 @@
 import { productCard } from "./styles.css";
-import { useEffect } from "react";
 
 function ProductCard(props) {
 
