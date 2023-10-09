@@ -1,5 +1,5 @@
 const header = {
-  container: 'flex w-full items-start justify-start justify-start',
+  container: 'flex w-full h-24 items-start justify-start justify-start',
 
   content: 'flex w-full items-center justify-center gap-10 px-4 py-4',
 

@@ -6,11 +6,15 @@ export default {
 
     async findAllProducts(req, res) {
         try {
-            const products = await prisma.product.findMany();
+            const products = await prisma.product.findMany({
+                include: {
+                    category: true
+                }
+            });
 
             return res.json(products);
         } catch (error) {
-            return res.json(error);
+            return res.json(error.message);
         }
     },
 
@@ -19,15 +23,18 @@ export default {
         const { id } = req.params;
 
         try {
-            const product = await prisma.product.findUnique(
+            const product = await prisma.product.findFirst(
                 {
+                    include: {
+                        category: true
+                    },
                     where: {
                         id: parseInt(id)
                     }
+
                 }
             );
 
-            res.sendStatus(200);
             return res.json(product);
 
         } catch (error) {
@@ -36,17 +43,30 @@ export default {
     },
 
     async createProduct(req, res) {
-        const { name, quantity, inTransit, category_id } = req.body;
+        const { name, quantity, sale_price, category_id, profit_porcent, description } = req.body;
+
+
+        const product = {
+            name,
+            quantity: parseInt(quantity),
+            category_id: parseInt(category_id),
+            sale_price: parseFloat(sale_price),
+            profit_porcent: parseFloat(profit_porcent),
+            description
+        }
 
         try {
             console.log('trying');
             await prisma.product.create({
-                data: {
-                    name,
-                    quantity: parseInt(quantity),
-                    inTransit: parseInt(inTransit),
-                    category_id: parseInt(category_id)
-                }
+                data: product
+            }).catch((error) => {
+                console.log(error.message);
+                return res.json(error.message);
+            })
+
+            return res.json({
+                message: 'Produto criado com sucesso',
+                productCreated: product
             })
 
         } catch (error) {
@@ -55,22 +75,35 @@ export default {
         }
     },
 
-
+    // não funciona
     async updateProduct(req, res) {
-        const { name, quantity, inTransit, category_id } = req.body;
+        const { name, quantity, sale_price, category_id, profit_porcent, description } = req.body;
         const { id } = req.params;
+        console.log(req)
+        const product = {
+            name,
+            quantity: parseInt(quantity),
+            category_id: parseInt(category_id),
+            sale_price: parseFloat(sale_price),
+            profit_porcent: parseFloat(profit_porcent),
+            description
+        }
 
         try {
+            console.log('trying');
             await prisma.product.update({
                 where: {
                     id: parseInt(id)
                 },
-                data: {
-                    name,
-                    quantity: parseInt(quantity),
-                    inTransit: parseInt(inTransit),
-                    category_id: parseInt(category_id)
-                }
+                data: product
+            }).catch((error) => {
+                console.log(error.message);
+                return res.json(error.message);
+            })
+
+            return res.json({
+                message: 'Produto criado com sucesso',
+                productCreated: product
             })
 
         } catch (error) {
@@ -84,17 +117,20 @@ export default {
         const { id } = req.params;
 
         try {
-            await prisma.product.delete({
+            await prisma.product.deleteMany({
                 where: {
                     id: parseInt(id)
                 }
             })
-            .catch((error) => {
-                console.log(error.message);
-                return res.json(error.message);
-            });
+                .catch((error) => {
+                    console.log(error.message);
+                    return res.json(error.message);
+                });
 
-            return res.sendStatus(200);
+            return res.json({
+                message: 'Produto deletado com sucesso',
+            })
+
         } catch (error) {
             return res.json(error.message);
         }

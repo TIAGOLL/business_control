@@ -18,7 +18,7 @@ const SideBar = () => {
 
   return (
     <>
-      <aside className="h-screen w-20 flex flex-col relative left-0 text-zinc-300 group hover:transition-all hover:w-2/12">
+      <aside className="h-screen w-20 flex flex-col text-zinc-300 group hover:transition-all hover:w-2/12">
         <div className="flex w-full flex-col h-full relative bg-slate-800 py-6">
           <nav className="space-y-8 text-lg">
             <div className="justify-center text-center flex flex-col items-center mb-20">

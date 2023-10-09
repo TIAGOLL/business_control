@@ -7,140 +7,140 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model accounts {
-  id          Int       @default(autoincrement())
-  name        String    @db.VarChar(45)
-  platform_id Int
-  owner       String    @db.VarChar(45)
-  platform    platform  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_platform1")
-  request     request[]
-
-  @@id([id, platform_id])
-  @@index([platform_id], map: "fk_accounts_platform1_idx")
-}
-
 model category {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(45)
-}
-
-model clients {
-  id        Int        @id @default(autoincrement())
-  name      String     @db.VarChar(45)
-  cpf       String?    @db.VarChar(45)
-  adress    String?    @db.VarChar(45)
-  placeWork String?    @db.VarChar(45)
-  purchase  purchase[]
-}
-
-model paymentType {
-  id                        Int    @default(autoincrement())
-  type                      String @db.VarChar(45)
-  installments              Int?
-  rate_id                   Int
-  rate_payment_processor_id Int
-
-  @@id([id, rate_id, rate_payment_processor_id])
-  @@index([rate_id], map: "fk_paymentType_rate1_idx")
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(45)
+  product product[]
 }
 
 model platform {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(45)
-  accounts accounts[]
-}
-
-model prodPurchase {
-  purchase_id   Int
-  produto_id    Int
-  quantity      Int
-  salePrice     Int
-  porcentProfit Int
-  purchase      purchase @relation(fields: [purchase_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_has_produto_purchase1")
-
-  @@id([purchase_id, produto_id])
-  @@index([produto_id], map: "fk_purchase_has_produto_produto1_idx")
-  @@index([purchase_id], map: "fk_purchase_has_produto_purchase1_idx")
-}
-
-model prodRequest {
-  produto_id    Int
-  request_id    Int
-  purchasePrice Int
-  quantity      Int
-  totalPrice    Int
-  request       request @relation(fields: [request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_produto_has_request_request1")
-
-  @@id([produto_id, request_id])
-  @@index([produto_id], map: "fk_produto_has_request_produto_idx")
-  @@index([request_id], map: "fk_produto_has_request_request1_idx")
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(45)
+  account account[]
 }
 
 model purchase {
-  id                                    Int            @unique @default(autoincrement())
-  totalPrice                            Int
-  clientName                            Int
-  clients_id                            Int
-  paymentType_id                        Int
-  paymentType_rate_id                   Int
-  paymentType_rate_payment_processor_id Int            @map("paymentType_rate_payment processor_id")
-  salesperson_id                        Int
-  prodPurchase                          prodPurchase[]
-  clients                               clients        @relation(fields: [clients_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_clients1")
-  salesperson                           salesperson    @relation(fields: [salesperson_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_salesperson1")
+  id              Int             @default(autoincrement())
+  client_id       Int
+  salesperson_id  Int
+  payment_type_id Int
+  date            DateTime        @db.Date
+  status          String          @db.VarChar(45)
+  prod_purchase   prod_purchase[]
+  client          client          @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_clients1")
+  payment_type    payment_type    @relation(fields: [payment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_payment_type1")
+  salesperson     salesperson     @relation(fields: [salesperson_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_salesperson1")
 
-  @@id([id, clients_id, paymentType_id, paymentType_rate_id, paymentType_rate_payment_processor_id, salesperson_id])
-  @@index([clients_id], map: "fk_purchase_clients1_idx")
-  @@index([paymentType_id, paymentType_rate_id, paymentType_rate_payment_processor_id], map: "fk_purchase_paymentType1_idx")
+  @@id([id, client_id, salesperson_id, payment_type_id])
+  @@index([client_id], map: "fk_purchase_clients1_idx")
   @@index([salesperson_id], map: "fk_purchase_salesperson1_idx")
-}
-
-model rate {
-  id                   Int @default(autoincrement())
-  porcent              Int
-  installments         Int
-  payment_processor_id Int
-
-  @@id([id, payment_processor_id])
+  @@index([payment_type_id], map: "fk_purchase_payment_type1_idx")
 }
 
 model request {
-  id                   Int           @unique @default(autoincrement())
-  date                 DateTime      @db.Date
-  idTracking           String        @db.VarChar(45)
-  qtd_items            Int
-  statusTracking       String        @db.VarChar(15)
-  accounts_id          Int
-  accounts_platform_id Int
-  lote                 String        @db.VarChar(45)
-  storeName            String        @db.VarChar(45)
-  prodRequest          prodRequest[]
-  accounts             accounts      @relation(fields: [accounts_id, accounts_platform_id], references: [id, platform_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_accounts1")
+  id                 Int             @default(autoincrement())
+  account_id         Int
+  status_tracking_id Int
+  lot                Int             @unique(map: "lote_UNIQUE")
+  date               DateTime        @db.Date
+  store_name         String          @db.VarChar(45)
+  tracking_id        String          @db.VarChar(45)
+  prod_request       prod_request[]
+  account            account         @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_account1")
+  status_tracking    status_tracking @relation(fields: [status_tracking_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_status_tracking1")
 
-  @@id([id, accounts_id, accounts_platform_id])
-  @@index([accounts_id, accounts_platform_id], map: "fk_request_accounts1_idx")
+  @@id([id, account_id, status_tracking_id])
+  @@index([account_id], map: "fk_request_account1_idx")
+  @@index([status_tracking_id], map: "fk_request_status_tracking1_idx")
 }
 
 model salesperson {
   id       Int        @id @default(autoincrement())
   name     String     @db.VarChar(45)
-  cpf      String     @db.VarChar(45)
+  cpf      String?    @db.VarChar(45)
   purchase purchase[]
 }
 
-model paymentProcessor {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(45)
-}
-
 model product {
-  id          Int     @unique(map: "produto_id_key") @default(autoincrement())
-  name        String  @db.VarChar(45)
-  quantity    Int
-  inTransit   Int
-  category_id Int
-  description String? @db.VarChar(200)
+  id             Int             @default(autoincrement())
+  category_id    Int
+  name           String          @db.VarChar(45)
+  quantity       Int
+  sale_price     Float           @db.Float
+  profit_porcent Int
+  description    String?         @db.VarChar(200)
+  prod_purchase  prod_purchase[]
+  prod_request   prod_request[]
+  category       category        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_produto_category1")
 
   @@id([id, category_id])
   @@index([category_id], map: "fk_produto_category1_idx")
+}
+
+model account {
+  id          Int       @unique(map: "id_UNIQUE") @default(autoincrement())
+  platform_id Int
+  name        String    @db.VarChar(45)
+  owner       String    @db.VarChar(45)
+  platform    platform  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_platform1")
+  request     request[]
+
+  @@id([id, platform_id])
+  @@index([platform_id], map: "fk_account_platform1_idx")
+}
+
+model client {
+  id          Int        @id @default(autoincrement())
+  name        String     @db.VarChar(45)
+  cpf         String?    @db.VarChar(45)
+  adress      String?    @db.VarChar(45)
+  place_work  String?    @db.VarChar(45)
+  description String?    @db.VarChar(100)
+  purchase    purchase[]
+}
+
+model payment_type {
+  id           Int        @id @default(autoincrement())
+  name         String     @db.VarChar(45)
+  porcent_rate Float      @db.Float
+  purchase     purchase[]
+}
+
+model prod_purchase {
+  purchase_id              Int
+  purchase_clients_id      Int
+  purchase_salesperson_id  Int
+  purchase_payment_type_id Int
+  product_id               Int
+  product_category_id      Int
+  quantity                 Int
+  total_profit             Float    @db.Float
+  product                  product  @relation(fields: [product_id, product_category_id], references: [id, category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_has_product_product1")
+  purchase                 purchase @relation(fields: [purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id], references: [id, client_id, salesperson_id, payment_type_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_has_product_purchase1")
+
+  @@id([purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id, product_id, product_category_id])
+  @@index([product_id, product_category_id], map: "fk_purchase_has_product_product1_idx")
+  @@index([purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id], map: "fk_purchase_has_product_purchase1_idx")
+}
+
+model prod_request {
+  request_id                 Int
+  request_account_id         Int
+  request_status_tracking_id Int
+  product_id                 Int
+  product_category_id        Int
+  quantity                   Int
+  purchase_price             Float   @db.Float
+  product                    product @relation(fields: [product_id, product_category_id], references: [id, category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_product1")
+  request                    request @relation(fields: [request_id, request_account_id, request_status_tracking_id], references: [id, account_id, status_tracking_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_request2")
+
+  @@id([request_id, request_account_id, request_status_tracking_id, product_id, product_category_id])
+  @@index([product_id, product_category_id], map: "fk_request_has_product_product2_idx")
+  @@index([request_id, request_account_id, request_status_tracking_id], map: "fk_request_has_product_request2_idx")
+}
+
+model status_tracking {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.VarChar(45)
+  request request[]
 }

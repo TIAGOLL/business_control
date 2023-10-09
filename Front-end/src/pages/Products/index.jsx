@@ -21,8 +21,7 @@ function Products() {
   const [products, setProducts] = useState([])
 
   async function loadProducts() {
-    const response = await axios.get('http://localhost:3030/products')
-
+    await axios.get('http://localhost:3030/products')
       .then(res => {
         setProducts(res.data);
       })
@@ -43,7 +42,7 @@ function Products() {
 
       <section className="w-full">
         <Header />
-        <div className="p-16 flex w-full h-full gap-4">
+        <div className="px-4 items-center justify-center flex w-full h-[calc(100vh-100px)] gap-4 flex-wrap overflow-x-auto ">
           {
             products.map(({ id, ...rest }) => (
               <ProductCard key={id} id={id} {...rest} />

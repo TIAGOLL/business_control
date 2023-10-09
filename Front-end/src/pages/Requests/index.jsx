@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { ChangePage } from "../../redux/slices/activePage";
 import SideBar from './../../components/SideBar';
-import requestCard from "../../components/RequestsCard/styles.css";
 import Header from './../../components/Header/index';
 import { container } from "../../styles/global.css";
+import axios from "axios";
+import RequestsCard from "../../components/RequestsCard";
+import stylesRequestCard from "../../components/RequestsCard/styles.css";
 
 
 // ToDo
@@ -23,24 +25,26 @@ function Requests() {
 
   const dispatch = useDispatch()
 
+  const [requests, setRequests] = useState([])
+
   async function loadProducts() {
     await axios.get('http://localhost:3030/requests')
       .then((response) => {
         console.log(response.data)
+        setRequests(response.data)
       })
       .catch((error) => {
         console.log(error)
       })
   }
 
-
-  function sortTable() {
-
+  function sortTable(column) {
+    return
   }
-
 
   useEffect(() => {
     dispatch(ChangePage('requests'))
+    loadProducts()
   }, [])
 
   return (
@@ -48,60 +52,41 @@ function Requests() {
       <SideBar />
       <div className="w-full items-center justify-center flex flex-col">
         <Header />
-        <section className={requestCard.container}>
-          <div className={requestCard.headTable}>
-            <button onClick={() => sortTable('id')} className={requestCard.cellHead}>
+        <section className={stylesRequestCard.container}>
+          <div className={stylesRequestCard.headTable}>
+            <button onClick={() => sortTable('id')} className={stylesRequestCard.cellHead}>
               ID
             </button>
-            <button onClick={() => sortTable('plataforma')} className={requestCard.cellHead}>
+            <button onClick={() => sortTable('plataforma')} className={stylesRequestCard.cellHead}>
+              Conta do pedido
+            </button>
+            <button onClick={() => sortTable('plataforma')} className={stylesRequestCard.cellHead}>
               Plataforma
             </button>
-            <button onClick={() => sortTable('conta')} className={requestCard.cellHead}>
-              Conta
+            <button onClick={() => sortTable('conta')} className={stylesRequestCard.cellHead}>
+              Loja do pedido
             </button>
-            <button onClick={() => sortTable('codigorastreio')} className={requestCard.cellHead}>
-              Código rastreio
+            <button onClick={() => sortTable('codigorastreio')} className={stylesRequestCard.cellHead}>
+              Código de rastreio
             </button>
-            <button onClick={() => sortTable('precototal')} className={requestCard.cellHead}>
-              Preço total
-            </button>
-            <button onClick={() => sortTable('datapedido')} className={requestCard.cellHead}>
+            <button onClick={() => sortTable('datapedido')} className={stylesRequestCard.cellHead}>
               Data pedido
             </button>
-            <button onClick={() => sortTable('status')} className={requestCard.cellHead}>
+            <button onClick={() => sortTable('datapedido')} className={stylesRequestCard.cellHead}>
+              Lote
+            </button>
+            <button onClick={() => sortTable('status')} className={stylesRequestCard.cellHead}>
               Status
             </button>
           </div>
           {
-            a.map((id) => (
-              <a href="/dashboard/requests/${id}" key={id} className={requestCard.tableLines}>
-                <button className={requestCard.cellLine}>
-                  {id}
-                </button>
-                <button className={requestCard.cellLine}>
-                  Shopee
-                </button>
-                <button className={requestCard.cellLine}>
-                  tinnyimports
-                </button>
-                <button className={requestCard.cellLine}>
-                  BR0328423948
-                </button>
-                <button className={requestCard.cellLine}>
-                  R$ 245,00
-                </button>
-                <button className={requestCard.cellLine}>
-                  10/09/2023
-                </button>
-                <button className={requestCard.cellLine}>
-                  <span className="bg-yellow-700 p-1 rounded-lg">Em trânsito</span>
-                </button>
-              </a>
+            requests.map((item) => (
+              <RequestsCard key={item.id} {...item} />
             ))
           }
         </section>
       </div>
-    </div>
+    </div >
   );
 }
 

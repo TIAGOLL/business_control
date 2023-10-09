@@ -25,7 +25,8 @@ function Header() {
   return (
     <section className={header.container}>
       <div className={header.content}>
-        <a href='/dashboard/products/create' className={header.button}>{textButton}</a>
+        {textButton == 'Cadastrar produto' && <a href='/dashboard/products/create' className={header.button}>{textButton}</a>}
+        {textButton == 'Cadastrar pedido' && <a href='/dashboard/requests/create' className={header.button}>{textButton}</a>}
         <input placeholder='Search...' className={header.input} type="text" />
       </div>
     </section>

@@ -4,9 +4,46 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export default {
+
     async findAllRequests(req, res) {
         try {
-            const requests = await prisma.request.findMany();
+            const requests = await prisma.request.findMany({
+                include: {
+                    account: {
+                        include: {
+                            platform: true
+                        },
+                    },
+                    status_tracking: true
+                }
+            });
+
+            return res.json(requests);
+        } catch (error) {
+            return res.json(error.message);
+        }
+    },
+
+    async findRequestsById(req, res) {
+        const { id } = req.params;
+
+        try {
+            const requests = await prisma.request.findFirst({
+                include: {
+                    status_tracking: true,
+                    account: {
+                        include: {
+                            platform: true
+                        },
+                    },
+                },
+                where: {
+                    id: parseInt(id)
+                }
+            }).catch((error) => {
+                console.log(error);
+                return error;
+            });
 
             return res.json(requests);
         } catch (error) {
@@ -14,81 +51,85 @@ export default {
         }
     },
 
+    // não funciona
     async createRequest(req, res) {
-        const { date, idTracking, qtd_items, statusTracking, account_id, accounts_plataform_id, lote } = req.body;
+        const { account_id, date, status_tracking, lot, store_name, tracking_id } = req.body;
+
+        const request = {
+            account_id: parseInt(account_id),
+            date: date,
+            status_tracking: status_tracking,
+            lot: parseInt(lot),
+            store_name: store_name,
+            tracking_id: tracking_id
+        }
 
         try {
-            const request = await prisma.request.create({
-                data: {
-                    date,
-                    idTracking,
-                    qtd_items,
-                    statusTracking,
-                    account_id,
-                    accounts_plataform_id,
-                    lote
-                }
+            await prisma.request.create({
+                data: request
             })
                 .catch((error) => {
                     console.log(error);
-                    return error;
+                    return error.message;
                 });
 
             return res.json(request);
 
         } catch (error) {
-            return console.log(res.json(error))
+            return console.log(res.json(error.message))
         }
     },
 
+    // não funciona
     async updateRequest(req, res) {
-        const { id, date, idTracking, qtd_items, statusTracking, account_id, accounts_plataform_id, lote } = req.body;
+        const { account_id, date, status_tracking, lot, store_name, tracking_id } = req.body;
+        const { id } = req.params;
+
+        const request = {
+            account_id: parseInt(account_id),
+            date: date,
+            status_tracking: status_tracking,
+            lot: parseInt(lot),
+            store_name: store_name,
+            tracking_id: tracking_id
+        }
 
         try {
-            const request = await prisma.request.update({
+            await prisma.request.updateMany({
                 where: {
                     id: parseInt(id)
                 },
-                data: {
-                    date,
-                    idTracking,
-                    qtd_items,
-                    statusTracking,
-                    account_id,
-                    accounts_plataform_id,
-                    lote
-                }
+                data: request
             })
                 .catch((error) => {
                     console.log(error);
-                    return error;
+                    return error.message;
                 });
 
             return res.json(request);
 
         } catch (error) {
-            return console.log(res.json(error))
+            return console.log(res.json(error.message))
         }
     },
 
     async deleteRequest(req, res) {
-        const { id } = req.body;
-
+        const { id } = req.params;
         try {
-            const request = await prisma.request.delete({
+            const request = await prisma.request.deleteMany({
                 where: {
                     id: parseInt(id)
                 }
             })
                 .catch((error) => {
-                    console.log(error);
-                    return error;
+                    console.log(error.message);
+                    return error.message;
                 });
 
             return res.json(request);
 
         } catch (error) {
-            return console.log(res.json(error))
+            return console.log(res.json(error.message))
         }
     }
 }

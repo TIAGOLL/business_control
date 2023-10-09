@@ -1,4 +1,4 @@
-const requestCard = {
+const stylesRequestCard = {
   container: 'w-10/12 h-full flex flex-col justify-center items-center',
 
   button: 'px-4 text-md whitespace-nowrap py-2 rounded-xl bg-green-700 border-2 border-zinc-200 text-white font-semibold hover:bg-green-600 hover:border-blue-100',
@@ -13,4 +13,4 @@ const requestCard = {
 
 }
 
-export default requestCard
+export default stylesRequestCard
