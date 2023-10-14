@@ -14,7 +14,12 @@ export default {
                             platform: true
                         },
                     },
-                    status_tracking: true
+                    status_tracking: true,
+                    prod_request: {
+                        include: {
+                            product: true
+                        }
+                    }
                 }
             });
 
@@ -36,6 +41,11 @@ export default {
                             platform: true
                         },
                     },
+                    prod_request: {
+                        include: {
+                            product: true
+                        }
+                    }
                 },
                 where: {
                     id: parseInt(id)

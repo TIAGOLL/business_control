@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import SideBar from "../../components/SideBar";
-import { ChangePage } from "../../redux/slices/activePage";
+import { ChangePage } from "../../redux/features/activePage";
 import { container } from "../../styles/global.css";
 
 

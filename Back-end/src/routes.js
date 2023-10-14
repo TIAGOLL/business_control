@@ -5,6 +5,7 @@ import categoryController from "./controllers/categoryController";
 import requestsController from "./controllers/requestsController";
 import platformController from "./controllers/platformController";
 import accountController from "./controllers/accountController";
+import statusTrakingController from "./controllers/statusTrakingController";
 
 const router = Router();
 
@@ -32,4 +33,6 @@ router.get("/platforms", platformController.findAllPlatforms);
 //accounts
 router.get("/accounts", accountController.findAllAccounts);
 
+//status tracking
+router.get("/statustracking", statusTrakingController.findAllStatusTracking);
 export { router };

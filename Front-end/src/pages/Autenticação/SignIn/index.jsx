@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import IfLoading from '../../../icons/IfLoading';
-import { HanddleLoading } from '../../../redux/slices/loading';
+import { HanddleLoading } from '../../../redux/features/loading';
 import { container, formStyle } from '../../../styles/global.css';
 
 function SignIn() {

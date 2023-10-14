@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formStyle } from "../../../styles/global.css";
 import { useDispatch, useSelector } from "react-redux";
-import { ChangePage } from "../../../redux/slices/activePage";
+import { ChangePage } from "../../../redux/features/activePage";
 import { toast } from "react-toastify";
 
 
