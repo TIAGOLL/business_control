@@ -1,12 +1,12 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { ChangePage } from "../../redux/slices/activePage";
-import SideBar from './../../components/SideBar';
-import Header from './../../components/Header/index';
-import { container } from "../../styles/global.css";
-import axios from "axios";
 import RequestsCard from "../../components/RequestsCard";
 import stylesRequestCard from "../../components/RequestsCard/styles.css";
+import { ChangePage } from "../../redux/features/activePage";
+import { container } from "../../styles/global.css";
+import Header from './../../components/Header/index';
+import SideBar from './../../components/SideBar';
 
 
 // ToDo

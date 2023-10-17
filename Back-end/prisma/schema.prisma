@@ -38,7 +38,7 @@ model purchase {
 }
 
 model request {
-  id                 Int             @default(autoincrement())
+  id                 Int             @unique(map: "id_UNIQUE") @default(autoincrement())
   account_id         Int
   status_tracking_id Int
   lot                Int             @unique(map: "lote_UNIQUE")
@@ -62,7 +62,7 @@ model salesperson {
 }
 
 model product {
-  id             Int             @default(autoincrement())
+  id             Int             @unique(map: "id_UNIQUE") @default(autoincrement())
   category_id    Int
   name           String          @db.VarChar(45)
   quantity       Int
@@ -124,19 +124,16 @@ model prod_purchase {
 }
 
 model prod_request {
-  request_id                 Int
-  request_account_id         Int
-  request_status_tracking_id Int
-  product_id                 Int
-  product_category_id        Int
-  quantity                   Int
-  purchase_price             Float   @db.Float
-  product                    product @relation(fields: [product_id, product_category_id], references: [id, category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_product1")
-  request                    request @relation(fields: [request_id, request_account_id, request_status_tracking_id], references: [id, account_id, status_tracking_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_request2")
+  request_id     Int
+  product_id     Int
+  quantity       Int
+  purchase_price Float   @db.Float
+  product        product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_product2")
+  request        request @relation(fields: [request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_request2")
 
-  @@id([request_id, request_account_id, request_status_tracking_id, product_id, product_category_id])
-  @@index([product_id, product_category_id], map: "fk_request_has_product_product2_idx")
-  @@index([request_id, request_account_id, request_status_tracking_id], map: "fk_request_has_product_request2_idx")
+  @@id([request_id, product_id])
+  @@index([product_id], map: "fk_request_has_product_product2_idx")
+  @@index([request_id], map: "fk_request_has_product_request2_idx")
 }
 
 model status_tracking {

@@ -1,7 +1,7 @@
 
 import { container } from '../../styles/global.css';
 import stylesRequestCard from './styles.css';
-
+import moment from 'moment'
 
 
 function RequestsCard(props) {
@@ -26,7 +26,7 @@ function RequestsCard(props) {
         {props.tracking_id}
       </div>
       <div className={stylesRequestCard.cellLine}>
-        {props.date}
+        {moment(props.date).format('DD/MM/YYYY')}
       </div>
       <div className={stylesRequestCard.cellLine}>
         {props.lot}

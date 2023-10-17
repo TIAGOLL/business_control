@@ -10,7 +10,9 @@ const formStyle = {
 
   greenButton: 'bg-green-500 flex justify-center font-semibold py-1 border border-zinc-500 text-lg w-6/12 text-center items-center rounded-lg hover:border-black hover:bg-green-600',
 
-  redButton: 'p-4 rounded bg-red-600 border-2 border-zinc-200 text-white hover:bg-red-700 font-semibold hover:border-zinc-800'
+  redButton: 'p-4 rounded bg-red-600 border-2 border-zinc-200 text-white hover:bg-red-700 font-semibold hover:border-zinc-800',
+
+  blueButton: 'bg-blue-400 flex justify-center font-semibold py-1 border border-zinc-500 text-lg w-6/12 text-center items-center rounded-lg hover:border-black hover:bg-blue-500',
 }
 
 
