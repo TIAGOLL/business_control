@@ -47,7 +47,7 @@ function ProductsById() {
         setCurrentCategory(res.data.category.name);
         setSalePrice(res.data.sale_price);
         setProfitPorcent(res.data.profit_porcent);
-      })
+      })  
       .catch(err => {
         console.log(err);
       })
