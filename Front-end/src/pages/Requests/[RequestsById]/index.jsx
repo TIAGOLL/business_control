@@ -101,14 +101,18 @@ function RequestsById() {
         id: parseInt(id)
       },
       data: {
-        accounts_id: accountId,
-        accounts_platform_id: platformId,
-        storeName: storeName,
-        idTracking: idTracking,
+        tracking_id: idTracking,
+        store_name: storeName,
         date: date,
-        statusTracking: statusTracking,
-        lote: lot,
-        qtd_items: qtd_items,
+        status_tracking_id: parseInt(statusTracking),
+        lot: lot,
+        prod_request: currentProducts.map(item => {
+          return {
+            product_id: parseInt(item.product_id),
+            quantity: parseInt(item.quantity),
+            purchase_price: parseFloat(item.purchase_price),
+          }
+        })
       }
     })
       .then(res => {
