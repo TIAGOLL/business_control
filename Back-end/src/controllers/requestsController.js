@@ -65,6 +65,8 @@ export default {
     async createRequest(req, res) {
         const { account_id, date, status_tracking, lot, store_name, tracking_id } = req.body;
 
+        console.log('createRequest')
+
         const request = {
             account_id: parseInt(account_id),
             date: date,
@@ -90,33 +92,34 @@ export default {
         }
     },
 
-    // não funciona
     async updateRequest(req, res) {
-        const { account_id, date, status_tracking, lot, store_name, tracking_id } = req.body;
+        const { account_id, date, status_tracking_id, lot, store_name, tracking_id } = req.body.data;
         const { id } = req.params;
-
-        const request = {
-            account_id: parseInt(account_id),
-            date: date,
-            status_tracking: status_tracking,
-            lot: parseInt(lot),
-            store_name: store_name,
-            tracking_id: tracking_id
-        }
-
+        console.log('updateRequest')
+        console.log(req.body.data)
         try {
             await prisma.request.updateMany({
                 where: {
                     id: parseInt(id)
                 },
-                data: request
+                data: {
+                    date: date,
+                    store_name: store_name,
+                    tracking_id: tracking_id,
+                    account_id: parseInt(account_id),
+                    status_tracking_id: parseInt(status_tracking_id),
+                    lot: parseInt(lot)
+                }
             })
                 .catch((error) => {
-                    console.log(error);
+                    console.log(error.message);
                     return error.message;
+                })
+                .then((resp) => {
+                    console.log(resp);
+                    return res.json({ message: 'Pedido atualizado com sucesso' });
                 });
 
-            return res.json(request);
 
         } catch (error) {
             return console.log(res.json(error.message))

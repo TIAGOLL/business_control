@@ -17,7 +17,7 @@ function RequestsById() {
   const [typeInputDate, setTypeInputDate] = useState('text');
 
   const [storeName, setStoreName] = useState('');
-  const [idTracking, setIdTracking] = useState('');
+  const [trackingId, setTrackingId] = useState('');
   const [date, setDate] = useState('');
   const [statusTracking, setStatusTracking] = useState('');
   const [lot, setLot] = useState('');
@@ -34,11 +34,13 @@ function RequestsById() {
   const [platformData, setPlatformData] = useState([]);
   const [productsData, setProductsData] = useState([]);
 
+
+  // funções crud
   async function loadRequest() {
     axios.get(`http://localhost:3030/requests/${id}`)
       .then(res => {
         console.log(res.data);
-        setIdTracking(res.data.tracking_id);
+        setTrackingId(res.data.tracking_id);
         setStoreName(res.data.store_name);
         setDate(moment(res.data.date).format('YYYY/MM/DD'));
         setLot(res.data.lot);
@@ -52,7 +54,6 @@ function RequestsById() {
           };
         })
         );
-        console.log(currentProducts)
         setCurrentStatusTracking(res.data.status_tracking);
         setCurrentAccount(res.data.account);
         setCurrentPlatform(res.data.account.platform);
@@ -62,53 +63,23 @@ function RequestsById() {
       })
   }
 
-  async function loadAccounts() {
-    axios.get(`http://localhost:3030/accounts`)
-      .then(res => {
-        console.log(res.data);
-        setAccountData(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-
-  async function loadPlatforms() {
-    axios.get(`http://localhost:3030/platforms`)
-      .then(res => {
-        console.log(res.data);
-        setPlatformData(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-
-  async function loadStatusTracking() {
-    axios.get(`http://localhost:3030/statustracking`)
-      .then(res => {
-        console.log(res.data);
-        setStatusTrackingData(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
-
   async function updateRequest() {
     axios.put(`http://localhost:3030/requests/${id}`, {
-      where: {
-        id: parseInt(id)
-      },
+      Headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: {
-        accounts_id: accountId,
-        accounts_platform_id: platformId,
-        storeName: storeName,
-        idTracking: idTracking,
-        date: date,
-        statusTracking: statusTracking,
-        lote: lot,
-        qtd_items: qtd_items,
+        account_id: currentAccount.id,
+        date: (new Date(date)).toISOString(),
+        status_tracking_id: currentStatusTracking.id,
+        lot: lot,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_request: currentProducts.map(item => {
+          return {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
       }
     })
       .then(res => {
@@ -116,20 +87,13 @@ function RequestsById() {
         console.log(res.data);
       })
       .catch(err => {
-        console.log(err);
+        console.log('Erro == ' + err);
+      })
+      .finally(() => {
+
       });
   }
 
-  async function loadProducts() {
-    axios.get(`http://localhost:3030/products`)
-      .then(res => {
-        console.log(res.data);
-        setProductsData(res.data);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  }
 
   async function createRequest() {
 
@@ -142,27 +106,48 @@ function RequestsById() {
       });
   }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (page === 'createRequest') {
-      createRequest()
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    } else if (page === 'requestsById') {
-      updateRequest()
-        .then(res => {
-          console.log(res);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
+  // funções de carregamento de dados
+  async function loadProducts() {
+    axios.get(`http://localhost:3030/products`)
+      .then(res => {
+        setProductsData(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
+  async function loadAccounts() {
+    axios.get(`http://localhost:3030/accounts`)
+      .then(res => {
+        setAccountData(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  async function loadPlatforms() {
+    axios.get(`http://localhost:3030/platforms`)
+      .then(res => {
+        setPlatformData(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  async function loadStatusTracking() {
+    axios.get(`http://localhost:3030/statustracking`)
+      .then(res => {
+        setStatusTrackingData(res.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  // funções de manipulação de dados
   function handlePlatform(e) {
     e.preventDefault();
     setCurrentPlatform({
@@ -212,6 +197,14 @@ function RequestsById() {
     setCurrentProducts([...currentProducts]);
   }
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (page === 'createRequest') {
+      createRequest()
+    } else if (page === 'requestsById') {
+      updateRequest()
+    }
+  }
 
   useEffect(() => {
     loadAccounts();
@@ -273,7 +266,7 @@ function RequestsById() {
             {/* Conta do pedido */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <select id="accountName" className={formStyle.input} >
+                <select id="accountName" className={formStyle.input} onChange={e => handleAccount(e)} onClick={e => handleAccount(e)}>
                   <option htmlFor='accountName' key={currentAccount.id} value={currentAccount.id}>{currentAccount.name}</option>
                   {
                     accountData.map((item) => {
@@ -299,20 +292,20 @@ function RequestsById() {
             {/* Código de rastreio */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setIdTracking(e.target.value)} value={idTracking} id='idTracking' className={formStyle.input} type='text' />
-                <label htmlFor='idTracking' className={formStyle.label}>Código de rastreio</label>
+                <input required onChange={e => setTrackingId(e.target.value)} value={trackingId} id='trackingId' className={formStyle.input} type='text' />
+                <label htmlFor='trackingId' className={formStyle.label}>Código de rastreio</label>
               </div>
             </div>
 
             {/* Data do pedido */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setDate(moment(e.target.value).format('YYYY/MM/DD'))} value={moment(date).format('DD/MM/YYYY')} id='date' type={typeInputDate} className={formStyle.input} onFocus={() => setTypeInputDate('date')} onBlur={() => setTypeInputDate('text')} />
+                <input required onChange={e => setDate(moment(e.target.value).format('YYYY-MM-DD'))} value={moment(date).format('DD/MM/YYYY')} id='date' type={typeInputDate} className={formStyle.input} onFocus={() => setTypeInputDate('date')} onBlur={() => setTypeInputDate('text')} />
                 <label htmlFor='date' className={formStyle.label}>Data</label>
               </div>
             </div>
-
-            {/* Status */}
+            {date}
+            {/* Status tracking */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
                 <select id="statusTracking" onChange={e => setStatusTracking(e.target.value)} className={formStyle.input} >
@@ -342,7 +335,7 @@ function RequestsById() {
             {/* Quantidade de items */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input readOnly required value={productsData.length} id='quantityItems' className={formStyle.input} type='text' />
+                <input readOnly required value={currentProducts.length} id='quantityItems' className={formStyle.input} type='text' />
                 <label htmlFor='quantityItems' className={formStyle.label}>Quantidade de items</label>
               </div>
             </div>
