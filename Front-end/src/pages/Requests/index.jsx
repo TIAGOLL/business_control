@@ -72,9 +72,6 @@ function Requests() {
             <button onClick={() => sortTable('datapedido')} className={stylesRequestCard.cellHead}>
               Data pedido
             </button>
-            <button onClick={() => sortTable('datapedido')} className={stylesRequestCard.cellHead}>
-              Lote
-            </button>
             <button onClick={() => sortTable('status')} className={stylesRequestCard.cellHead}>
               Status
             </button>

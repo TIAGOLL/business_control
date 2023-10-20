@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model category {
@@ -38,10 +39,9 @@ model purchase {
 }
 
 model request {
-  id                 Int             @unique(map: "id_UNIQUE") @default(autoincrement())
+  id                 Int             @unique @default(autoincrement())
   account_id         Int
   status_tracking_id Int
-  lot                Int             @unique(map: "lote_UNIQUE")
   date               DateTime        @db.Date
   store_name         String          @db.VarChar(45)
   tracking_id        String          @db.VarChar(45)
@@ -62,7 +62,7 @@ model salesperson {
 }
 
 model product {
-  id             Int             @unique(map: "id_UNIQUE") @default(autoincrement())
+  id             Int             @unique @default(autoincrement())
   category_id    Int
   name           String          @db.VarChar(45)
   quantity       Int

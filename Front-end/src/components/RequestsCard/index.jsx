@@ -29,9 +29,6 @@ function RequestsCard(props) {
         {moment(props.date).format('DD/MM/YYYY')}
       </div>
       <div className={stylesRequestCard.cellLine}>
-        {props.lot}
-      </div>
-      <div className={stylesRequestCard.cellLine}>
         {props.status_tracking.name == 'Em trânsito' && <span className="bg-yellow-700 p-1 w-11/12 text-center font-semibold rounded-lg">{props.status_tracking.name}</span>}
         {props.status_tracking.name == 'Entregue' && <span className="bg-green-700 p-1 w-11/12 text-center font-semibold rounded-lg">{props.status_tracking.name}</span>}
         {props.status_tracking.name == 'Reembolsado' && <span className="bg-zinc-700 p-1 w-11/12 text-center font-semibold rounded-lg">{props.status_tracking.name}</span>}

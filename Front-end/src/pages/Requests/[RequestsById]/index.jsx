@@ -20,7 +20,6 @@ function RequestsById() {
   const [trackingId, setTrackingId] = useState('');
   const [date, setDate] = useState('');
   const [statusTracking, setStatusTracking] = useState('');
-  const [lot, setLot] = useState('');
 
   //current data
   const [currentStatusTracking, setCurrentStatusTracking] = useState('');
@@ -43,7 +42,6 @@ function RequestsById() {
         setTrackingId(res.data.tracking_id);
         setStoreName(res.data.store_name);
         setDate(moment(res.data.date).format('YYYY/MM/DD'));
-        setLot(res.data.lot);
 
         setCurrentProducts(res.data.prod_request.map(item => {
           return {
@@ -70,7 +68,6 @@ function RequestsById() {
         account_id: currentAccount.id,
         date: (new Date(date)).toISOString(),
         status_tracking_id: currentStatusTracking.id,
-        lot: lot,
         store_name: storeName,
         tracking_id: trackingId,
         prod_request: currentProducts.map(item => {
@@ -94,15 +91,30 @@ function RequestsById() {
       });
   }
 
-
   async function createRequest() {
 
-    axios.post(`http://localhost:3030/requests`, list)
+
+    axios.post(`http://localhost:3030/requests`, {
+      data: {
+        account_id: currentAccount.id,
+        date: (new Date(date)).toISOString(),
+        status_tracking_id: currentStatusTracking.id,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_request: currentProducts.map(item => {
+          return {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
+      }
+    })
       .then(res => {
-        console.log(res);
+        console.log(res.request);
       })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   }
 
@@ -147,7 +159,28 @@ function RequestsById() {
       });
   }
 
-  // funções de manipulação de dados
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (page === 'createRequest') {
+      createRequest()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (page === 'requestsById') {
+      updateRequest()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }
+
   function handlePlatform(e) {
     e.preventDefault();
     setCurrentPlatform({
@@ -163,6 +196,14 @@ function RequestsById() {
   function handleAccount(e) {
     e.preventDefault();
     setCurrentAccount({
+      id: e.target.value,
+      name: e.target.options[e.target.selectedIndex].text
+    });
+  }
+
+  function handleStatusTracking(e) {
+    e.preventDefault();
+    setCurrentStatusTracking({
       id: e.target.value,
       name: e.target.options[e.target.selectedIndex].text
     });
@@ -304,11 +345,11 @@ function RequestsById() {
                 <label htmlFor='date' className={formStyle.label}>Data</label>
               </div>
             </div>
-            {date}
+
             {/* Status tracking */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <select id="statusTracking" onChange={e => setStatusTracking(e.target.value)} className={formStyle.input} >
+                <select id="statusTracking" onChange={e => handleStatusTracking(e)} className={formStyle.input} >
                   <option htmlFor='statusTracking' key={currentStatusTracking.id} value={currentStatusTracking.id}>{currentStatusTracking.name}</option>
                   {
                     statusTrackingData.map((item) => {
@@ -321,14 +362,6 @@ function RequestsById() {
                   }
                 </select>
                 <label htmlFor='statusTracking' className={formStyle.label}>Status</label>
-              </div>
-            </div>
-
-            {/* Lote */}
-            <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input readOnly required onChange={e => setLot(e.target.value)} value={lot} id='lot' className={formStyle.input} type='text' />
-                <label htmlFor='lot' className={formStyle.label}>Lote</label>
               </div>
             </div>
 
@@ -383,15 +416,6 @@ function RequestsById() {
               )
             })
             }
-
-            {currentProducts.map((item, index) => (
-              <div>
-                id: {item.product_id},
-                quantidade: {item.quantity},
-                preço de compra: {item.purchase_price},
-                nome: {item.name}
-              </div>
-            ))}
           </div>
           <div className='flex w-full flex-col justify-center items-center'>
             <button type="submit" className={formStyle.greenButton} >
