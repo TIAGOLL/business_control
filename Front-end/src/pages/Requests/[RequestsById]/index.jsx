@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ArrowBigLeft } from "lucide-react";
+import { ArrowBigLeft, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -159,7 +159,7 @@ function RequestsById() {
       });
   }
 
-
+  // funções de manipulação de inputs
   async function handleSubmit(e) {
     e.preventDefault();
     if (page === 'createRequest') {
@@ -238,6 +238,13 @@ function RequestsById() {
     setCurrentProducts([...currentProducts]);
   }
 
+  function deleteProduct(e, index) {
+    e.preventDefault();
+    currentProducts.splice(index, 1);
+    setCurrentProducts([...currentProducts]);
+  }
+
+  // onSubmit
   async function handleSubmit(e) {
     e.preventDefault();
     if (page === 'createRequest') {
@@ -245,6 +252,18 @@ function RequestsById() {
     } else if (page === 'requestsById') {
       updateRequest()
     }
+  }
+
+  // onDelete
+  async function deleteRequest(e) {
+    e.preventDefault();
+    axios.delete(`http://localhost:3030/requests/${id}`)
+      .then(res => {
+        console.log(res.message);
+      })
+      .catch(err => {
+        console.log(err.message);
+      });
   }
 
   useEffect(() => {
@@ -279,7 +298,7 @@ function RequestsById() {
             {/* ID */}
             {page === 'createRequest' ? null :
               <div className='flex flex-col w-full'>
-                <div className='flex relative w-full space-x-2 items-center justify-center'>
+                <div className='flex relative w-full items-center justify-center'>
                   <input readOnly required value={id} id='id' className={formStyle.input} type='text' />
                   <label htmlFor='id' className={formStyle.label}>ID</label>
                 </div>
@@ -288,7 +307,7 @@ function RequestsById() {
 
             {/* palataforma */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <select id="platform" onClick={e => handlePlatform(e)} onChange={e => handlePlatform(e)} className={formStyle.input} >
                   <option htmlFor='platform' value={currentPlatform.id}>{currentPlatform.name}</option>
                   {
@@ -306,7 +325,7 @@ function RequestsById() {
 
             {/* Conta do pedido */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <select id="accountName" className={formStyle.input} onChange={e => handleAccount(e)} onClick={e => handleAccount(e)}>
                   <option htmlFor='accountName' key={currentAccount.id} value={currentAccount.id}>{currentAccount.name}</option>
                   {
@@ -324,7 +343,7 @@ function RequestsById() {
 
             {/* Loja do pedido */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <input required onChange={e => setStoreName(e.target.value)} value={storeName} id='storeName' className={formStyle.input} type='text' />
                 <label htmlFor='storeName' className={formStyle.label}>Loja</label>
               </div>
@@ -332,7 +351,7 @@ function RequestsById() {
 
             {/* Código de rastreio */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <input required onChange={e => setTrackingId(e.target.value)} value={trackingId} id='trackingId' className={formStyle.input} type='text' />
                 <label htmlFor='trackingId' className={formStyle.label}>Código de rastreio</label>
               </div>
@@ -340,7 +359,7 @@ function RequestsById() {
 
             {/* Data do pedido */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <input required onChange={e => setDate(moment(e.target.value).format('YYYY-MM-DD'))} value={moment(date).format('DD/MM/YYYY')} id='date' type={typeInputDate} className={formStyle.input} onFocus={() => setTypeInputDate('date')} onBlur={() => setTypeInputDate('text')} />
                 <label htmlFor='date' className={formStyle.label}>Data</label>
               </div>
@@ -348,7 +367,7 @@ function RequestsById() {
 
             {/* Status tracking */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <select id="statusTracking" onChange={e => handleStatusTracking(e)} className={formStyle.input} >
                   <option htmlFor='statusTracking' key={currentStatusTracking.id} value={currentStatusTracking.id}>{currentStatusTracking.name}</option>
                   {
@@ -357,7 +376,6 @@ function RequestsById() {
                       return (
                         <option htmlFor='statusTracking' key={item.id} value={item.id}>{item.name}</option>
                       )
-
                     })
                   }
                 </select>
@@ -367,7 +385,7 @@ function RequestsById() {
 
             {/* Quantidade de items */}
             <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
+              <div className='flex relative w-full items-center justify-center'>
                 <input readOnly required value={currentProducts.length} id='quantityItems' className={formStyle.input} type='text' />
                 <label htmlFor='quantityItems' className={formStyle.label}>Quantidade de items</label>
               </div>
@@ -384,9 +402,10 @@ function RequestsById() {
               return (
                 <div className="flex flex-row w-full gap-8 items-center justify-center" key={item.id}>
                   <div className='flex flex-col w-4/12'>
-                    <div className='flex relative w-full space-x-2 items-center justify-center'>
-                      <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} onClick={e => handleTypeProduct(e, index)} value={item.id} className={formStyle.input} >
-                        {page == 'requestsById' && <option htmlFor={`products${index + 1}`} key={item.id} value={item.id}>{item.name}</option>}
+                    <div className='flex relative w-full items-center justify-center'>
+                      <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} onClick={e => handleTypeProduct(e, index)} value={item.product_id} className={formStyle.input} >
+                        {page == 'createRequest' && <option value={null}>Selecione um produto</option>}
+                        {item.product_id == '' && <option>Selecione um produto</option>}
                         {
                           productsData.map((item, idx) => {
                             return (
@@ -399,33 +418,44 @@ function RequestsById() {
                     </div>
                   </div>
 
-                  <div className='flex flex-col w-4/12'>
-                    <div className='flex relative w-full space-x-2 items-center justify-center'>
+                  <div className='flex flex-col w-2/12'>
+                    <div className='flex relative w-full items-center justify-center'>
+                      <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
+                      <label htmlFor={`quantityProduct${index}`} className={formStyle.label}>Quantidade</label>
+                    </div>
+                  </div>
+
+                  <div className='flex flex-col w-/12'>
+                    <div className='flex relative w-full items-center justify-center'>
                       <input required onChange={e => handlePurchasePriceProduct(e, index)} onClick={e => handlePurchasePriceProduct(e, index)} value={item.purchase_price} id={`purchasePrice${index}`} className={formStyle.input} type='text' />
                       <label htmlFor={`purchasePrice${index}`} className={formStyle.label}>Preço de compra</label>
                     </div>
                   </div>
 
-                  <div className='flex flex-col w-2/12'>
-                    <div className='flex relative w-full space-x-2 items-center justify-center'>
-                      <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
-                      <label htmlFor={`quantityProduct${index}`} className={formStyle.label}>Quantidade</label>
-                    </div>
+                  <div className='flex relative items-center justify-start'>
+                    <button className="bg-red-500 flex justify-center font-semibold border border-zinc-500 text-lg w-10 h-8 text-center items-center rounded-lg hover:border-black hover:bg-red-600" onClick={e => deleteProduct(e, index)}><Trash2 width={20} height={20} color="white" /></button>
                   </div>
                 </div>
               )
             })
             }
           </div>
-          <div className='flex w-full flex-col justify-center items-center'>
-            <button type="submit" className={formStyle.greenButton} >
-              {page === 'createRequest' && 'Cadastrar'}
-              {page === 'requestsById' && 'Salvar'}
-            </button>
+          <div className='flex w-full flex-row justify-center gap-8 items-center'>
+            <div className="w-4/12 flex items-center justify-end">
+              <button type="submit" className={formStyle.greenButton} >
+                {page === 'createRequest' && 'Cadastrar'}
+                {page === 'requestsById' && 'Salvar'}
+              </button>
+            </div>
+            {page == 'requestsById' &&
+              <div className="w-4/12 flex items-center justify-start">
+                <button onClick={(e) => deleteRequest(e)} className={formStyle.redButton} >Excluir</button>
+              </div>
+            }
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 

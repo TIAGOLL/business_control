@@ -108,8 +108,8 @@ export default {
     async updateRequest(req, res) {
         const { account_id, date, status_tracking_id, store_name, tracking_id, prod_request } = req.body.data;
         const { id } = req.params;
+
         console.log('updateRequest')
-        console.log(req.body.data)
         try {
             await prisma.request.updateMany({
                 where: {
@@ -119,33 +119,34 @@ export default {
                     date: date,
                     store_name: store_name,
                     tracking_id: tracking_id,
-                    account: {
-                        connect: {
-                            id: parseInt(account_id)
-                        }
-                    },
-                    status_tracking: {
-                        connect: {
-                            id: parseInt(status_tracking_id)
-                        },
-                    },
-                    prod_request: {
-                        create: prod_request.map((prod) => {
-                            return {
-                                product_id: parseInt(prod.product_id),
-                                quantity: parseInt(prod.quantity),
-                                purchase_price: parseFloat(prod.purchase_price)
-                            }
-                        })
-                    }
+                    account_id: parseInt(account_id),
+                    status_tracking_id: parseInt(status_tracking_id),
                 },
+            })
+
+
+            await prisma.prod_request.deleteMany({
+                where: {
+                    request_id: parseInt(id)
+                }
+            })
+
+            await prisma.prod_request.createMany({
+                data: prod_request.map((prod) => {
+                    return {
+                        request_id: parseInt(id),
+                        product_id: parseInt(prod.product_id),
+                        quantity: parseInt(prod.quantity),
+                        purchase_price: parseFloat(prod.purchase_price)
+                    }
+                }),
             })
                 .catch((error) => {
                     console.log(error.message);
                     return error.message;
                 })
                 .then((resp) => {
-                    console.log(resp);
+                    console.log(resp.message);
                     return res.json({ message: 'Pedido atualizado com sucesso' });
                 });
 
@@ -158,7 +159,17 @@ export default {
     async deleteRequest(req, res) {
         const { id } = req.params;
         try {
-            const request = await prisma.request.deleteMany({
+            await prisma.prod_request.deleteMany({
+                where: {
+                    request_id: parseInt(id)
+                }
+            })
+                .catch((error) => {
+                    console.log(error.message);
+                    return error.message;
+                });
+
+            await prisma.request.deleteMany({
                 where: {
                     id: parseInt(id)
                 }
@@ -168,10 +179,10 @@ export default {
                     return error.message;
                 });
 
-            return res.json(request);
+            return res.json({ message: 'Pedido deletado com sucesso' });
 
         } catch (error) {
-            return console.log(res.json(error.message))
+            return res.json(error.message);
         }
     }
 }
