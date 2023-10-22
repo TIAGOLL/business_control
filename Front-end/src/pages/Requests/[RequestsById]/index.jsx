@@ -2,11 +2,10 @@ import axios from "axios";
 import { ArrowBigLeft, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { redirect, useParams } from "react-router-dom";
 import { ChangePage } from "../../../redux/features/activePage";
 import { formStyle } from "../../../styles/global.css";
 import moment from "moment";
-
 
 function RequestsById() {
   const { id } = useParams();
@@ -80,20 +79,17 @@ function RequestsById() {
       }
     })
       .then(res => {
-        console.log(res);
         console.log(res.data);
       })
       .catch(err => {
         console.log('Erro == ' + err);
       })
       .finally(() => {
-
+        redirect('/dashboard/requests');
       });
   }
 
   async function createRequest() {
-
-
     axios.post(`http://localhost:3030/requests`, {
       data: {
         account_id: currentAccount.id,
@@ -260,6 +256,7 @@ function RequestsById() {
     axios.delete(`http://localhost:3030/requests/${id}`)
       .then(res => {
         console.log(res.message);
+        redirect('/dashboard/requests')
       })
       .catch(err => {
         console.log(err.message);
