@@ -43,15 +43,12 @@ export default {
     },
 
     async createProduct(req, res) {
-        const { name, quantity, sale_price, category_id, profit_porcent, description } = req.body;
-
+        const { name, sale_price, category_id, description } = req.body.data;
 
         const product = {
             name,
-            quantity: parseInt(quantity),
             category_id: parseInt(category_id),
             sale_price: parseFloat(sale_price),
-            profit_porcent: parseFloat(profit_porcent),
             description
         }
 
@@ -75,17 +72,14 @@ export default {
         }
     },
 
-    // não funciona
     async updateProduct(req, res) {
-        const { name, quantity, sale_price, category_id, profit_porcent, description } = req.body;
+        const { name, sale_price, category_id, description } = req.body.data;
         const { id } = req.params;
-        console.log(req)
+
         const product = {
             name,
-            quantity: parseInt(quantity),
             category_id: parseInt(category_id),
             sale_price: parseFloat(sale_price),
-            profit_porcent: parseFloat(profit_porcent),
             description
         }
 

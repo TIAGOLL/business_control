@@ -1,4 +1,4 @@
-const LoadingIcon = ({ color = 'white', widht = 50, height = widht, strokeWidht = 12 }) => {
+const LoadingIcon = ({ color = 'white', widht = 30, height = widht, strokeWidht = 12 }) => {
     return (
         <svg
             width={widht}

@@ -108,7 +108,7 @@ export default {
     async updateRequest(req, res) {
         const { account_id, date, status_tracking_id, store_name, tracking_id, prod_request } = req.body.data;
         const { id } = req.params;
-
+        console.log(req.body.data.prod_request)
         console.log('updateRequest')
         try {
             await prisma.request.updateMany({
@@ -145,14 +145,15 @@ export default {
                     console.log(error.message);
                     return error.message;
                 })
-                .then((resp) => {
-                    console.log(resp.message);
-                    return res.json({ message: 'Pedido atualizado com sucesso' });
+                .then((res) => {
+                    return res;
                 });
 
-
-        } catch (error) {
-            return console.log(res.json(error.message))
+            return res.json({ message: 'Pedido atualizado com sucesso' });
+        } 
+        
+        catch (error) {
+            return res.json({ message: error.message })
         }
     },
 
@@ -184,5 +185,38 @@ export default {
         } catch (error) {
             return res.json(error.message);
         }
-    }
+    },
+
+    async findAllRequestsByProductId(req, res) {
+        const { id } = req.params;
+
+        try {
+            const requests = await prisma.request.findMany({
+                include: {
+                    account: {
+                        include: {
+                            platform: true
+                        },
+                    },
+                    status_tracking: true,
+                    prod_request: {
+                        include: {
+                            product: true
+                        }
+                    }
+                },
+                where: {
+                    prod_request: {
+                        some: {
+                            product_id: parseInt(id)
+                        }
+                    }
+                }
+            });
+
+            return res.json(requests);
+        } catch (error) {
+            return res.json(error.message);
+        }
+    },
 }

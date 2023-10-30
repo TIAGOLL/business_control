@@ -2,6 +2,7 @@ import { BarChartBig, PackageSearch, Power, ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { sideBar } from "./styles.css";
+import { toast } from "react-toastify";
 
 
 const SideBar = () => {
@@ -10,8 +11,9 @@ const SideBar = () => {
 
 
   function desconnectUser() {
-    // localStorage.removeItem('@ticketsPRO');
-    // navigate('/')
+    localStorage.removeItem('@ticketsPRO');
+    navigate('/')
+    toast.warn('Desconectado com sucesso!')
   }
 
   const { page } = useSelector(state => state.page)

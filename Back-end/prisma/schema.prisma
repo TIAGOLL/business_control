@@ -65,9 +65,7 @@ model product {
   id             Int             @unique @default(autoincrement())
   category_id    Int
   name           String          @db.VarChar(45)
-  quantity       Int
   sale_price     Float           @db.Float
-  profit_porcent Int
   description    String?         @db.VarChar(200)
   prod_purchase  prod_purchase[]
   prod_request   prod_request[]

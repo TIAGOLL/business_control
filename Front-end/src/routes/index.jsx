@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 //Autenticação
 import SignIn from '../pages/Autenticação/SignIn/index';
 import Register from '../pages/Autenticação/Register';
-// import Private from './private';
+import Private from './private';
 
 //Dashboard
 import Dashboard from '../pages/Dashboard';
@@ -26,15 +26,15 @@ function RoutesApp() {
       <Route path='/register' element={<Register />} />
 
       {/* Dashboard */}
-      <Route path='/dashboard' element={<Dashboard />} />
+      <Route path='/dashboard' element={<Private><Dashboard /></Private>} />
 
       {/* Produto */}
-      <Route path='/dashboard/products' element={<Products />} />
-      <Route path='/dashboard/products/:id' element={<ProductsById />} />
+      <Route path='/dashboard/products' element={<Private><Products /></Private>} />
+      <Route path='/dashboard/products/:id' element={<Private><ProductsById /></Private>} />
 
       {/* Pedidos de compra */}
-      <Route path='/dashboard/requests' element={<Requests />} />
-      <Route path='/dashboard/requests/:id' element={<RequestsById />} />
+      <Route path='/dashboard/requests' element={<Private><Requests /></Private>} />
+      <Route path='/dashboard/requests/:id' element={<Private><RequestsById /></Private>} />
     </Routes>
   )
 }

@@ -2,17 +2,20 @@ import axios from "axios";
 import { ArrowBigLeft, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { redirect, useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { ChangePage } from "../../../redux/features/activePage";
 import { formStyle } from "../../../styles/global.css";
 import moment from "moment";
+import { Oval } from 'svg-loaders-react';
+import { toast } from "react-toastify";
 
 function RequestsById() {
   const { id } = useParams();
   const { page } = useSelector(state => state.page)
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-
+  const [loading, setLoading] = useState(true);
   const [typeInputDate, setTypeInputDate] = useState('text');
 
   const [storeName, setStoreName] = useState('');
@@ -33,11 +36,92 @@ function RequestsById() {
   const [productsData, setProductsData] = useState([]);
 
 
-  // funções crud
+  async function updateRequest() {
+    setLoading(true);
+    axios.put(`http://localhost:3030/requests/${id}`, {
+      Headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      data: {
+        account_id: currentAccount.id,
+        date: (new Date(date)).toISOString(),
+        status_tracking_id: currentStatusTracking.id,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_request: currentProducts.map(item => {
+          return {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
+      }
+    })
+      .then(res => {
+        navigate('/dashboard/requests')
+        toast.success(res.data.message);
+      })
+      .catch(err => {
+        console.log('Erro == ' + err);
+        toast.error('Erro ao atualizar pedido!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  async function createRequest() {
+    setLoading(true);
+    axios.post(`http://localhost:3030/requests`, {
+      data: {
+        account_id: currentAccount.id,
+        date: (new Date(date)).toISOString(),
+        status_tracking_id: currentStatusTracking.id,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_request: currentProducts.map(item => {
+          return {
+            product_id: item.product_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
+      }
+    })
+      .then(res => {
+        console.log(res.message);
+        navigate('/dashboard/requests')
+        toast.success('Pedido cadastrado com sucesso!');
+      })
+      .catch(err => {
+        console.log(err.message);
+        toast.error('Erro ao cadastrar pedido!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
+  async function deleteRequest(e) {
+    setLoading(true);
+    e.preventDefault();
+    axios.delete(`http://localhost:3030/requests/${id}`)
+      .then(res => {
+        console.log(res.message);
+        navigate('/dashboard/requests')
+        toast.warn('Pedido excluído com sucesso!');
+      })
+      .catch(err => {
+        console.log(err.message);
+        toast.error('Erro ao excluir pedido!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
+
   async function loadRequest() {
+    // carrega os dados do pedido
     axios.get(`http://localhost:3030/requests/${id}`)
       .then(res => {
-        console.log(res.data);
         setTrackingId(res.data.tracking_id);
         setStoreName(res.data.store_name);
         setDate(moment(res.data.date).format('YYYY/MM/DD'));
@@ -58,95 +142,42 @@ function RequestsById() {
       .catch(err => {
         console.log(err);
       })
-  }
-
-  async function updateRequest() {
-    axios.put(`http://localhost:3030/requests/${id}`, {
-      Headers: { 'content-type': 'application/x-www-form-urlencoded' },
-      data: {
-        account_id: currentAccount.id,
-        date: (new Date(date)).toISOString(),
-        status_tracking_id: currentStatusTracking.id,
-        store_name: storeName,
-        tracking_id: trackingId,
-        prod_request: currentProducts.map(item => {
-          return {
-            product_id: item.product_id,
-            quantity: item.quantity,
-            purchase_price: item.purchase_price
-          }
-        })
-      }
-    })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.log('Erro == ' + err);
-      })
       .finally(() => {
-        redirect('/dashboard/requests');
+        setLoading(false);
       });
   }
 
-  async function createRequest() {
-    axios.post(`http://localhost:3030/requests`, {
-      data: {
-        account_id: currentAccount.id,
-        date: (new Date(date)).toISOString(),
-        status_tracking_id: currentStatusTracking.id,
-        store_name: storeName,
-        tracking_id: trackingId,
-        prod_request: currentProducts.map(item => {
-          return {
-            product_id: item.product_id,
-            quantity: item.quantity,
-            purchase_price: item.purchase_price
-          }
-        })
-      }
-    })
-      .then(res => {
-        console.log(res.request);
-      })
-      .catch(err => {
-        console.log(err.message);
-      });
-  }
-
-  // funções de carregamento de dados
-  async function loadProducts() {
-    axios.get(`http://localhost:3030/products`)
+  async function loadData() {
+    setLoading(true);
+    // carrega os dados dos produtos
+    await axios.get(`http://localhost:3030/products`)
       .then(res => {
         setProductsData(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }
 
-  async function loadAccounts() {
-    axios.get(`http://localhost:3030/accounts`)
+    // carrega os dados das contas
+    await axios.get(`http://localhost:3030/accounts`)
       .then(res => {
         setAccountData(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }
 
-  async function loadPlatforms() {
-    axios.get(`http://localhost:3030/platforms`)
+    // carrega os dados das plataformas
+    await axios.get(`http://localhost:3030/platforms`)
       .then(res => {
         setPlatformData(res.data);
       })
       .catch(err => {
         console.log(err);
       });
-  }
 
-  async function loadStatusTracking() {
-    axios.get(`http://localhost:3030/statustracking`)
+    // carrega os dados dos status tracking
+    await axios.get(`http://localhost:3030/statustracking`)
       .then(res => {
         setStatusTrackingData(res.data);
       })
@@ -217,6 +248,14 @@ function RequestsById() {
 
   function handleTypeProduct(e, index) {
     e.preventDefault();
+
+    currentProducts.map((item) => {
+      if (e.target.value == item.product_id) {
+        toast.error('Esse Produto ja está incluído!')
+        return deleteProduct(e, index)
+      }
+    })
+
     currentProducts[index].product_id = e.target.value;
     currentProducts[index].name = e.target.options[e.target.selectedIndex].text;
     setCurrentProducts([...currentProducts]);
@@ -250,24 +289,10 @@ function RequestsById() {
     }
   }
 
-  // onDelete
-  async function deleteRequest(e) {
-    e.preventDefault();
-    axios.delete(`http://localhost:3030/requests/${id}`)
-      .then(res => {
-        console.log(res.message);
-        redirect('/dashboard/requests')
-      })
-      .catch(err => {
-        console.log(err.message);
-      });
-  }
 
   useEffect(() => {
-    loadAccounts();
-    loadPlatforms();
-    loadStatusTracking();
-    loadProducts();
+    setLoading(true);
+    loadData();
 
     if (id === 'create') {
       dispatch(ChangePage('createRequest'));
@@ -276,6 +301,8 @@ function RequestsById() {
       loadRequest();
       dispatch(ChangePage('requestsById'));
     }
+    setLoading(false);
+
   }, []);
 
   return (
@@ -305,7 +332,7 @@ function RequestsById() {
             {/* palataforma */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full items-center justify-center'>
-                <select id="platform" onClick={e => handlePlatform(e)} onChange={e => handlePlatform(e)} className={formStyle.input} >
+                <select id="platform" onChange={e => handlePlatform(e)} className={formStyle.input} >
                   <option htmlFor='platform' value={currentPlatform.id}>{currentPlatform.name}</option>
                   {
                     platformData.map((item) => {
@@ -323,7 +350,7 @@ function RequestsById() {
             {/* Conta do pedido */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full items-center justify-center'>
-                <select id="accountName" className={formStyle.input} onChange={e => handleAccount(e)} onClick={e => handleAccount(e)}>
+                <select id="accountName" className={formStyle.input} onChange={e => handleAccount(e)}>
                   <option htmlFor='accountName' key={currentAccount.id} value={currentAccount.id}>{currentAccount.name}</option>
                   {
                     accountData.map((item) => {
@@ -395,14 +422,14 @@ function RequestsById() {
               </button>
             </div>
 
-            {currentProducts.map((item, index) => {
+            {currentProducts.map((item2, index) => {
               return (
-                <div className="flex flex-row w-full gap-8 items-center justify-center" key={item.id}>
+                <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.product_id}>
                   <div className='flex flex-col w-4/12'>
                     <div className='flex relative w-full items-center justify-center'>
-                      <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} onClick={e => handleTypeProduct(e, index)} value={item.product_id} className={formStyle.input} >
+                      <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} value={item2.product_id} className={formStyle.input} >
                         {page == 'createRequest' && <option value={null}>Selecione um produto</option>}
-                        {item.product_id == '' && <option>Selecione um produto</option>}
+                        {item2.product_id == '' && <option>Selecione um produto</option>}
                         {
                           productsData.map((item, idx) => {
                             return (
@@ -417,14 +444,14 @@ function RequestsById() {
 
                   <div className='flex flex-col w-2/12'>
                     <div className='flex relative w-full items-center justify-center'>
-                      <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
+                      <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item2.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
                       <label htmlFor={`quantityProduct${index}`} className={formStyle.label}>Quantidade</label>
                     </div>
                   </div>
 
                   <div className='flex flex-col w-/12'>
                     <div className='flex relative w-full items-center justify-center'>
-                      <input required onChange={e => handlePurchasePriceProduct(e, index)} onClick={e => handlePurchasePriceProduct(e, index)} value={item.purchase_price} id={`purchasePrice${index}`} className={formStyle.input} type='text' />
+                      <input required onChange={e => handlePurchasePriceProduct(e, index)} onClick={e => handlePurchasePriceProduct(e, index)} value={item2.purchase_price} id={`purchasePrice${index}`} className={formStyle.input} type='text' />
                       <label htmlFor={`purchasePrice${index}`} className={formStyle.label}>Preço de compra</label>
                     </div>
                   </div>
@@ -439,14 +466,18 @@ function RequestsById() {
           </div>
           <div className='flex w-full flex-row justify-center gap-8 items-center'>
             <div className="w-4/12 flex items-center justify-end">
-              <button type="submit" className={formStyle.greenButton} >
-                {page === 'createRequest' && 'Cadastrar'}
-                {page === 'requestsById' && 'Salvar'}
+              <button type="submit" disabled={loading} className={formStyle.greenButton} >
+                {
+                  loading ? <Oval width={20} height={20} /> :
+                    page === 'createRequest' && 'Cadastrar' ||
+                    page === 'requestsById' && 'Salvar'
+                }
               </button>
             </div>
-            {page == 'requestsById' &&
+            {
+              page == 'requestsById' &&
               <div className="w-4/12 flex items-center justify-start">
-                <button onClick={(e) => deleteRequest(e)} className={formStyle.redButton} >Excluir</button>
+                <button disabled={loading} onClick={(e) => deleteRequest(e)} className={formStyle.redButton} >{loading ? <Oval width={20} height={20} /> : 'Excluir'}</button>
               </div>
             }
           </div>

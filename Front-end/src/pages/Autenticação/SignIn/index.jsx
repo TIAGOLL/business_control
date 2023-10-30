@@ -6,25 +6,38 @@ import { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import IfLoading from '../../../icons/IfLoading';
-import { HanddleLoading } from '../../../redux/features/loading';
 import { container, formStyle } from '../../../styles/global.css';
+import { AuthContext } from '../../../contexts/auth';
+import { useContext } from 'react';
+import { toast } from 'react-toastify';
 
 function SignIn() {
 
   const dispatch = useDispatch()
+  const { signIn } = useContext(AuthContext);
+
   //hooks
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(useSelector(state => state.loading.value))
+  const [loading, setLoading] = useState(true)
+
+  async function SignInUser(e) {
+    e.preventDefault()
+    // acionada quando aperto o botão de login
+    setLoading(true)
+    await signIn(email, password)
+    setLoading(false)
+  }
+
   useEffect(() => {
-    dispatch(HanddleLoading(false))
+    setLoading(false)
   }, [])
 
   return (
     <div className='w-screen h-screen flex items-center justify-center bg-zinc-400'>
       <section className='flex flex-col h-max items-center bg-zinc-100 w-4/12 justify-center rounded-xl py-6 space-y-8 shadow-lg shadow-zinc-800 border-3'>
         <img src='/images/Logo.png' alt='Logo' width={125} height={100} />
-        <form className="w-full gap-8 flex-col flex">
+        <form onSubmit={(e) => SignInUser(e)} className="w-full gap-8 flex-col flex">
           <div className='flex w-full flex-col px-14 justify-center items-center gap-8'>
             <div className='flex flex-row gap-4 justify-center items-center w-full'>
               <User strokeWidth={2} width={30} height={30} />
@@ -42,8 +55,8 @@ function SignIn() {
             </div>
           </div>
           <div className='flex w-full flex-col justify-center items-center'>
-            <button type='submit' className='bg-green-600 flex justify-center font-semibold py-1 border border-zinc-500 text-lg w-6/12 text-center items-center rounded-lg hover:border-black hover:bg-green-700' >
-              {loading ? <IfLoading /> : 'Entrar'}
+            <button type='submit' className='bg-green-600 flex justify-center font-semibold py-1 border border-zinc-500 text-lg w-6/12 text-center items-center rounded-lg hover:border-black hover:bg-green-700 text-white' >
+              {loading ? <p className='flex flex-row'>Carregando...<span className='ml-4 animate-spin'><IfLoading /></span></p> : 'Entrar'}
             </button>
           </div>
           <div className="flex w-full flex-row px-4">

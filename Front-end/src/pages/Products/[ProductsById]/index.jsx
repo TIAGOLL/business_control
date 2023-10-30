@@ -1,88 +1,137 @@
 import axios from "axios";
-import { ArrowBigLeft } from "lucide-react";
+import { ArrowBigLeft, AwardIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { formStyle } from "../../../styles/global.css";
 import { useDispatch, useSelector } from "react-redux";
 import { ChangePage } from "../../../redux/features/activePage";
 import { toast } from "react-toastify";
 
 
-// ToDo
-// [ X ] - ID
-// [ X ] - Nome
-// [ X ] - Quantidade
-// [ X ] - Categoria
-// [   ] - Preço de venda
-// [   ] - Preço de compra
-// [   ] - % de lucro
-
 function ProductsById() {
 
   const { id } = useParams();
   const dispatch = useDispatch();
-
   const { page } = useSelector(state => state.page)
+  const navigate = useNavigate()
 
-  const [productId, setProductId] = useState('');
-  const [categoryId, setCategoryId] = useState('');
-  const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [salePrice, setSalePrice] = useState('');
-  const [profitPorcent, setProfitPorcent] = useState('');
-  const [description, setDescription] = useState('');
-
-  const [currentCategory, setCurrentCategory] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [purchasePrice, setPurchasePrice] = useState();
+  const [profitPorcent, setProfitPorcent] = useState(0);
 
   const [categorysData, setCategorysData] = useState([]);
+  const [currentProduct, setCurrentProduct] = useState({
+    id: '',
+    name: '',
+    quantity: '',
+    description: '',
+    sale_price: '',
+    category: {
+      id: '',
+      name: ''
+    },
+  });
 
   async function loadProducts() {
     await axios.get(`http://localhost:3030/products/${id}`)
       .then(res => {
-        setProductId(res.data.id);
-        setName(res.data.name);
-        setQuantity(res.data.quantity);
-        setCategoryId(res.data.category_id);
-        setDescription(res.data.description);
-        setCurrentCategory(res.data.category.name);
-        setSalePrice(res.data.sale_price);
-        setProfitPorcent(res.data.profit_porcent);
-      })  
+        setCurrentProduct(res.data);
+      })
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
+      })
+  }
+
+  async function loadData() {
+    // procurar a quantidade no estoque físico
+    await axios.get(`http://localhost:3030/prodrequests/${id}`)
+      .then(res => {
+        const quantity = res.data.reduce((acc, item) => {
+          return acc + item.quantity;
+        }, 0);
+        currentProduct.quantity = quantity
+        setCurrentProduct({ ...currentProduct });
+      })
+      .catch(err => {
+        console.log(err.message);
+      })
+
+    // procurar o preço de compra do pedido mais recente
+    await axios.get(`http://localhost:3030/prodrequests/${id}`)
+      .then(res => {
+        const maxID = res.data.reduce(function (item, current) {
+          return (item.request_id > current.request_id) ? item : current
+        })
+        setPurchasePrice(maxID.purchase_price);
+      })
+      .catch(err => {
+        console.log(err.message);
+        setPurchasePrice('Nenhum preço de compra encontrado');
       })
   }
 
   async function loadCategorys() {
-
+    // pegar todas as categorias
     await axios.get(`http://localhost:3030/categorys`)
       .then(res => {
         setCategorysData(res.data);
       })
       .catch(err => {
         console.log(err);
-      })
+      });
+  }
+
+  function handleCategory(e) {
+    e.preventDefault();
+    currentProduct.category.id = e.target.value;
+    currentProduct.category.name = e.target.options[e.target.selectedIndex].text;
+    setCurrentProduct({
+      ...currentProduct,
+      category: {
+        id: currentProduct.category.id,
+        name: currentProduct.category.name
+      }
+    });
+  }
+
+  function handleName(e) {
+    e.preventDefault();
+    currentProduct.name = e.target.value;
+    setCurrentProduct({ ...currentProduct });
+  }
+
+  function handleDescription(e) {
+    e.preventDefault();
+    currentProduct.description = e.target.value;
+    setCurrentProduct({ ...currentProduct });
+  }
+
+  async function handleSalePrice(e) {
+    e.preventDefault();
+    currentProduct.sale_price = e.target.value;
+    setCurrentProduct({ ...currentProduct });
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (page === 'createProduct') {
-      toast('Produto cadastrado com sucesso!')
       createProduct()
         .then(res => {
-          console.log(res);
+          navigate('/dashboard/products')
+          toast.success('Produto cadastrado com sucesso!')
         })
         .catch(err => {
-          console.log(err);
+          console.log(err.message);
         });
     } else if (page === 'productsbyid') {
       updateProduct()
         .then(res => {
-          console.log(res);
+          navigate('/dashboard/products')
+          toast.success('Produto atualizado com sucesso!')
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err.message);
+        })
     }
 
     async function updateProduct() {
@@ -91,30 +140,23 @@ function ProductsById() {
           id: id
         },
         data: {
-          name: name,
-          quantity: quantity,
-          category_id: categoryId,
-          description: description,
-          sale_price: salePrice,
-          profit_porcent: profitPorcent
+          name: currentProduct.name,
+          category_id: currentProduct.category.id,
+          description: currentProduct.description,
+          sale_price: currentProduct.sale_price,
         }
       })
-        .then(res => {
-          console.log(res.message);
-        })
-        .catch(err => {
-          console.log(err);
-        });
     }
 
     async function createProduct() {
+      console.log(currentProduct)
       await axios.post(`http://localhost:3030/products`, {
-        name: name,
-        quantity: quantity,
-        category_id: categoryId,
-        description: description,
-        sale_price: salePrice,
-        profit_porcent: profitPorcent
+        data: {
+          name: currentProduct.name,
+          category_id: currentProduct.category.id,
+          description: currentProduct.description,
+          sale_price: currentProduct.sale_price,
+        }
       })
         .then(res => {
           console.log(res.message);
@@ -126,16 +168,25 @@ function ProductsById() {
   }
 
   useEffect(() => {
-    loadProducts();
-    loadCategorys();
     if (id === 'create') {
       dispatch(ChangePage('createProduct'));
+      loadCategorys();
     }
     else {
       dispatch(ChangePage('productsbyid'));
+      loadData();
+      loadCategorys();
+      loadProducts();
     }
-
+    setLoading(false);
   }, []);
+
+  // calcula o lucro
+  useEffect(() => {
+    if (!purchasePrice || purchasePrice == 'Nenhum preço de compra encontrado') return setProfitPorcent('Nenhum preço de compra encontrado');
+    const value = (currentProduct.sale_price - purchasePrice) / purchasePrice * 100
+    setProfitPorcent(value.toFixed(1));
+  }, [purchasePrice, currentProduct.sale_price]);
 
   return (
     <div className={formStyle.container}>
@@ -155,10 +206,10 @@ function ProductsById() {
           <div className='flex w-full flex-col px-14 justify-center items-center gap-8'>
 
             {/* ID */}
-            {page === 'createProduct' &&
+            {page === 'productsbyid' &&
               <div className='flex flex-col w-full'>
                 <div className='flex relative w-full space-x-2 items-center justify-center'>
-                  <input readOnly required onChange={e => setProductId(e.target.value)} value={productId} id='id' className={formStyle.input} type='text' />
+                  <input readOnly required value={currentProduct.id} id='id' className={formStyle.input} type='text' />
                   <label htmlFor='id' className={formStyle.label}>ID</label>
                 </div>
               </div>
@@ -167,7 +218,7 @@ function ProductsById() {
             {/* Nome */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setName(e.target.value)} value={name} id='name' className={formStyle.input} type='text' />
+                <input required onChange={e => handleName(e)} value={currentProduct.name} id='name' className={formStyle.input} type='text' />
                 <label htmlFor='name' className={formStyle.label}>Nome</label>
               </div>
             </div>
@@ -175,11 +226,11 @@ function ProductsById() {
             {/* Categoria */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <select id="category" onChange={e => setCategoryId(e.target.value)} className={formStyle.input} >
-                  <option htmlFor='category' key={categoryId} value={categoryId}>{currentCategory}</option>
+                <select id="category" onChange={e => handleCategory(e)} className={formStyle.input} >
+                  <option htmlFor='category' key={currentProduct.category.id} value={currentProduct.category.id}>{currentProduct.category.name}</option>
                   {
                     categorysData.map((item) => {
-                      if (item.id == categoryId) return; // Não renderizar a categoria atual
+                      if (item.id == currentProduct.category.id) return; // não exibe a plataforma atual
                       return (
                         <option htmlFor='category' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -190,42 +241,42 @@ function ProductsById() {
               </div>
             </div>
 
-            {/* Quantidade */}
-            <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setQuantity(e.target.value)} value={quantity} id='quantity' className={formStyle.input} type='text' />
-                <label htmlFor='quantity' className={formStyle.label}>Quantidade</label>
-              </div>
-            </div>
-
-            {/* Preço de compra do lote mais antigo */}
-            <div className='flex flex-col w-full'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required id='purchasePrice' onChange={e => setPurchasePrice(e.target.value)} className={formStyle.input} type='text' />
-                <label htmlFor='purchasePrice' className={formStyle.label}>Preço de compra</label>
-              </div>
-            </div>
-
             {/* Preço de venda */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setSalePrice(e.target.value)} value={salePrice} id='salePrice' className={formStyle.input} type='text' />
+                <input required onChange={e => handleSalePrice(e)} on value={currentProduct.sale_price} id='salePrice' className={formStyle.input} type='text' />
                 <label htmlFor='salePrice' className={formStyle.label}>Preço de venda</label>
               </div>
             </div>
 
-            {/* Lucro */}
-            <div className='flex flex-col w-full'>
+            {/* Preço de compra do lote mais recente */}
+            {page == 'productsbyid' && <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => setProfitPorcent(e.target.value)} value={profitPorcent} id='profitPorcent' className={formStyle.input} type='text' />
+                <input required readOnly id='purchasePrice' value={purchasePrice} className={formStyle.input} type='text' />
+                <label htmlFor='purchasePrice' className={formStyle.label}>Preço de compra</label>
+              </div>
+            </div>}
+
+            {/* Lucro */}
+            {page == 'productsbyid' && <div className='flex flex-col w-full'>
+              <div className='flex relative w-full space-x-2 items-center justify-center'>
+                <input readOnly required value={profitPorcent} id='profitPorcent' className={formStyle.input} type='text' />
                 <label htmlFor='profitPorcent' className={formStyle.label}>% de Lucro</label>
               </div>
-            </div>
+            </div>}
+
+            {/* Estoque Físico */}
+            {page == 'productsbyid' && <div className='flex flex-col w-full'>
+              <div className='flex relative w-full space-x-2 items-center justify-center'>
+                <input readOnly required value={currentProduct.quantity} id='quantity' className={formStyle.input} type='text' />
+                <label htmlFor='quantity' className={formStyle.label}>Estoque Físico</label>
+              </div>
+            </div>}
 
             {/* Descrição */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <textarea required onChange={e => setDescription(e.target.value)} value={description} id='description' className={formStyle.textArea} type='text' />
+                <textarea required onChange={e => handleDescription(e)} value={currentProduct.description} id='description' className={formStyle.textArea} type='text' />
                 <label htmlFor='description' className={formStyle.label}>Descrição</label>
               </div>
             </div>
@@ -233,7 +284,7 @@ function ProductsById() {
           <div className='flex w-full flex-col justify-center items-center'>
             <button type="submit" className='bg-green-600 flex justify-center font-semibold py-1 border border-zinc-500 text-lg w-6/12 text-center items-center rounded-lg hover:border-black hover:bg-green-700' >
               {page == 'createProduct' && 'Cadastrar'}
-              {page == 'productsbyid' && 'Editar'}
+              {page == 'productsbyid' && 'Salvar'}
             </button>
           </div>
         </form>

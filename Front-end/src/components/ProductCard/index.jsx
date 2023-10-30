@@ -1,6 +1,35 @@
+import { useEffect, useState } from "react";
 import { productCard } from "./styles.css";
+import axios from "axios";
 
 function ProductCard(props) {
+
+  const [currentProduct, setCurrentProduct] = useState({
+    quantity: '',
+    name: props.name,
+    sale_price: props.sale_price,
+  })
+
+
+  async function loadData() {
+    await axios.get(`http://localhost:3030/prodrequests/${props.id}`)
+      .then(res => {
+        const quantity = res.data.reduce((acc, item) => {
+          return acc + item.quantity;
+        }, 0);
+        currentProduct.quantity = quantity
+        setCurrentProduct({ ...currentProduct });
+        return
+      })
+      .catch(err => {
+        console.log(err.message);
+      })
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
@@ -8,15 +37,15 @@ function ProductCard(props) {
       </div>
 
       <div className={productCard.tittle}>
-        {props.name}
+        {currentProduct.name}
       </div>
 
       <div className={productCard.info}>
-        Preço: <span className="font-semibold">R${props.sale_price}</span>
+        Preço: <span className="font-semibold">R${currentProduct.sale_price}</span>
       </div>
 
       <div className={productCard.info}>
-        Quantidade: <span className="font-semibold">{props.quantity}</span>
+        Quantidade: <span className="font-semibold">{currentProduct.quantity}</span>
       </div>
     </a>
   );

@@ -6,6 +6,7 @@ import requestsController from "./controllers/requestsController";
 import platformController from "./controllers/platformController";
 import accountController from "./controllers/accountController";
 import statusTrakingController from "./controllers/statusTrakingController";
+import prodRequestController from "./controllers/prodRequestController";
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.get("/requests/:id", requestsController.findRequestsById)
 router.put("/requests/:id", requestsController.updateRequest)
 router.post("/requests", requestsController.createRequest)
 router.delete("/requests/:id", requestsController.deleteRequest);
+router.get("/requests/products/:id", requestsController.findAllRequestsByProductId)
 
 //categorys
 router.get("/categorys", categoryController.findAllCategorys);
@@ -35,4 +37,9 @@ router.get("/accounts", accountController.findAllAccounts);
 
 //status tracking
 router.get("/statustracking", statusTrakingController.findAllStatusTracking);
+
+//prod requests
+router.get("/prodrequests/:id", prodRequestController.findAllProdRequests)
+router.get("/prodrequests/delivered/:id", prodRequestController.findProdrequestsIfdelivered)
+
 export { router };
