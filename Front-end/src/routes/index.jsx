@@ -15,6 +15,8 @@ import ProductsById from '../pages/Products/[ProductsById]';
 //Requests
 import Requests from '../pages/Requests';
 import RequestsById from '../pages/Requests/[RequestsById]';
+import Sales from '../pages/Sales';
+import SalesById from '../pages/Sales/[SalesById]';
 
 
 
@@ -35,6 +37,11 @@ function RoutesApp() {
       {/* Pedidos de compra */}
       <Route path='/dashboard/requests' element={<Private><Requests /></Private>} />
       <Route path='/dashboard/requests/:id' element={<Private><RequestsById /></Private>} />
+
+      {/* Vendas */}
+      <Route path='/dashboard/sales' element={<Private><Sales /></Private>} />
+      <Route path='/dashboard/sales/:id' element={<Private><SalesById /></Private>} />
+
     </Routes>
   )
 }

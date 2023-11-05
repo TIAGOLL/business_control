@@ -12,12 +12,9 @@ function ProductCard(props) {
 
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/prodrequests/${props.id}`)
+    await axios.get(`http://localhost:3030/products/stock/${props.id}`)
       .then(res => {
-        const quantity = res.data.reduce((acc, item) => {
-          return acc + item.quantity;
-        }, 0);
-        currentProduct.quantity = quantity
+        currentProduct.quantity = res.data
         setCurrentProduct({ ...currentProduct });
         return
       })
@@ -45,7 +42,7 @@ function ProductCard(props) {
       </div>
 
       <div className={productCard.info}>
-        Quantidade: <span className="font-semibold">{currentProduct.quantity}</span>
+        Estoque Físico: <span className="font-semibold">{currentProduct.quantity}</span>
       </div>
     </a>
   );

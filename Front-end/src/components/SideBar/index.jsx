@@ -1,4 +1,4 @@
-import { BarChartBig, PackageSearch, Power, ShoppingCart } from "lucide-react";
+import { BadgeDollarSign, BarChartBig, PackageSearch, Power, ShoppingCart } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { sideBar } from "./styles.css";
@@ -34,7 +34,7 @@ const SideBar = () => {
 
               <a href="/dashboard" className={page == 'dashboard' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><BarChartBig /></a>
 
-              {/* Home */}
+              {/* Requests */}
               <a href="/dashboard/requests" className={page == 'requests' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><ShoppingCart />Pedidos</a>
 
               <a href="/dashboard/requests" className={page == 'requests' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><ShoppingCart /></a>
@@ -43,6 +43,11 @@ const SideBar = () => {
               <a href="/dashboard/products" className={page == 'products' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><PackageSearch /> Produtos</a>
 
               <a href="/dashboard/products" className={page == 'products' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><PackageSearch /></a>
+
+              {/* Sales */}
+              <a href="/dashboard/sales" className={page == 'sales' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><BadgeDollarSign /> Vendas</a>
+
+              <a href="/dashboard/sales" className={page == 'sales' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><BadgeDollarSign /></a>
 
               {/* Disconect */}
               <div className="flex flex-col absolute bottom-2">

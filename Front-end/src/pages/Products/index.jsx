@@ -11,9 +11,11 @@ import axios from "axios";
 
 // [   ] - Barra de pesquisa
 // [ X ] - Lista de produtos
-// [   ] -
-// [   ] -
-
+// [   ] Cadastro de subcategorias de produtos
+// [   ] Cadastro de marcas de produtos
+// [   ] Cadastro de modelos de produtos
+// [   ] Cadastro de cores de produtos
+// [   ] Cadastro de tamanhos de produtos
 
 function Products() {
   const dispatch = useDispatch()

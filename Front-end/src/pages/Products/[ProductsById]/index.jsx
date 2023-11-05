@@ -17,7 +17,7 @@ function ProductsById() {
 
   const [loading, setLoading] = useState(true);
   const [purchasePrice, setPurchasePrice] = useState();
-  const [profitPorcent, setProfitPorcent] = useState(0);
+  const [profitPorcent, setProfitPorcent] = useState();
 
   const [categorysData, setCategorysData] = useState([]);
   const [currentProduct, setCurrentProduct] = useState({
@@ -35,6 +35,7 @@ function ProductsById() {
   async function loadProducts() {
     await axios.get(`http://localhost:3030/products/${id}`)
       .then(res => {
+        console.log(res.data)
         setCurrentProduct(res.data);
       })
       .catch(err => {
@@ -43,26 +44,22 @@ function ProductsById() {
   }
 
   async function loadData() {
+
     // procurar a quantidade no estoque físico
-    await axios.get(`http://localhost:3030/prodrequests/${id}`)
+    await axios.get(`http://localhost:3030/products/stock/${id}`)
       .then(res => {
-        const quantity = res.data.reduce((acc, item) => {
-          return acc + item.quantity;
-        }, 0);
-        currentProduct.quantity = quantity
+        currentProduct.quantity = res.data
         setCurrentProduct({ ...currentProduct });
+        return
       })
       .catch(err => {
         console.log(err.message);
       })
 
     // procurar o preço de compra do pedido mais recente
-    await axios.get(`http://localhost:3030/prodrequests/${id}`)
+    await axios.get(`http://localhost:3030/products/purchaseprice/${id}`)
       .then(res => {
-        const maxID = res.data.reduce(function (item, current) {
-          return (item.request_id > current.request_id) ? item : current
-        })
-        setPurchasePrice(maxID.purchase_price);
+        setPurchasePrice(res.data);
       })
       .catch(err => {
         console.log(err.message);
@@ -167,23 +164,26 @@ function ProductsById() {
     }
   }
 
-  useEffect(() => {
+  async function init() {
     if (id === 'create') {
       dispatch(ChangePage('createProduct'));
       loadCategorys();
+      return setLoading(false);
     }
-    else {
-      dispatch(ChangePage('productsbyid'));
-      loadData();
-      loadCategorys();
-      loadProducts();
-    }
+
+    dispatch(ChangePage('productsbyid'));
+    loadData();
+    loadCategorys();
+    loadProducts();
     setLoading(false);
+  }
+  useEffect(() => {
+    init();
   }, []);
 
   // calcula o lucro
   useEffect(() => {
-    if (!purchasePrice || purchasePrice == 'Nenhum preço de compra encontrado') return setProfitPorcent('Nenhum preço de compra encontrado');
+    if (purchasePrice == 'Nenhum preço de compra encontrado') return setProfitPorcent('Nenhum preço de compra encontrado');
     const value = (currentProduct.sale_price - purchasePrice) / purchasePrice * 100
     setProfitPorcent(value.toFixed(1));
   }, [purchasePrice, currentProduct.sale_price]);
@@ -244,7 +244,7 @@ function ProductsById() {
             {/* Preço de venda */}
             <div className='flex flex-col w-full'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required onChange={e => handleSalePrice(e)} on value={currentProduct.sale_price} id='salePrice' className={formStyle.input} type='text' />
+                <input required onChange={e => handleSalePrice(e)} value={currentProduct.sale_price} id='salePrice' className={formStyle.input} type='text' />
                 <label htmlFor='salePrice' className={formStyle.label}>Preço de venda</label>
               </div>
             </div>

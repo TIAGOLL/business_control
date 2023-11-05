@@ -150,8 +150,8 @@ export default {
                 });
 
             return res.json({ message: 'Pedido atualizado com sucesso' });
-        } 
-        
+        }
+
         catch (error) {
             return res.json({ message: error.message })
         }
@@ -219,4 +219,18 @@ export default {
             return res.json(error.message);
         }
     },
+
+    async findRequestsInTransit(req, res) {
+        try {
+            const requests = await prisma.request.findMany({
+                where: {
+                    status_tracking_id: 2
+                }
+            });
+
+            return res.json(requests);
+        } catch (error) {
+            return res.json(error.message);
+        }
+    }
 }
