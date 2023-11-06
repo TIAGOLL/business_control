@@ -1,6 +1,6 @@
 import { useState, createContext, useEffect } from 'react';
 import { auth, db } from '../services/auth';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut } from 'firebase/auth'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 import { useNavigate } from 'react-router-dom'
@@ -34,7 +34,9 @@ function AuthProvider({ children }) {
   }, [])
 
 
-  async function signIn(email, password) {
+
+
+  async function signInWithEmail(email, password) {
     setLoadingAuth(true);
 
     await signInWithEmailAndPassword(auth, email, password)
@@ -61,12 +63,48 @@ function AuthProvider({ children }) {
       .catch((error) => {
         console.log(error);
         setLoadingAuth(false);
-        toast.error('Erro ao logar!')
+        if (error.code === 'auth/invalid-email') {
+          toast.error('Email inválido!')
+          return
+        }
+        if (error.code === 'auth/invalid-login-credentials') {
+          toast.error('Email ou senha inválidos!')
+          return
+        }
+        if (error.code === 'auth/too-many-requests') {
+          toast.error('Muitas tentativas, tente novamente mais tarde!')
+          return
+        }
       })
 
   }
 
 
+  async function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
+    let result = await signInWithPopup(auth, provider)
+      .then(async (value) => {
+        let data = {
+          uid: value.uid,
+          nome: value.displayName,
+          avatarUrl: value.photoURL
+        }
+
+        setUser(data);
+        storageUser(data);
+        setLoadingAuth(false);
+        navigate("/dashboard")
+        toast.success('Bem vindo de volta!')
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoadingAuth(false);
+        if (error.code === 'auth/too-many-requests') {
+          toast.error('Muitas tentativas, tente novamente mais tarde!')
+          return
+        }
+      })
+  }
 
   // Cadastrar um novo user
   async function signUp(email, password, name) {
@@ -121,7 +159,8 @@ function AuthProvider({ children }) {
       value={{
         signed: !!user,
         user,
-        signIn,
+        signInWithGoogle,
+        signInWithEmail,
         signUp,
         logout,
         loadingAuth,

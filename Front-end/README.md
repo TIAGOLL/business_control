@@ -12,6 +12,7 @@ Funcionalidades do sistema:
 [ X ] Dashboard com informações para tomadas de decisões estratégicas
 [   ] Gerar CSV dos produtos para a inclusão em marketplaces
 [   ] Espaço para gerenciamento de pedidos de reembolso do cliente final
+[   ] Autenticação para o espaço admin
 [   ] Cadastro de clientes
 [   ] Manipulação de permissões
 [   ] Cadastro de fornecedores
@@ -28,12 +29,12 @@ Diferenciais:
 [ X ] API externa para manipulação de dados
 [ X ] Testes automatizados
 [ X ] SideBar responsiva
+[ X ] Login com o Google
 [   ] Documentação do Frontend
 [   ] Documentação da API
 [   ] Deploy automatizado
 [   ] Integração contínua
 [   ] Dockerização
-[   ] Autenticação de dois fatores
 [   ] Criptografia de dados
 [   ] Autenticação de dois fatores
 

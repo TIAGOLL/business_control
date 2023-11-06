@@ -17,6 +17,9 @@ import Requests from '../pages/Requests';
 import RequestsById from '../pages/Requests/[RequestsById]';
 import Sales from '../pages/Sales';
 import SalesById from '../pages/Sales/[SalesById]';
+import Clients from './../pages/Clients/index';
+import ClientsById from './../pages/Clients/[ClientsById]/index';
+import Admin from './../pages/admin/index';
 
 
 
@@ -42,6 +45,12 @@ function RoutesApp() {
       <Route path='/dashboard/sales' element={<Private><Sales /></Private>} />
       <Route path='/dashboard/sales/:id' element={<Private><SalesById /></Private>} />
 
+      {/* Clientes */}
+      <Route path='/dashboard/clients' element={<Private><Clients /></Private>} />
+      <Route path='/dashboard/clients/:id' element={<Private><ClientsById /></Private>} />
+
+      {/* admin */}
+      <Route path='/dashboard/admin' element={<Private><Admin /></Private>} />
     </Routes>
   )
 }

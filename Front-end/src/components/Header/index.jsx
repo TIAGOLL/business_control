@@ -19,6 +19,9 @@ function Header() {
       case 'sales':
         setTextButton('Cadastrar vendas')
         break;
+      case 'clients':
+        setTextButton('Cadastrar cliente')
+        break;
       default:
         setTextButton('Cadastrar')
         break;
@@ -31,6 +34,7 @@ function Header() {
         {textButton == 'Cadastrar produto' && <a href='/dashboard/products/create' className={header.button}>{textButton}</a>}
         {textButton == 'Cadastrar pedido' && <a href='/dashboard/requests/create' className={header.button}>{textButton}</a>}
         {textButton == 'Cadastrar vendas' && <a href='/dashboard/sales/create' className={header.button}>{textButton}</a>}
+        {textButton == 'Cadastrar cliente' && <a href='/dashboard/client/create' className={header.button}>{textButton}</a>}
         <input placeholder='Search...' className={header.input} type="text" />
       </div>
     </section>

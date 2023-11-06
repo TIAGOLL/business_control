@@ -422,46 +422,46 @@ function RequestsById() {
               </button>
             </div>
 
-            {currentProducts.map((item2, index) => {
-              return (
-                <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.product_id}>
-                  <div className='flex flex-col w-4/12'>
-                    <div className='flex relative w-full items-center justify-center'>
-                      <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} value={item2.product_id} className={formStyle.input} >
-                        {page == 'createRequest' && <option value={null}>Selecione um produto</option>}
-                        {item2.product_id == '' && <option>Selecione um produto</option>}
-                        {
-                          productsData.map((item, idx) => {
-                            return (
-                              <option htmlFor={`products${idx + 1}`} key={item.id} value={item.id}>{item.name}</option>
-                            )
-                          })
-                        }
-                      </select>
-                      <label htmlFor={`products${index + 1}`} className={formStyle.label}>{`Produto ${index + 1}`}</label>
+            {
+              currentProducts.map((item2, index) => {
+                return (
+                  <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.product_id}>
+                    <div className='flex flex-col w-4/12'>
+                      <div className='flex relative w-full items-center justify-center'>
+                        <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} value={item2.product_id} className={formStyle.input} >
+                          {item2.product_id == '' && <option>Selecione um produto</option>}
+                          {
+                            productsData.map((item, idx) => {
+                              return (
+                                <option htmlFor={`products${idx + 1}`} key={item.id} value={item.id}>{item.name}</option>
+                              )
+                            })
+                          }
+                        </select>
+                        <label htmlFor={`products${index + 1}`} className={formStyle.label}>{`Produto ${index + 1}`}</label>
+                      </div>
+                    </div>
+
+                    <div className='flex flex-col w-2/12'>
+                      <div className='flex relative w-full items-center justify-center'>
+                        <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item2.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
+                        <label htmlFor={`quantityProduct${index}`} className={formStyle.label}>Quantidade</label>
+                      </div>
+                    </div>
+
+                    <div className='flex flex-col w-/12'>
+                      <div className='flex relative w-full items-center justify-center'>
+                        <input required onChange={e => handlePurchasePriceProduct(e, index)} onClick={e => handlePurchasePriceProduct(e, index)} value={item2.purchase_price} id={`purchasePrice${index}`} className={formStyle.input} type='text' />
+                        <label htmlFor={`purchasePrice${index}`} className={formStyle.label}>Preço de compra</label>
+                      </div>
+                    </div>
+
+                    <div className='flex relative items-center justify-start'>
+                      <button className="bg-red-500 flex justify-center font-semibold border border-zinc-500 text-lg w-10 h-8 text-center items-center rounded-lg hover:border-black hover:bg-red-600" onClick={e => deleteProduct(e, index)}><Trash2 width={20} height={20} color="white" /></button>
                     </div>
                   </div>
-
-                  <div className='flex flex-col w-2/12'>
-                    <div className='flex relative w-full items-center justify-center'>
-                      <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item2.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
-                      <label htmlFor={`quantityProduct${index}`} className={formStyle.label}>Quantidade</label>
-                    </div>
-                  </div>
-
-                  <div className='flex flex-col w-/12'>
-                    <div className='flex relative w-full items-center justify-center'>
-                      <input required onChange={e => handlePurchasePriceProduct(e, index)} onClick={e => handlePurchasePriceProduct(e, index)} value={item2.purchase_price} id={`purchasePrice${index}`} className={formStyle.input} type='text' />
-                      <label htmlFor={`purchasePrice${index}`} className={formStyle.label}>Preço de compra</label>
-                    </div>
-                  </div>
-
-                  <div className='flex relative items-center justify-start'>
-                    <button className="bg-red-500 flex justify-center font-semibold border border-zinc-500 text-lg w-10 h-8 text-center items-center rounded-lg hover:border-black hover:bg-red-600" onClick={e => deleteProduct(e, index)}><Trash2 width={20} height={20} color="white" /></button>
-                  </div>
-                </div>
-              )
-            })
+                )
+              })
             }
           </div>
           <div className='flex w-full flex-row justify-center gap-8 items-center'>

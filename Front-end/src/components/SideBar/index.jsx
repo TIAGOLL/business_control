@@ -1,4 +1,4 @@
-import { BadgeDollarSign, BarChartBig, PackageSearch, Power, ShoppingCart } from "lucide-react";
+import { BadgeDollarSign, BarChartBig, PackageSearch, Power, ShieldAlert, ShoppingCart, Users } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { sideBar } from "./styles.css";
@@ -48,6 +48,16 @@ const SideBar = () => {
               <a href="/dashboard/sales" className={page == 'sales' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><BadgeDollarSign /> Vendas</a>
 
               <a href="/dashboard/sales" className={page == 'sales' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><BadgeDollarSign /></a>
+
+              {/* Clients */}
+              <a href="/dashboard/clients" className={page == 'clients' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><Users /> Clientes</a>
+
+              <a href="/dashboard/clients" className={page == 'clients' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><Users /></a>
+
+              {/* admin */}
+              <a href="/dashboard/admin" className={page == 'admin' ? sideBar.activeLink.complete : sideBar.inactiveLink.complete}><ShieldAlert /> Admin</a>
+
+              <a href="/dashboard/admin" className={page == 'admin' ? sideBar.activeLink.short : sideBar.inactiveLink.short}><ShieldAlert /></a>
 
               {/* Disconect */}
               <div className="flex flex-col absolute bottom-2">
