@@ -1,4 +1,4 @@
-import { Router } from "express";
+const Router = require("express");
 
 import productController from "./controllers/productController";
 import categoryController from "./controllers/categoryController";
