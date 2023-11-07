@@ -76,7 +76,6 @@ function AuthProvider({ children }) {
           return
         }
       })
-
   }
 
 
@@ -85,9 +84,9 @@ function AuthProvider({ children }) {
     let result = await signInWithPopup(auth, provider)
       .then(async (value) => {
         let data = {
-          uid: value.uid,
-          nome: value.displayName,
-          avatarUrl: value.photoURL
+          uid: value.user.uid,
+          name: value.user.displayName.split(' ')[0],
+          avatarUrl: value.user.photoURL,
         }
 
         setUser(data);
