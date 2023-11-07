@@ -33,7 +33,6 @@ Diferenciais:
 [   ] Documentação do Frontend
 [   ] Documentação da API
 [   ] Deploy automatizado
-[   ] Integração contínua
 [   ] Dockerização
 [   ] Criptografia de dados
 [   ] Autenticação de dois fatores

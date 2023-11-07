@@ -61,7 +61,7 @@ function Dashboard() {
       <SideBar />
       <section className="w-full">
         <Header />
-        <div className="px-24 items-start justify-center flex w-full gap-8 flex-wrap">
+        <section className="px-24 items-start justify-center flex w-full gap-8 flex-wrap">
           <div className="flex w-3/12 h-56 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <div className="font-semibold flex">
               <p className="text-3xl px-4">Faturamento total</p>
@@ -114,7 +114,7 @@ function Dashboard() {
             </div>
           </div>
 
-        </div>
+        </section>
       </section >
     </div >
   );

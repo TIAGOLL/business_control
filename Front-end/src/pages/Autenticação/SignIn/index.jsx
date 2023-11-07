@@ -40,7 +40,7 @@ function SignIn() {
   }, [])
 
   return (
-    <div className='w-screen h-screen flex items-center justify-center bg-zinc-400'>
+    <div className="w-screen h-screen flex items-center justify-center bg-[url('/images/armazen1.png')] bg-cover bg-no-repeat">
       <section className='flex flex-col h-max items-center bg-zinc-100 w-4/12 justify-center rounded-xl py-6 space-y-8 shadow-lg shadow-zinc-800 border-3'>
         <img src='/images/Logo.png' alt='Logo' width={125} height={100} />
         <form className="w-full gap-8 flex-col flex">

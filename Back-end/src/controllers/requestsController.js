@@ -94,11 +94,10 @@ export default {
                 },
             })
                 .catch((error) => {
-                    console.log(error.message);
                     return error.message;
                 })
                 .then(() => {
-                    return res.json({ message: 'Pedido cadastrado com sucesso', e: res });
+                    return res.json({ message: 'Pedido cadastrado com sucesso' });
                 });
 
         } catch (error) {

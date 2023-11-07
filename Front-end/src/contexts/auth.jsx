@@ -49,7 +49,7 @@ function AuthProvider({ children }) {
 
         let data = {
           uid: uid,
-          nome: docSnap.data().nome,
+          name: docSnap.data().nome.split(' ')[0],
           email: value.user.email,
           avatarUrl: docSnap.data().avatarUrl
         }
