@@ -28,7 +28,7 @@
 
 ## 💻 Sobre o projeto
 
- 📈 - Sistema de controle de logística empresarial para pequenas empresas e grandes empresas.
+ 📈 - Sistema de controle de logística empresarial para pequenas e grandes empresas.
 
 ---
 
