@@ -1,17 +1,17 @@
 
 <p align="center">
-  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/TIAGOLL/TinnyImportsSystem?color=%2304D361">
+  <img alt="GitHub language count" src="https://img.shields.io/github/languages/count/TIAGOLL/business_control?color=%2304D361">
 
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/TIAGOLL/TinnyImportsSystem">
+  <img alt="Repository size" src="https://img.shields.io/github/repo-size/TIAGOLL/business_control">
 
   
-  <a href="https://github.com/TIAGOLL/TinnyImportsSystem/commits/main">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TIAGOLL/TinnyImportsSystem">
+  <a href="https://github.com/TIAGOLL/business_control/commits/main">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/TIAGOLL/business_control">
   </a>
     
    <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
-   <a href="https://github.com/TIAGOLL/TinnyImportsSystem/stargazers">
-    <img alt="Stargazers" src="https://img.shields.io/github/stars/TIAGOLL/TinnyImportsSystem?style=social">
+   <a href="https://github.com/TIAGOLL/business_control/stargazers">
+    <img alt="Stargazers" src="https://img.shields.io/github/stars/TIAGOLL/business_control?style=social">
   </a>
 
   <a href="https://www.tiagoll.vercel.app/">
@@ -93,7 +93,7 @@ Além disto é bom ter um editor para trabalhar com o código como [VSCode](http
 ```bash
 
 # Clone este repositório
-$ git clone https://github.com/TIAGOLL/TinnyImportsSystem.git
+$ git clone https://github.com/TIAGOLL/business_control.git
 
 # Acesse a pasta do projeto no terminal/cmd
 $ cd ./Back-end
@@ -108,7 +108,7 @@ $ npm run dev
 # De um CTRL + clique no link acima para abrir no navegador
 
 # Abra outro terminal e acesse a pasta do repositório
-$ cd TinnyImportsSystem
+$ cd business_control
 
 # Vá para a pasta da aplicação Front-End
 $  cd ./Front-end
@@ -140,7 +140,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   **Tailwind**
 -   **Vite**
 
-> Veja o arquivo  [package.json](https://github.com/TIAGOLL/TinnyImportsSystem/blob/main/Front-end/package.json)
+> Veja o arquivo  [package.json](https://github.com/TIAGOLL/business_control/blob/main/Front-end/package.json)
 
 #### **Server**  ([NodeJS](https://nodejs.org/en/))
 
@@ -150,7 +150,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
 -   **Tsup**
 -   **Tsx**
 
-> Veja o arquivo  [package.json](https://github.com/TIAGOLL/TinnyImportsSystem/blob/main/Back-end/package.json)
+> Veja o arquivo  [package.json](https://github.com/TIAGOLL/business_control/blob/main/Back-end/package.json)
 
 
 #### [](https://github.com/TIAGOLL/Ecoleta#utilit%C3%A1rios)**Utilitários**
