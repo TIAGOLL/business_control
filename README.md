@@ -19,7 +19,7 @@
   </a>
   
   <a href="https://www.tiagoll.vercel.app/">
-    <img alt="Stargazers" src="https://img.shields.io/badge/Blog-Rocketseat-%237159c1?style=flat&logo=ghost">
+    <img alt="Stargazers" src="https://img.shields.io/badge/Portfólio-%237159c1?style=flat&logo=ghost">
     </a>
   
  
@@ -88,7 +88,7 @@ Antes de começar, você vai precisar ter instalado em sua máquina as seguintes
 [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/). 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/)
 
-#### 🎲 Rodando o Backend (servidor)
+#### 🎲 Rodando a aplicação
 
 ```bash
 
@@ -169,7 +169,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 2. Crie uma nova branch com as suas alterações: `git checkout -b my-feature`
 3. Salve as alterações e crie uma mensagem de commit contando o que você fez: `git commit -m "feature: My new feature"`
 4. Envie as suas alterações: `git push origin my-feature`
-> Caso tenha alguma dúvida confira este [guia de como contribuir no GitHub](./CONTRIBUTING.md)
 
 ---
 
@@ -181,7 +180,7 @@ As seguintes ferramentas foram usadas na construção do projeto:
  <sub><b>Tiago Emanuel</b></sub></a> <a href="https://www.tiagoll.vercel.app/" title="Portfólio">🚀</a>
  <br />
 
-[![Linkedin Badge](https://img.shields.io/badge/-Tiago-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/tiago-emanuel-de-lima)](www.linkedin.com/in/tiago-emanuel-de-lima)
+[![Linkedin Badge](https://img.shields.io/badge/-Tiago-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/tiago-emanuel-de-lima)](https://www.linkedin.com/in/tiago-emanuel-de-lima)
 
 ---
 
@@ -189,4 +188,4 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 Este projeto esta sobe a licença [MIT](./LICENSE).
 
-Feito com ❤️ por Tiago Emanuel 👋🏽 [Entre em contato!](www.linkedin.com/in/tiago-emanuel-de-lima)
+Feito com ❤️ por Tiago Emanuel 👋🏽 [Entre em contato!](https://www.linkedin.com/in/tiago-emanuel-de-lima)
