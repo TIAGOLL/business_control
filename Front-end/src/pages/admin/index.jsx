@@ -83,28 +83,28 @@ function Sales() {
       <div className="w-full items-center justify-center flex flex-col">
         <Header />
         <section className="px-24 mt-10 items-start justify-center flex w-full gap-8 flex-wrap">
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Gerenciar funcionários</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Gerar CSV dos produtos ativos</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Pedidos de reembolso do cliente final</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Fornecedores</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Transportadoras</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Filiais</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Impostos</p>
           </div>
-          <div className="flex w-2/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-3/12 p-2 h-16 items-center text-center gap-12 justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
             <p className="font-semibold text-lg">Metas</p>
           </div>
         </section>

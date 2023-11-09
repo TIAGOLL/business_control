@@ -67,6 +67,10 @@ function AuthProvider({ children }) {
           toast.error('Email inválido!')
           return
         }
+        if (error.code === 'permission-denied') {
+          toast.error('Permissão negada!')
+          return
+        }
         if (error.code === 'auth/invalid-login-credentials') {
           toast.error('Email ou senha inválidos!')
           return
