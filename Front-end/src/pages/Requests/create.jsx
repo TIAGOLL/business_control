@@ -2,7 +2,7 @@ import axios from "axios";
 import { ArrowBigLeft, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { ChangePage } from "../../../redux/features/activePage";
 import { formStyle } from "../../../styles/global.css";
 import moment from "moment";
@@ -21,6 +21,7 @@ function RequestsById() {
   const [storeName, setStoreName] = useState('');
   const [trackingId, setTrackingId] = useState('');
   const [date, setDate] = useState('');
+  const [statusTracking, setStatusTracking] = useState('');
 
   //current data
   const [currentStatusTracking, setCurrentStatusTracking] = useState('');
@@ -65,6 +66,37 @@ function RequestsById() {
   //       setLoading(false);
   //     });
   // }
+
+  async function createRequest() {
+    setLoading(true);
+    axios.post(`http://localhost:3030/api/requests/post`, {
+      data: {
+        accounts_id: currentAccount.id,
+        status_tracking_id: currentStatusTracking.id,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_requests: currentProducts.map(item => {
+          return {
+            products_id: item.products_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
+      }
+    })
+      .then(res => {
+        console.log(res.data.data);
+        navigate('/dashboard/requests')
+        toast.success(res.data.message);
+      })
+      .catch(err => {
+        console.log(err.message);
+        toast.error('Erro ao cadastrar pedido!');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   async function deleteRequest(e) {
     setLoading(true);
@@ -119,9 +151,27 @@ function RequestsById() {
       });
   }
 
+
   // funções de manipulação de inputs
   async function handleSubmit(e) {
     e.preventDefault();
+    if (page === 'createRequest') {
+      createRequest()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else if (page === 'requestsById') {
+      updateRequest()
+        .then(res => {
+          console.log(res);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 
   function handlePlatform(e) {
@@ -201,10 +251,26 @@ function RequestsById() {
     setCurrentProducts([...currentProducts]);
   }
 
+  // onSubmit
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (page === 'createRequest') {
+      createRequest()
+    } else if (page === 'requestsById') {
+      updateRequest()
+    }
+  }
+
+
   useEffect(() => {
     setLoading(true);
-    dispatch(ChangePage('updaterequest'));
     loadData();
+
+    if (id === 'create') {
+      dispatch(ChangePage('createRequest'));
+    }
+    setLoading(false);
+
   }, []);
 
   return (
@@ -218,7 +284,7 @@ function RequestsById() {
         <div className='flex flex-col items-center justify-center'>
           <h1 className='pb-24 m-0 font-semibold'>{page === 'createRequest' ? 'Cadastrar pedido' : 'Editar pedido'}</h1>
         </div>
-        <form onSubmit={(e) => handleSubmit(e)} className="w-full gap-8 flex-col flex">
+        <form onSubmit={handleSubmit} className="w-full gap-8 flex-col flex">
           <div className='flex w-full flex-wrap px-14 justify-center items-center gap-8'>
 
             {/* ID */}
@@ -406,8 +472,9 @@ function RequestsById() {
         {
           <div>
             <p>{currentProducts.map((item) => {
+              console.log(item);
               return (
-                <div className="flex gap-8" key={item.products_id} >
+                <div className="flex gap-8">
                   <p>{item.products_id}</p>
                   <p>{item.name}</p>
                   <p>{item.color}</p>

@@ -1,46 +1,30 @@
 const Router = require("express");
 
-import productController from "./controllers/productController";
-import categoryController from "./controllers/categoryController";
-import requestsController from "./controllers/requestsController";
-import platformController from "./controllers/platformController";
-import accountController from "./controllers/accountController";
-import statusTrakingController from "./controllers/statusTrakingController";
+import requestsGET from "./controllers/pages/requestController/get";
+import requestsDEL from "./controllers/pages/requestController/delete";
+import requestsPOST from "./controllers/pages/requestController/post";
 
 const router = Router();
 
 //products
-router.get("/products", productController.findAllProducts);
-router.get("/products/:id", productController.findProductById);
-router.get("/products/stock/:id", productController.findStockByProduct)
-router.get("/products/purchaseprice/:id", productController.findCurrentPurchasePriceByProduct)
-router.get("/totalinvested", productController.totalInvested)
-router.post("/products", productController.createProduct)
-router.put("/products/:id", productController.updateProduct)
-router.delete("/products/:id", productController.deleteProduct);
-
 
 //requests
-router.get("/requests", requestsController.findAllRequests)
-router.get("/requests/:id", requestsController.findRequestsById)
-router.get("/requests/products/:id", requestsController.findAllRequestsByProductId)
-router.get("/req/intransit", requestsController.findRequestsInTransit)
-router.put("/requests/:id", requestsController.updateRequest)
-router.post("/requests", requestsController.createRequest)
-router.delete("/requests/:id", requestsController.deleteRequest);
+router.get("/api/requests/all", requestsGET.loadAll);
+router.get("/api/requests/actives", requestsGET.loadActives);
+router.get("/api/requests/waitingforrefund", requestsGET.loadWaitingForRefund);
+router.get("/api/requests/refunded", requestsGET.loadRefunded);
+router.get("/api/requests/intransit", requestsGET.loadInTransit);
+router.get("/api/requests/byid/:id", requestsGET.loadById);
+router.get("/api/requests/canceled", requestsGET.loadCanceled);
+router.delete("/api/requests/delete/:id", requestsDEL.delete);
+router.post("/api/requests/post", requestsPOST.post);
 
 //categorys
-router.get("/categorys", categoryController.findAllCategorys);
-router.get("/categorys/:id", categoryController.findCategorysById);
 
 //platforms
-router.get("/platforms", platformController.findAllPlatforms);
 
 //accounts
-router.get("/accounts", accountController.findAllAccounts);
 
 //status tracking
-router.get("/statustracking", statusTrakingController.findAllStatusTracking);
-
 
 export { router };

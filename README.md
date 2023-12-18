@@ -71,6 +71,8 @@
 - [x] O sistema não contabiliza no estoque se um produto está em trânsito
 - [x] O sistema informa os produtos que possui um estoque baixo
 - [x] O sistema informa qual foram seus lucros, faturamento e investimento
+- [x] O Sistema não deixa incluir dois produtos como o mesmo nome no mesmo pedido
+- [x] O Sistema não deixa criar um pedido com o status de "Reembolso" ou "Esperando reembolso"
 
 ---
 
@@ -152,8 +154,6 @@ As seguintes ferramentas foram usadas na construção do projeto:
 
 > Veja o arquivo  [package.json](https://github.com/TIAGOLL/business_control/blob/main/Back-end/package.json)
 
-
-#### [](https://github.com/TIAGOLL/Ecoleta#utilit%C3%A1rios)**Utilitários**
 
 
 -   Editor:  **[Visual Studio Code](https://code.visualstudio.com/)**
