@@ -253,7 +253,7 @@ model requests {
   accounts_id        Int
   created_at         DateTime        @default(now()) @db.Timestamp(0)
   store_name         String          @db.VarChar(45)
-  tracking_id        String          @db.VarChar(45)
+  tracking_id        String          @unique(map: "tracking_id_UNIQUE") @db.VarChar(45)
   tested             Boolean         @default(dbgenerated("b'0'")) @db.Bit(1)
   active             Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
   prod_requests      prod_requests[]

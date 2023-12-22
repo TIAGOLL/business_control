@@ -1,51 +1,65 @@
-import { useEffect, useState } from "react";
+
+import AvaibColorsCard from "../AvaibColorsCard/index";
 import { productCard } from "./styles.css";
-import axios from "axios";
 
 function ProductCard(props) {
+  if (props.prod_requests) {
+    return (
+      props.prod_requests.map((item) => {
+        return (
+          <a href={`/dashboard/products/${item.products_id}`} key={item.products_id} className={productCard.container} >
+            <div className={productCard.image}>
+              <img className="rounded-2xl" width={180} src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
+              <div className={productCard.info + ' !flex-col !items-start'}>
+                Cores: <span className="font-semibold">{item.color}</span>
+              </div>
+            </div>
 
-  const [currentProduct, setCurrentProduct] = useState({
-    quantity: '',
-    name: props.name,
-    sale_price: props.sale_price,
-  })
+            <div className={productCard.tittle}>
+              {item.products.name}
+            </div>
 
-
-  async function loadData() {
-    await axios.get(`http://localhost:3030/products/stock/${props.id}`)
-      .then(res => {
-        currentProduct.quantity = res.data
-        setCurrentProduct({ ...currentProduct });
-        return
+            <div className={productCard.info}>
+              Preço: <span className="font-semibold">R${item.products.sale_price.toFixed(2)}</span>
+            </div>
+          </a>
+        )
       })
-      .catch(err => {
-        console.log(err.message);
-      })
+
+    )
   }
-
-  useEffect(() => {
-    loadData()
-  }, [])
 
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
-        <img className="rounded-2xl" src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
+        <img className="rounded-2xl" width={180} src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
+        <div className={productCard.info + ' !flex-wrap !items-start'}>
+          {
+            props.prod_colors.length > 0 &&
+            <span className="font-semibold">{props.prod_colors.map((item) => {
+              if (item.quantity > 0) {
+                return <AvaibColorsCard key={item.id} {...item} />
+              }
+            }
+            )}</span>
+          }
+
+
+        </div>
       </div>
 
       <div className={productCard.tittle}>
-        {currentProduct.name}
+        {props.name}
       </div>
 
       <div className={productCard.info}>
-        Preço: <span className="font-semibold">R${currentProduct.sale_price}</span>
+        Preço: <span className="font-semibold">R${props.sale_price.toFixed(2)}</span>
       </div>
 
-      <div className={productCard.info}>
-        Estoque Físico: <span className="font-semibold">{currentProduct.quantity}</span>
-      </div>
+
     </a>
   );
+
 }
 
 export default ProductCard;

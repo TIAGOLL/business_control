@@ -9,8 +9,9 @@ export default {
       store_name,
       tracking_id,
       prod_requests,
-    } = req.body ? req.body : req.body.data;
+    } = req.body.data;
 
+    console.log(req.body.data);
     try {
       await prisma.requests
         .create({

@@ -1,6 +1,4 @@
 import stylesRequestCard from './styles.css';
-import moment from 'moment'
-
 
 function RequestsCard(props) {
 
@@ -22,7 +20,7 @@ function RequestsCard(props) {
         {props.tracking_id}
       </div>
       <div className={stylesRequestCard.cellLine}>
-        {props.created_at}
+        {new Date(props.created_at).toLocaleDateString('pt-br') + ' ' + new Date(props.created_at).toLocaleTimeString('pt-br')}
       </div>
       <div className={stylesRequestCard.cellLine}>
         {props.active == false && <span className="bg-orange-950 p-1 w-11/12 text-center font-semibold rounded-lg">Cancelado</span>}

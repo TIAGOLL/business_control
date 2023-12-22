@@ -35,7 +35,6 @@ function Header() {
         {textButton == 'Cadastrar pedido' && <a href='/dashboard/requests/create' className={header.button}>{textButton}</a>}
         {textButton == 'Cadastrar vendas' && <a href='/dashboard/sales/create' className={header.button}>{textButton}</a>}
         {textButton == 'Cadastrar cliente' && <a href='/dashboard/clients/create' className={header.button}>{textButton}</a>}
-        <input placeholder='Search...' className={header.input} type="text" />
       </div>
     </section>
   );

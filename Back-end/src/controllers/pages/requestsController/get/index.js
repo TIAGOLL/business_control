@@ -4,8 +4,16 @@ const prisma = new PrismaClient();
 
 export default {
   async loadAll(req, res) {
+    const { date1, date2 } = req.query;
+
     try {
       let requests = await prisma.requests.findMany({
+        where: {
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
+        },
         include: {
           accounts: {
             include: {
@@ -19,11 +27,9 @@ export default {
             },
           },
         },
-      });
-
-      //formata todas as horas para o padrão brasileiro
-      requests.map((item) => {
-        item.created_at = moment(item.created_at).format("DD/MM/YYYY HH:mm:ss");
+        orderBy: {
+          created_at: "desc",
+        },
       });
 
       return res.json({
@@ -37,10 +43,15 @@ export default {
   },
 
   async loadActives(req, res) {
+    const { date1, date2 } = req.query;
     try {
       const requests = await prisma.requests.findMany({
         where: {
           active: true,
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
         },
         include: {
           accounts: {
@@ -68,10 +79,18 @@ export default {
   },
 
   async loadWaitingForRefund(req, res) {
+    const { date1, date2 } = req.query;
     try {
       const requests = await prisma.requests.findMany({
         where: {
-          status_tracking_id: 3,
+          status_tracking: {
+            name: "Esperando reembolso",
+          },
+          active: true,
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
         },
         include: {
           accounts: {
@@ -99,10 +118,16 @@ export default {
   },
 
   async loadRefunded(req, res) {
+    const { date1, date2 } = req.query;
     try {
       const requests = await prisma.requests.findMany({
         where: {
+          active: true,
           status_tracking_id: 4,
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
         },
         include: {
           accounts: {
@@ -130,9 +155,15 @@ export default {
   },
 
   async loadInTransit(req, res) {
+    const { date1, date2 } = req.query;
     try {
       const requests = await prisma.requests.findMany({
         where: {
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
+          active: true,
           status_tracking_id: 1,
         },
         include: {
@@ -161,10 +192,15 @@ export default {
   },
 
   async loadCanceled(req, res) {
+    const { date1, date2 } = req.query;
     try {
       const requests = await prisma.requests.findMany({
         where: {
           active: false,
+          created_at: {
+            gte: new Date(date1).toISOString(),
+            lte: new Date(date2).toISOString(),
+          },
         },
         include: {
           accounts: {
@@ -247,6 +283,47 @@ export default {
         colors: colors,
         status_tracking: status_tracking,
         message: "Pedido carregado com sucesso!",
+      });
+    } catch (error) {
+      console.log(error);
+      return res.json({ message: error.message });
+    }
+  },
+
+  async loadOfCreateRequest(req, res) {
+    try {
+      const products = await prisma.products.findMany({
+        include: {
+          prod_categories: true,
+          prod_functionalities: true,
+          prod_accessories: true,
+        },
+      });
+
+      const accounts = await prisma.accounts.findMany({
+        include: {
+          platforms: true,
+        },
+      });
+
+      const status_tracking = await prisma.status_tracking.findMany();
+
+      const platforms = await prisma.platforms.findMany();
+
+      const colors = await prisma.prod_colors.findMany({
+        select: {
+          color: true,
+          products_id: true,
+        },
+      });
+
+      return res.json({
+        products: products,
+        accounts: accounts,
+        platforms: platforms,
+        colors: colors,
+        status_tracking: status_tracking,
+        message: "Dados carregado com sucesso!",
       });
     } catch (error) {
       console.log(error);

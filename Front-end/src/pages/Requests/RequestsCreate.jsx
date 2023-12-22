@@ -2,16 +2,15 @@ import axios from "axios";
 import { ArrowBigLeft, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useParams } from "react-router-dom";
-import { ChangePage } from "../../../redux/features/activePage";
-import { formStyle } from "../../../styles/global.css";
+import { useNavigate } from "react-router-dom";
+import { ChangePage } from "../../redux/features/activePage";
 import moment from "moment";
 import { Oval } from 'svg-loaders-react';
 import { toast } from "react-toastify";
+import { formStyle } from "../../styles/global.css";
 import { Plus } from "lucide-react";
 
-function RequestsById() {
-  const { id } = useParams();
+function RequestsCreate() {
   const { page } = useSelector(state => state.page)
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ function RequestsById() {
 
   const [storeName, setStoreName] = useState('');
   const [trackingId, setTrackingId] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
 
   //current data
   const [currentStatusTracking, setCurrentStatusTracking] = useState('');
@@ -37,48 +36,32 @@ function RequestsById() {
   const [colorsData, setColorsData] = useState([]);
 
 
-  // async function updateRequest() {
-  //   setLoading(true);
-  //   axios.put(`http://localhost:3030/requests/${id}`, {
-  //     data: {
-  //       accounts_id: currentAccount.id,
-  //       store_name: storeName,
-  //       status_tracking_id: currentStatusTracking.id,
-  //       tracking_id: trackingId,
-  //       prod_requests: currentProducts.map(item => {
-  //         return {
-  //           products_id: item.products_id,
-  //           quantity: item.quantity,
-  //           purchase_price: item.purchase_price
-  //         }
-  //       })
-  //     }
-  //   })
-  //     .then(res => {
-  //       navigate('/dashboard/requests')
-  //       toast.success(res.data.message);
-  //     })
-  //     .catch(err => {
-  //       console.log('Erro == ' + err);
-  //       toast.error('Erro ao atualizar pedido!');
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }
-
-  async function deleteRequest(e) {
+  async function createRequest() {
     setLoading(true);
-    e.preventDefault();
-    axios.delete(`http://localhost:3030/api/requests/delete/${id}`)
+    axios.post(`http://localhost:3030/api/requests/post`, {
+      data: {
+        accounts_id: currentAccount.id,
+        status_tracking_id: currentStatusTracking.id,
+        store_name: storeName,
+        tracking_id: trackingId,
+        prod_requests: currentProducts.map(item => {
+          return {
+            color: item.color,
+            products_id: item.products_id,
+            quantity: item.quantity,
+            purchase_price: item.purchase_price
+          }
+        })
+      }
+    })
       .then(res => {
-        console.log(res.data.message);
+        console.log(res.data.data);
         navigate('/dashboard/requests')
-        toast.warn(res.data.message);
+        toast.success(res.data.message);
       })
       .catch(err => {
         console.log(err.message);
-        toast.error('Erro ao excluir pedido!');
+        toast.error('Erro ao cadastrar pedido!');
       })
       .finally(() => {
         setLoading(false);
@@ -87,30 +70,13 @@ function RequestsById() {
 
   async function loadData() {
     // carrega os dados do pedido
-    axios.get(`http://localhost:3030/api/requests/byid/${id}`)
+    axios.get('http://localhost:3030/api/requests/ofcreate')
       .then(res => {
-        setTrackingId(res.data.requests.tracking_id);
-        setStoreName(res.data.requests.store_name);
-        setDate(res.data.created_at);
         setAccountData(res.data.accounts);
         setPlatformData(res.data.platforms);
         setStatusTrackingData(res.data.status_tracking);
         setProductsData(res.data.products);
         setColorsData(res.data.colors);
-
-        setCurrentProducts(res.data.requests.prod_requests.map(item => {
-          return {
-            products_id: item.products_id,
-            name: item.products.name,
-            quantity: item.quantity,
-            purchase_price: item.purchase_price,
-            color: item.color,
-          };
-        })
-        );
-        setCurrentStatusTracking(res.data.requests.status_tracking);
-        setCurrentAccount(res.data.requests.accounts);
-        setCurrentPlatform(res.data.requests.accounts.platforms);
       })
       .catch(err => {
         console.log(err);
@@ -118,11 +84,6 @@ function RequestsById() {
       .finally(() => {
         setLoading(false);
       });
-  }
-
-  // funções de manipulação de inputs
-  async function handleSubmit(e) {
-    e.preventDefault();
   }
 
   function handlePlatform(e) {
@@ -155,6 +116,7 @@ function RequestsById() {
 
   function addProduct(e) {
     e.preventDefault();
+
     //não adiciona mais produtos se a quantidade de produtos for igual a quantidade de produtos disponíveis
     if (currentProducts.length >= productsData.length) return toast.error('Não há mais produtos para adicionar!');
 
@@ -174,13 +136,6 @@ function RequestsById() {
 
     //Não seleciona o produto se ele ja estiver sido selecionado
     if (currentProducts.map((item) => item.products_id).includes(e.target.value)) return toast.error('Esse Produto ja está incluído!'), deleteProduct(e, index)
-
-    currentProducts.map((item) => {
-      if (e.target.value == item.products_id) {
-        toast.error('Esse Produto ja está incluído!')
-        return deleteProduct(e, index)
-      }
-    })
 
     currentProducts[index].products_id = e.target.value;
     currentProducts[index].name = e.target.options[e.target.selectedIndex].text;
@@ -211,10 +166,11 @@ function RequestsById() {
     setCurrentProducts([...currentProducts]);
   }
 
+
   useEffect(() => {
     setLoading(true);
-    dispatch(ChangePage('updateRequest'));
     loadData();
+    dispatch(ChangePage('createRequest'));
   }, []);
 
   if (loading) return (
@@ -246,23 +202,15 @@ function RequestsById() {
           </a>
         </div>
         <div className='flex flex-col items-center justify-center'>
-          <h1 className='pb-24 m-0 font-semibold'>Editar pedido</h1>
+          <h1 className='pb-24 m-0 font-semibold'>Criar pedido</h1>
         </div>
-        <form onSubmit={(e) => handleSubmit(e)} className="w-full gap-8 flex-col flex">
+        <form className="w-full gap-8 flex-col flex">
           <div className='flex w-full flex-wrap px-14 justify-center items-center gap-8'>
-
-            {/* ID */}
-            <div className='flex flex-col w-5/12'>
-              <div className='flex relative w-full items-center justify-center'>
-                <input readOnly required value={id} id='id' className={formStyle.input} type='text' />
-                <label htmlFor='id' className={formStyle.label}>ID</label>
-              </div>
-            </div>
 
             {/* Data do pedido */}
             <div className='flex flex-col w-5/12'>
               <div className='flex relative w-full items-center justify-center'>
-                <input required onChange={e => setDate(moment(e.target.value).format('YYYY-MM-DD'))} value={moment(date).format('DD/MM/YYYY')} id='date' type={typeInputDate} className={formStyle.input} onFocus={() => setTypeInputDate('date')} onBlur={() => setTypeInputDate('text')} />
+                <input required onChange={e => setDate(e.target.value)} value={moment(date).format('DD/MM/YYYY')} id='date' type={typeInputDate} className={formStyle.input} onFocus={() => setTypeInputDate('date')} onBlur={() => setTypeInputDate('text')} />
                 <label htmlFor='date' className={formStyle.label}>Data</label>
               </div>
             </div>
@@ -271,10 +219,9 @@ function RequestsById() {
             <div className='flex flex-col w-5/12'>
               <div className='flex relative w-full items-center justify-center'>
                 <select id="platform" onChange={e => handlePlatform(e)} className={formStyle.input} >
-                  <option htmlFor='platform' value={currentPlatform.id}>{currentPlatform.name}</option>
+                  <option htmlFor="platform" disabled selected hidden value={''}>Selecione</option>
                   {
                     platformData.map((item) => {
-                      if (item.id == currentPlatform.id) return; // não exibe a plataforma atual
                       return (
                         <option htmlFor='platform' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -288,11 +235,10 @@ function RequestsById() {
             {/* Conta do pedido */}
             <div className='flex flex-col w-5/12'>
               <div className='flex relative w-full items-center justify-center'>
-                <select id="accountName" className={formStyle.input} onChange={e => handleAccount(e)}>
-                  <option htmlFor='accountName' key={currentAccount.id} value={currentAccount.id}>{currentAccount.name}</option>
+                <select id="accountName" className={formStyle.input} disabled={!currentPlatform} onChange={e => handleAccount(e)}>
+                  <option htmlFor="accountName" disabled selected hidden value={''}>Selecione</option>
                   {
                     accountData.map((item) => {
-                      if (item.id == currentAccount.id) return; // não exibe a plataforma atual
                       if (item.platform_id == currentPlatform.id) {
                         return <option htmlFor='accountName' key={item.id} value={item.id}>{item.name}</option>
                       }
@@ -324,10 +270,9 @@ function RequestsById() {
             <div className='flex flex-col w-5/12'>
               <div className='flex relative w-full items-center justify-center'>
                 <select id="statusTracking" onChange={e => handleStatusTracking(e)} className={formStyle.input} >
-                  <option htmlFor='statusTracking' key={currentStatusTracking.id} value={currentStatusTracking.id}>{currentStatusTracking.name}</option>
+                  <option htmlFor="statusTracking" disabled selected hidden value={''}>Selecione</option>
                   {
                     statusTrackingData.map((item) => {
-                      if (item.id == currentStatusTracking.id) return; // não exibe a plataforma atual
                       return (
                         <option htmlFor='statusTracking' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -346,7 +291,6 @@ function RequestsById() {
                   <label htmlFor='quantityItems' className={formStyle.label}>Quantidade de items</label>
                 </div>
               </div>
-
               {
                 currentProducts.map((item2, index) => {
                   return (
@@ -411,18 +355,31 @@ function RequestsById() {
           </div>
           <div className='flex w-full flex-row justify-center gap-8 items-center'>
             <div className="w-4/12 flex items-center justify-center">
-              <button type="submit" disabled={loading} className={formStyle.greenButton} >
+              <button onClick={(e) => createRequest(e)} disabled={loading} className={formStyle.greenButton} >
                 {loading ? <Oval width={20} height={20} /> : 'Salvar'}
               </button>
             </div>
-            <div className="w-4/12 flex items-center justify-start">
-              <button disabled={loading} onClick={(e) => deleteRequest(e)} className={formStyle.redButton} >{loading ? <Oval width={20} height={20} /> : 'Excluir'}</button>
-            </div>
           </div>
         </form>
+        {
+          <div>
+            <p>{currentProducts.map((item) => {
+              return (
+                <div className="flex gap-8" key={item.products_id} >
+                  <p>{item.products_id}</p>
+                  <p>{item.name}</p>
+                  <p>{item.color}</p>
+                  <p>{item.quantity}</p>
+                  <p>{item.purchase_price}</p>
+                </div>
+              )
+            })}
+            </p>
+          </div>
+        }
       </div >
     </div >
   );
 }
 
-export default RequestsById;
+export default RequestsCreate;
