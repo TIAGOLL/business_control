@@ -36,7 +36,7 @@ function Products() {
 
   useEffect(() => {
     dispatch(ChangePage('products'))
-    loadProducts()
+    loadProducts();
   }, [])
 
   return (

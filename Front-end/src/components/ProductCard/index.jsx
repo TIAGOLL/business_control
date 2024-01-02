@@ -30,7 +30,9 @@ function ProductCard(props) {
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
-        <img className="rounded-2xl" src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
+        {props.id == 200 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/headset.jpg" alt="Foto do produto" />}
+        {props.id == 201 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/relogio.jpg" alt="Foto do produto" />}
+        {props.id == 202 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/mouse.jpg" alt="Foto do produto" />}
       </div>
 
       <div className={productCard.tittle}>
