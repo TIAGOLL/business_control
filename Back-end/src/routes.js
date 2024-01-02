@@ -1,46 +1,57 @@
 const Router = require("express");
 
-import productController from "./controllers/productController";
-import categoryController from "./controllers/categoryController";
-import requestsController from "./controllers/requestsController";
-import platformController from "./controllers/platformController";
-import accountController from "./controllers/accountController";
-import statusTrakingController from "./controllers/statusTrakingController";
+import requestsGET from "./controllers/pages/requestsController/get";
+import requestsDEL from "./controllers/pages/requestsController/delete";
+import requestsPOST from "./controllers/pages/requestsController/post";
+import requestsPUT from "./controllers/pages/requestsController/put";
+
+import productsGET from "./controllers/pages/productsController/get";
+import productsPUT from "./controllers/pages/productsController/put";
+import productsDEL from "./controllers/pages/productsController/delete";
+import productsPOST from "./controllers/pages/productsController/post";
+
+import salesGET from "./controllers/pages/salesController/get";
+import salesPUT from "./controllers/pages/salesController/put";
+import salesDEL from "./controllers/pages/salesController/delete";
+import salesPOST from "./controllers/pages/salesController/post";
 
 const router = Router();
 
 //products
-router.get("/products", productController.findAllProducts);
-router.get("/products/:id", productController.findProductById);
-router.get("/products/stock/:id", productController.findStockByProduct)
-router.get("/products/purchaseprice/:id", productController.findCurrentPurchasePriceByProduct)
-router.get("/totalinvested", productController.totalInvested)
-router.post("/products", productController.createProduct)
-router.put("/products/:id", productController.updateProduct)
-router.delete("/products/:id", productController.deleteProduct);
-
+router.get("/api/products/load/actives", productsGET.loadActives);
+router.get("/api/products/load/deleted", productsGET.loadDeleted);
+router.get("/api/products/load/byid/:id", productsGET.loadById);
+router.get("/api/products/load/avaibles", productsGET.loadAvailables);
+router.get("/api/products/load/intransit", productsGET.loadInTransit);
+router.get("/api/products/load/ofcreate", productsGET.loadOfCreate);
+router.post("/api/products/post", productsPOST.post);
+router.put("/api/products/put/:id", productsPUT.update);
+router.delete("/api/products/delete/:id", productsDEL.delete);
 
 //requests
-router.get("/requests", requestsController.findAllRequests)
-router.get("/requests/:id", requestsController.findRequestsById)
-router.get("/requests/products/:id", requestsController.findAllRequestsByProductId)
-router.get("/req/intransit", requestsController.findRequestsInTransit)
-router.put("/requests/:id", requestsController.updateRequest)
-router.post("/requests", requestsController.createRequest)
-router.delete("/requests/:id", requestsController.deleteRequest);
+router.get("/api/requests/load/all", requestsGET.loadAll);
+router.get("/api/requests/load/actives", requestsGET.loadActives);
+router.get(
+  "/api/requests/load/waitingforrefund",
+  requestsGET.loadWaitingForRefund
+);
+router.get("/api/requests/load/refunded", requestsGET.loadRefunded);
+router.get("/api/requests/load/intransit", requestsGET.loadInTransit);
+router.get("/api/requests/load/byid/:id", requestsGET.loadById);
+router.get("/api/requests/load/canceled", requestsGET.loadCanceled);
+router.get("/api/requests/load/ofcreate", requestsGET.loadOfCreate);
+router.delete("/api/requests/delete/:id", requestsDEL.delete);
+router.post("/api/requests/post", requestsPOST.post);
+router.put("/api/requests/put/delivered/:id", requestsPUT.putForDelivered);
+router.put(
+  "/api/requests/put/waitingforrefund/:id",
+  requestsPUT.putForWaitingForRefund
+);
+router.put("/api/requests/put/refunded/:id", requestsPUT.putForRefunded);
 
-//categorys
-router.get("/categorys", categoryController.findAllCategorys);
-router.get("/categorys/:id", categoryController.findCategorysById);
-
-//platforms
-router.get("/platforms", platformController.findAllPlatforms);
-
-//accounts
-router.get("/accounts", accountController.findAllAccounts);
-
-//status tracking
-router.get("/statustracking", statusTrakingController.findAllStatusTracking);
-
+//sales
+router.get("/api/sales/load/actives", salesGET.loadActives);
+router.get("/api/sales/load/ofcreate", salesGET.loadOfCreate);
+router.post("/api/sales/post", salesPOST.post);
 
 export { router };

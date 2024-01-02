@@ -42,7 +42,12 @@ function SignIn() {
   return (
     <div className="w-screen h-screen flex items-center justify-center bg-[url('/images/armazen1.png')] bg-cover bg-no-repeat">
       <section className='flex flex-col h-max items-center bg-zinc-100 w-4/12 justify-center rounded-xl py-6 space-y-8 shadow-lg shadow-zinc-800 border-3'>
+<<<<<<< HEAD
         <form className="w-full gap-8 pt-10 flex-col flex">
+=======
+        <img src='/images/logo.png' alt='Logo' width={125} height={100} />
+        <form className="w-full gap-8 flex-col flex">
+>>>>>>> 47974382efdaad48d2939a038e2b7628c69b500d
           <div className='flex w-full flex-col px-14 justify-center items-center gap-8'>
             <div className='flex flex-row gap-4 justify-center items-center w-full'>
               <User strokeWidth={2} width={30} height={30} />

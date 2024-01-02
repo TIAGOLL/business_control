@@ -1,53 +1,52 @@
-import { useEffect, useState } from "react";
+
 import { productCard } from "./styles.css";
-import axios from "axios";
 
 function ProductCard(props) {
+  console.log(props)
+  if (props.prod_requests) {
+    return (
+      props.prod_requests.map((item) => {
+        return (
+          <a href={`/dashboard/products/${item.products_id}`} key={item.products_id} className={productCard.container} >
+            <div className={productCard.image}>
+              <img className="rounded-2xl w-24" width={180} src={item.products.photo_url || '/images/empty.png'} alt="Foto do produto" />
+            </div>
 
-  const [currentProduct, setCurrentProduct] = useState({
-    quantity: '',
-    name: props.name,
-    sale_price: props.sale_price,
-  })
+            <div className={productCard.tittle}>
+              {item.products.full_name}
+            </div>
 
-
-  async function loadData() {
-    await axios.get(`http://localhost:3030/products/stock/${props.id}`)
-      .then(res => {
-        currentProduct.quantity = res.data
-        setCurrentProduct({ ...currentProduct });
-        return
+            <div className={productCard.info}>
+              Preço: <span className="font-semibold">R${item.products.sale_price.toFixed(2)}</span>
+            </div>
+          </a>
+        )
       })
-      .catch(err => {
-        console.log(err.message);
-      })
+    )
   }
-
-  useEffect(() => {
-    loadData()
-  }, [])
 
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
-        {props.id == 200 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/headset.jpg" alt="Foto do produto" />}
-        {props.id == 201 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/relogio.jpg" alt="Foto do produto" />}
-        {props.id == 202 && <img className="rounded-2xl w-40 h-40" src="../../../public/images/mouse.jpg" alt="Foto do produto" />}
+        <img className="rounded-2xl w-24" src={props.photo_url ? props.photo_url : '/images/empty.png'} alt="Foto do produto" />
       </div>
 
       <div className={productCard.tittle}>
-        {currentProduct.name}
+        {props.full_name}
       </div>
 
       <div className={productCard.info}>
-        Preço: <span className="font-semibold">R${currentProduct.sale_price}</span>
+        Preço: <span className="font-semibold">R${props.sale_price.toFixed(2)}</span>
       </div>
 
       <div className={productCard.info}>
-        Estoque Físico: <span className="font-semibold">{currentProduct.quantity}</span>
+        Estoque: <span className="font-semibold">{props.quantity}</span>
       </div>
+
+
     </a>
   );
+
 }
 
 export default ProductCard;

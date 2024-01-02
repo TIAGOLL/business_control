@@ -5,137 +5,250 @@ generator client {
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  relationMode = "foreignKeys"
 }
 
-model category {
-  id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(45)
-  product product[]
-}
-
-model platform {
-  id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(45)
-  account account[]
-}
-
-model purchase {
-  id              Int             @default(autoincrement())
-  client_id       Int
-  salesperson_id  Int
-  payment_type_id Int
-  date            DateTime        @db.Date
-  status          String          @db.VarChar(45)
-  prod_purchase   prod_purchase[]
-  client          client          @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_clients1")
-  payment_type    payment_type    @relation(fields: [payment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_payment_type1")
-  salesperson     salesperson     @relation(fields: [salesperson_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_salesperson1")
-
-  @@id([id, client_id, salesperson_id, payment_type_id])
-  @@index([client_id], map: "fk_purchase_clients1_idx")
-  @@index([salesperson_id], map: "fk_purchase_salesperson1_idx")
-  @@index([payment_type_id], map: "fk_purchase_payment_type1_idx")
-}
-
-model request {
-  id                 Int             @unique @default(autoincrement())
-  account_id         Int
-  status_tracking_id Int
-  date               DateTime        @db.Date
-  store_name         String          @db.VarChar(45)
-  tracking_id        String          @db.VarChar(45)
-  prod_request       prod_request[]
-  account            account         @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_account1")
-  status_tracking    status_tracking @relation(fields: [status_tracking_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_status_tracking1")
-
-  @@id([id, account_id, status_tracking_id])
-  @@index([account_id], map: "fk_request_account1_idx")
-  @@index([status_tracking_id], map: "fk_request_status_tracking1_idx")
-}
-
-model salesperson {
-  id       Int        @id @default(autoincrement())
-  name     String     @db.VarChar(45)
-  cpf      String?    @db.VarChar(45)
-  purchase purchase[]
-}
-
-model product {
-  id             Int             @unique @default(autoincrement())
-  category_id    Int
-  name           String          @db.VarChar(45)
-  sale_price     Float           @db.Float
-  description    String?         @db.VarChar(200)
-  prod_purchase  prod_purchase[]
-  prod_request   prod_request[]
-  category       category        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_produto_category1")
-
-  @@id([id, category_id])
-  @@index([category_id], map: "fk_produto_category1_idx")
-}
-
-model account {
-  id          Int       @unique(map: "id_UNIQUE") @default(autoincrement())
+model accounts {
+  id          Int        @unique(map: "id_UNIQUE") @default(autoincrement())
   platform_id Int
-  name        String    @db.VarChar(45)
-  owner       String    @db.VarChar(45)
-  platform    platform  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_platform1")
-  request     request[]
+  name        String     @db.VarChar(45)
+  owner       String     @db.VarChar(45)
+  cpf         String?    @db.VarChar(11)
+  email       String?    @db.VarChar(45)
+  active      Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  platforms   platforms  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_platform1")
+  requests    requests[]
 
   @@id([id, platform_id])
   @@index([platform_id], map: "fk_account_platform1_idx")
 }
 
-model client {
-  id          Int        @id @default(autoincrement())
-  name        String     @db.VarChar(45)
-  cpf         String?    @db.VarChar(45)
-  adress      String?    @db.VarChar(45)
-  place_work  String?    @db.VarChar(45)
-  description String?    @db.VarChar(100)
-  purchase    purchase[]
+model clients {
+  id              Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name            String      @db.VarChar(45)
+  gender          String      @db.VarChar(1)
+  cpf             String?     @db.VarChar(45)
+  adress          String?     @db.VarChar(45)
+  place_work      String?     @db.VarChar(45)
+  description     String?     @db.VarChar(100)
+  active          Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
+  total_purchased Float       @default(0) @db.Float
+  entry_date      DateTime    @default(now()) @db.Timestamp(0)
+  purchases       purchases[]
 }
 
-model payment_type {
-  id           Int        @id @default(autoincrement())
-  name         String     @db.VarChar(45)
-  porcent_rate Float      @db.Float
-  purchase     purchase[]
+model collaborators {
+  id                Int            @unique(map: "id_UNIQUE") @default(autoincrement())
+  marital_status_id Int
+  functions_id      Int
+  name              String         @db.VarChar(45)
+  gender            String         @db.VarChar(1)
+  entry_date        DateTime       @default(now()) @db.Timestamp(0)
+  cpf               String?        @db.VarChar(45)
+  adress            String?        @db.VarChar(45)
+  active            Boolean        @default(dbgenerated("b'1'")) @db.Bit(1)
+  comission         Float          @db.Float
+  functions         functions      @relation(fields: [functions_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_collaborators_functions1")
+  marital_status    marital_status @relation(fields: [marital_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salespersons_marital status1")
+  purchases         purchases[]
+
+  @@id([id, marital_status_id, functions_id])
+  @@index([functions_id], map: "fk_collaborators_functions1_idx")
+  @@index([marital_status_id], map: "fk_salespersons_marital status1_idx")
 }
 
-model prod_purchase {
-  purchase_id              Int
-  purchase_clients_id      Int
-  purchase_salesperson_id  Int
-  purchase_payment_type_id Int
-  product_id               Int
-  product_category_id      Int
-  quantity                 Int
-  total_profit             Float    @db.Float
-  product                  product  @relation(fields: [product_id, product_category_id], references: [id, category_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_has_product_product1")
-  purchase                 purchase @relation(fields: [purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id], references: [id, client_id, salesperson_id, payment_type_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_has_product_purchase1")
-
-  @@id([purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id, product_id, product_category_id])
-  @@index([product_id, product_category_id], map: "fk_purchase_has_product_product1_idx")
-  @@index([purchase_id, purchase_clients_id, purchase_salesperson_id, purchase_payment_type_id], map: "fk_purchase_has_product_purchase1_idx")
+model coupons {
+  id           Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name         String      @db.VarChar(45)
+  discount     Float       @db.Float
+  active       Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
+  initial_date DateTime    @db.Date
+  final_date   DateTime    @db.Date
+  purchases    purchases[]
 }
 
-model prod_request {
-  request_id     Int
-  product_id     Int
+model functions {
+  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  collaborators collaborators[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model marital_status {
+  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  collaborators collaborators[]
+}
+
+model moviments {
+  id           Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  mov_id       Int
+  date         DateTime @default(now()) @db.Timestamp(0)
+  type         String   @db.VarChar(45)
+  author_id    String   @db.VarChar(45)
+  author_name  String   @db.VarChar(45)
+  mov_stock    Decimal  @db.Decimal(10, 0)
+  product_id   Int
+  product_name String   @db.VarChar(45)
+
+  @@index([mov_id], map: "fk_moviments_prod_purchases1_idx")
+}
+
+model payment_processors {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  payment_types payment_types[]
+}
+
+model payment_types {
+  id                   Int                @unique(map: "id_UNIQUE") @default(autoincrement())
+  payment_processor_id Int
+  name                 String             @db.VarChar(45)
+  porcent_rate         Float              @db.Float
+  active               Boolean            @default(dbgenerated("b'1'")) @db.Bit(1)
+  payment_processors   payment_processors @relation(fields: [payment_processor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_payment_type_payment processor1")
+  purchases            purchases[]
+
+  @@id([id, payment_processor_id])
+  @@index([payment_processor_id], map: "fk_payment_type_payment processor1_idx")
+}
+
+model platforms {
+  id       Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name     String     @db.VarChar(45)
+  active   Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  accounts accounts[]
+}
+
+model prod_accessories {
+  id          Int      @unique(map: "id_UNIQUE") @default(autoincrement())
+  products_id Int
+  name        String   @db.VarChar(45)
+  active      Boolean  @default(dbgenerated("b'1'")) @db.Bit(1)
+  products    products @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_accessories_products1")
+
+  @@id([id, products_id])
+  @@index([products_id], map: "fk_prod_accessories_products1_idx")
+}
+
+model prod_categories {
+  id       Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name     String     @db.VarChar(45)
+  active   Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  products products[]
+}
+
+model prod_functionalities {
+  id          Int      @unique(map: "id_UNIQUE") @default(autoincrement())
+  products_id Int
+  description String   @db.VarChar(200)
+  active      Boolean  @default(dbgenerated("b'1'")) @db.Bit(1)
+  products    products @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_functionalities_products1")
+
+  @@id([id, products_id])
+  @@index([products_id], map: "fk_prod_functionalities_products1_idx")
+}
+
+model prod_purchases {
+  purchase_id    Int
+  products_id    Int
+  purchase_price Float     @db.Float
+  sale_price     Float     @db.Float
   quantity       Int
-  purchase_price Float   @db.Float
-  product        product @relation(fields: [product_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_product2")
-  request        request @relation(fields: [request_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_request_has_product_request2")
+  active         Boolean   @default(dbgenerated("b'1'")) @db.Bit(1)
+  products       products  @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_purchases_products1")
+  purchases      purchases @relation(fields: [purchase_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_purchases_purchases1")
 
-  @@id([request_id, product_id])
-  @@index([product_id], map: "fk_request_has_product_product2_idx")
-  @@index([request_id], map: "fk_request_has_product_request2_idx")
+  @@id([purchase_id, products_id])
+  @@index([products_id], map: "fk_prod_purchases_products1_idx")
+  @@index([purchase_id], map: "fk_purchase_has_product_purchase1_idx")
+}
+
+model prod_requests {
+  requests_id    Int
+  products_id    Int
+  quantity       Int
+  purchase_price Float    @db.Float
+  active         Boolean  @default(dbgenerated("b'1'")) @db.Bit(1)
+  products       products @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_products10")
+  requests       requests @relation(fields: [requests_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_requests10")
+
+  @@id([requests_id, products_id])
+  @@index([products_id], map: "fk_prod_requests_products1_idx")
+  @@index([requests_id], map: "fk_prod_requests_requests1_idx")
+}
+
+model products {
+  id                   Int                    @unique(map: "id_UNIQUE") @default(autoincrement())
+  category_id          Int
+  photo_url            String?                @db.VarChar(500)
+  name                 String                 @db.VarChar(45)
+  full_name            String?                @db.VarChar(100)
+  sale_price           Float                  @db.Float
+  color                String                 @db.VarChar(45)
+  quantity             Int                    @default(0)
+  critical_stock       Boolean                @default(dbgenerated("b'0'")) @db.Bit(1)
+  purchase_price       Float?                 @default(0) @db.Float
+  profit               Float?                 @db.Float
+  active               Boolean                @default(dbgenerated("b'1'")) @db.Bit(1)
+  prod_accessories     prod_accessories[]
+  prod_functionalities prod_functionalities[]
+  prod_purchases       prod_purchases[]
+  prod_requests        prod_requests[]
+  prod_categories      prod_categories        @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_produto_category1")
+
+  @@id([id, category_id])
+  @@index([category_id], map: "fk_produto_category1_idx")
+}
+
+model purchases {
+  id               Int              @unique(map: "id_UNIQUE") @default(autoincrement())
+  client_id        Int
+  payment_type_id  Int
+  coupon_id        Int              @default(0)
+  collaborators_id Int
+  created_at       DateTime         @default(now()) @db.Timestamp(0)
+  paid             Boolean          @default(dbgenerated("b'0'")) @db.Bit(1)
+  total_sold       Float?           @db.Float
+  total_profit     Float?           @db.Float
+  total_comission  Float?           @db.Float
+  active           Boolean          @default(dbgenerated("b'1'")) @db.Bit(1)
+  prod_purchases   prod_purchases[]
+  clients          clients          @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_clients1")
+  payment_types    payment_types    @relation(fields: [payment_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchase_payment_type1")
+  collaborators    collaborators    @relation(fields: [collaborators_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchases_collaborators1")
+  coupons          coupons          @relation(fields: [coupon_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_purchases_coupon1")
+
+  @@id([id, client_id, payment_type_id, coupon_id, collaborators_id])
+  @@index([client_id], map: "fk_purchase_clients1_idx")
+  @@index([payment_type_id], map: "fk_purchase_payment_type1_idx")
+  @@index([collaborators_id], map: "fk_purchases_collaborators1_idx")
+  @@index([coupon_id], map: "fk_purchases_coupon1_idx")
+}
+
+model requests {
+  id                 Int             @unique(map: "id_UNIQUE") @default(autoincrement())
+  status_tracking_id Int             @default(2)
+  accounts_id        Int
+  created_at         DateTime        @default(now()) @db.Timestamp(0)
+  store_name         String          @db.VarChar(45)
+  tracking_id        String          @db.VarChar(45)
+  active             Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  prod_requests      prod_requests[]
+  accounts           accounts        @relation(fields: [accounts_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_requests_accounts1")
+  status_tracking    status_tracking @relation(fields: [status_tracking_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_requests_status_tracking1")
+
+  @@id([id, status_tracking_id, accounts_id])
+  @@index([accounts_id], map: "fk_requests_accounts1_idx")
+  @@index([status_tracking_id], map: "fk_requests_status_tracking1_idx")
 }
 
 model status_tracking {
-  id      Int       @id @default(autoincrement())
-  name    String    @db.VarChar(45)
-  request request[]
+  id       Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name     String     @db.VarChar(45)
+  active   Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  requests requests[]
 }

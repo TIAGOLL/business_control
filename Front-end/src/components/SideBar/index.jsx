@@ -17,7 +17,6 @@ const SideBar = () => {
     navigate('/')
     toast.warn('Desconectado com sucesso!')
   }
-  console.log(user)
   const { page } = useSelector(state => state.page)
   return (
     <aside className="h-screen w-20 flex flex-col text-zinc-300 group hover:transition-all hover:w-2/12">

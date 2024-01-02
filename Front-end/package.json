@@ -1,5 +1,5 @@
 {
-  "name": "tinnyimportssystem",
+  "name": "business_control",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,22 +10,26 @@
     "test": "react-scripts test"
   },
   "dependencies": {
-    "@prisma/client": "^5.3.1",
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.5.0",
+    "eslint": "^8.56.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
     "firebase": "^10.5.2",
     "lucide-react": "^0.271.0",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-multimask": "^0.1.16",
     "react-redux": "^8.1.2",
     "react-router-dom": "^6.16.0",
+    "react-scripts": "5.0.1",
     "react-toastify": "^9.1.3",
     "redux": "^4.2.1",
     "svg-loaders-react": "^2.2.1",
     "tailwindcss": "^3.3.3",
-    "uuid": "^9.0.1",
-    "react-scripts": "5.0.1"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",

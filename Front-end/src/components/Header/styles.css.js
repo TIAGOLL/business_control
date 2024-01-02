@@ -1,7 +1,7 @@
 const header = {
   container: 'flex w-full h-24 items-start justify-start justify-start',
 
-  content: 'flex w-full items-center justify-center gap-10 px-4 py-4',
+  content: 'flex w-full items-center justify-start pl-20 gap-10 px-4 py-4',
 
   input: 'pl-4 rounded-xl peer h-10 w-4/12 border-b-2 border-gray-300 text-zinc-800 focus:outline-none focus:border-blue-500 placeholder:text-gray-500 placeholder:text-[18px]',
 

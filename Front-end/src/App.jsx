@@ -2,7 +2,7 @@ import { BrowserRouter } from 'react-router-dom'
 import RoutesApp from './routes'
 import { Provider } from 'react-redux'
 import store from './redux/app/store'
-import { ToastContainer } from 'react-toastify'
+import { Flip, ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import AuthProvider from './contexts/auth'
 
@@ -11,9 +11,9 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Provider store={store}>
+        <Provider store={store} >
           <RoutesApp />
-          <ToastContainer autoClose={3000} />
+          <ToastContainer autoClose={3000} transition={Flip} closeButton draggable theme='light' />
         </Provider>
       </AuthProvider>
     </BrowserRouter>

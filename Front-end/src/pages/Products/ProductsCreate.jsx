@@ -1,18 +1,18 @@
 import axios from "axios";
 import { ArrowBigLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { formStyle } from "../../../styles/global.css";
+import { useNavigate } from "react-router-dom";
+import { formStyle } from "../../styles/global.css";
 import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Oval } from 'svg-loaders-react';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db, storage } from "../../services/auth";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../../../services/auth";
 
 
-function ProductsById() {
-  const { id } = useParams();
+function ProductsCreate() {
   const navigate = useNavigate()
 
   const [loading, setLoading] = useState(true);
@@ -21,21 +21,14 @@ function ProductsById() {
 
   // Forms handler
   //products
-  const [prodId, setProdId] = useState();
   const [prodName, setProdName] = useState();
   const [prodSalePrice, setProdSalePrice] = useState();
-  const [ProdPurchasePrice, setProdPurchasePrice] = useState();
-  const [ProdProfit, setProdProfit] = useState();
-  const [prodActive, setProdActive] = useState();
-  const [prodPhotoUrl, setProdPhotoUrl] = useState();
   const [prodPhoto, setProdPhoto] = useState();
+  const [prodPhotoUrl, setProdPhotoUrl] = useState('');
   const [prodColor, setProdColor] = useState();
-  const [prodQuantity, setProdQuantity] = useState();
-
 
   //category
   const [currentCategoryId, setCurrentCategoryId] = useState()
-  const [currentCategoryName, setCurrentCategoryName] = useState()
 
   // accessories
   const [currentAccessories, setCurrentAccessories] = useState([]);
@@ -44,34 +37,8 @@ function ProductsById() {
   const [currentFuncionalities, setCurrentFuncionalities] = useState([]);
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/api/products/load/byid/${id}`)
+    await axios.get('http://localhost:3030/api/products/load/ofcreate')
       .then(res => {
-        console.log(res.data);
-        setProdActive(res.data.products.active)
-        setProdId(res.data.products.id)
-        setProdPhotoUrl(res.data.products.photo_url)
-        setProdName(res.data.products.name)
-        setProdSalePrice(res.data.products.sale_price)
-        setProdPurchasePrice(res.data.products.purchase_price)
-        setCurrentCategoryId(res.data.products.prod_categories.id)
-        setCurrentCategoryName(res.data.products.prod_categories.name)
-        setProdColor(res.data.products.color)
-        setCurrentAccessories(res.data.prod_accessories)
-        setCurrentFuncionalities(res.data.prod_funcionalities)
-        setProdQuantity(res.data.products.quantity)
-
-        setCurrentAccessories(res.data.products.prod_accessories.map((item) => {
-          return {
-            name: item.name,
-          }
-        }))
-
-        setCurrentFuncionalities(res.data.products.prod_functionalities.map((item) => {
-          return {
-            description: item.description,
-          }
-        }))
-
         setCategorysData(res.data.categories)
       })
       .catch(err => {
@@ -83,7 +50,7 @@ function ProductsById() {
       })
   }
 
-  async function updateProduct(e) {
+  async function createProduct(e) {
     e.preventDefault();
 
     setLoading(true);
@@ -93,12 +60,12 @@ function ProductsById() {
     await uploadBytes(uploadRef, prodPhoto)
       .then((snapshot) => {
         getDownloadURL(snapshot.ref).then(async (downloadURL) => {
-          await axios.put(`http://localhost:3030/api/products/put/${id}`, {
+          await axios.post("http://localhost:3030/api/products/post", {
             data: {
               name: prodName,
-              photo_url: downloadURL,
               category_id: currentCategoryId,
               sale_price: prodSalePrice,
+              photo_url: downloadURL,
               color: prodColor,
               prod_accessories: currentAccessories,
               prod_functionalities: currentFuncionalities,
@@ -111,27 +78,13 @@ function ProductsById() {
             })
             .catch(err => {
               console.log(err.message);
-              toast.error('Erro ao atualizar produto');
+              toast.error('Erro ao criar produto');
             })
         })
       })
       .catch((error) => {
         console.log(error.message)
         toast.error("Erro ao atualizar!")
-      })
-  }
-
-  async function deleteProduct(e) {
-    e.preventDefault();
-    await axios.delete(`http://localhost:3030/api/products/delete/${id}`)
-      .then(res => {
-        console.log(res.data);
-        toast.success(res.data.message);
-        navigate('/dashboard/products');
-      })
-      .catch(err => {
-        console.log(err.message);
-        toast.error('Erro ao deletar produto');
       })
   }
 
@@ -156,7 +109,7 @@ function ProductsById() {
     setCurrentAccessories([...currentAccessories]);
   }
 
-  function handleFuncionalities(e, index) {
+  function handleFunctionalities(e, index) {
     const { value } = e.target;
     currentFuncionalities[index].description = value;
     setCurrentFuncionalities([...currentFuncionalities]);
@@ -180,7 +133,7 @@ function ProductsById() {
     if (currentFuncionalities.map((item) => item.description).includes('')) return toast.error('Preencha todos os campos da funcionalidade antes de adicionar outra!');
 
     setCurrentFuncionalities([...currentFuncionalities, {
-      name: '',
+      description: '',
     }]);
   }
 
@@ -201,15 +154,7 @@ function ProductsById() {
     loadData();
   }, []);
 
-  // calcula o lucro
-  useEffect(() => {
-    if (ProdPurchasePrice == 0) return setProdProfit('Nenhum preço de compra encontrado');
-    const value = (prodSalePrice - ProdPurchasePrice) / ProdPurchasePrice * 100
-    setProdProfit(value.toFixed(1));
-  }, [ProdPurchasePrice, prodSalePrice]);
-
   if (loading) {
-
     return (
       <div className={formStyle.container}>
         <div className='flex flex-col items-center bg-zinc-100 w-10/12 my-10 justify-center rounded-xl py-6 space-y-8 shadow-lg shadow-zinc-800 border-3'>
@@ -219,15 +164,14 @@ function ProductsById() {
             </a>
           </div>
           <div className='flex flex-col items-center justify-center'>
-            <h1 className='font-semibold'>Editar produto</h1>
-            {!prodActive && <p className="font-semibold text-red-700">PRODUTO DELETADO</p>}
+            <h1 className='font-semibold'>Cadastrar produto</h1>
           </div>
           <div className="w-full gap-8 flex-col flex items-center justify-center">
             <Oval width={100} height={100} stroke="black" />
           </div>
         </div >
       </div >
-    )
+    );
   }
 
   return (
@@ -239,33 +183,21 @@ function ProductsById() {
           </a>
         </div>
         <div className='flex flex-col items-center justify-center'>
-          <h1 className='font-semibold'>Editar produto</h1>
-          {!prodActive && <p className="font-semibold text-red-700">PRODUTO DELETADO</p>}
+          <h1 className='font-semibold'>Cadastrar produto</h1>
         </div>
         <form className="w-full gap-8 flex-col flex items-center justify-center">
           <div className='flex w-full flex-wrap px-14 justify-center items-center gap-8'>
 
-            {/* Imagem */}
-            <div className='flex flex-col w-full items-center justify-center'>
-              <img src={prodPhotoUrl == null && '/images/empty.png' || prodPhotoUrl} alt="Foto do produto" className="rounded-xl w-48" />
-            </div>
-            <div className='flex flex-col w-5/12'>
+            {/* Foto */}
+            <div className='flex flex-col w-3/12'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
                 <input accept="image/*" onChange={handleProductPhoto} id='upload' className={formStyle.input} type="file" />
                 <label htmlFor='upload' className={formStyle.label}>Foto</label>
               </div>
             </div>
 
-            {/* ID */}
-            <div className='flex flex-col w-5/12'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input readOnly required value={prodId} id='id' className={formStyle.input} type='text' />
-                <label htmlFor='id' className={formStyle.label}>ID</label>
-              </div>
-            </div>
-
             {/* Nome */}
-            <div className='flex flex-col w-5/12'>
+            <div className='flex flex-col w-3/12'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
                 <input required onChange={e => setProdName(e.target.value)} value={prodName} id='name' className={formStyle.input} type='text' />
                 <label htmlFor='name' className={formStyle.label}>Nome</label>
@@ -281,10 +213,10 @@ function ProductsById() {
             </div>
 
             {/* Categoria */}
-            <div className='flex flex-col w-5/12'>
+            <div className='flex flex-col w-3/12'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
                 <select id="category" onChange={e => setCurrentCategoryId(e.target.value)} className={formStyle.input} >
-                  <option htmlFor='category' key={currentCategoryId} value={currentCategoryId}>{currentCategoryName}</option>
+                  <option htmlFor="category" disabled selected hidden value={''}>Selecione</option>
                   {
                     categorysData.map((item) => {
                       return (
@@ -298,26 +230,10 @@ function ProductsById() {
             </div>
 
             {/* Preço de venda */}
-            <div className='flex flex-col w-5/12'>
+            <div className='flex flex-col w-3/12'>
               <div className='flex relative w-full space-x-2 items-center justify-center'>
                 <input required onChange={e => setProdSalePrice(e.target.value)} value={prodSalePrice} id='salePrice' className={formStyle.input} type='text' />
                 <label htmlFor='salePrice' className={formStyle.label}>Preço de venda</label>
-              </div>
-            </div>
-
-            {/* Preço de compra do lote mais recente */}
-            <div className='flex flex-col w-5/12'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input required readOnly id='purchasePrice' value={ProdPurchasePrice} className={formStyle.input} type='text' />
-                <label htmlFor='purchasePrice' className={formStyle.label}>Preço de compra</label>
-              </div>
-            </div>
-
-            {/* Lucro */}
-            <div className='flex flex-col w-5/12'>
-              <div className='flex relative w-full space-x-2 items-center justify-center'>
-                <input readOnly required value={ProdProfit} id='profitPorcent' className={formStyle.input} type='text' />
-                <label htmlFor='profitPorcent' className={formStyle.label}>% de Lucro</label>
               </div>
             </div>
 
@@ -331,8 +247,8 @@ function ProductsById() {
                       <div className="flex flex-row w-2/12 items-center justify-center" key={item.id}>
                         <div className='flex flex-col w-full'>
                           <div className='flex relative w-full items-center justify-center'>
-                            <input required onChange={e => handleAccessories(e, index)} value={item.name} id={`colorName${index}`} className={formStyle.input + ' !rounded-r-none'} type='text' />
-                            <label htmlFor={`colorName${index}`} className={formStyle.label}>{`Acessório ${index + 1}`}</label>
+                            <input required onChange={e => handleAccessories(e, index)} value={item.name} id={`${index}`} className={formStyle.input + ' !rounded-r-none'} type='text' />
+                            <label htmlFor={`${index}`} className={formStyle.label}>{`Acessório ${index + 1}`}</label>
                           </div>
                         </div>
                         <div className='flex relative items-center justify-start h-10'>
@@ -361,8 +277,8 @@ function ProductsById() {
                       <div className="flex flex-row w-5/12 h-full items-center justify-center p-2" key={item.id}>
                         <div className='flex flex-col w-full'>
                           <div className='flex relative w-full items-center justify-center h-24'>
-                            <textarea required onChange={e => handleFuncionalities(e, index)} value={item.description} id={`colorName${index}`} className={formStyle.input + ' !rounded-r-none !p-2 !h-full'} type='text' />
-                            <label htmlFor={`colorName${index}`} className={formStyle.label}>{`Funcionalidade ${index + 1}`}</label>
+                            <textarea required onChange={e => handleFunctionalities(e, index)} value={item.description} id={`${index}`} className={formStyle.input + ' !rounded-r-none !p-2 !h-full'} type='text' />
+                            <label htmlFor={`${index}`} className={formStyle.label}>{`Funcionalidade ${index + 1}`}</label>
                           </div>
                         </div>
                         <div className='flex relative items-center justify-center h-24'>
@@ -372,6 +288,7 @@ function ProductsById() {
                     )
                   })
                 }
+
                 {/* Add funcionality */}
                 <div className='flex w-full flex-col justify-center items-center mb-8'>
                   <button onClick={addFuncionality} className={formStyle.blueButton + ' !w-1/12'} >
@@ -381,12 +298,9 @@ function ProductsById() {
               </div>
             </div>
           </div>
-          <div className='flex w-4/12 flex-row gap-10 justify-center items-center'>
-            <button onClick={(e) => updateProduct(e)} className={formStyle.greenButton} >
+          <div className='flex w-4/12 flex-col justify-center items-center'>
+            <button onClick={(e) => createProduct(e)} className={formStyle.greenButton} >
               Salvar
-            </button>
-            <button onClick={(e) => deleteProduct(e)} className={formStyle.redButton} >
-              Deletar
             </button>
           </div>
         </form>
@@ -395,4 +309,4 @@ function ProductsById() {
   );
 }
 
-export default ProductsById;
+export default ProductsCreate;
