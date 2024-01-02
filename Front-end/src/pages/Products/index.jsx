@@ -20,7 +20,7 @@ function Products() {
   const [searchData, setSearchData] = useState([])
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/api/products/${filter}`)
+    await axios.get(`http://localhost:3030/api/products/load/${filter}`)
       .then((res) => {
         setData(res.data)
         setSearchData(res.data.products)
@@ -37,7 +37,8 @@ function Products() {
     if (!loading) {
       setSearchData(data.products.filter((item) =>
         item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.prod_categories.name.toLowerCase().includes(search.toLowerCase())
+        item.prod_categories.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.color.toLowerCase().includes(search.toLowerCase())
       ))
     }
   }, [search])

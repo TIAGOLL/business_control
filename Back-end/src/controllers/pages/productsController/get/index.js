@@ -10,11 +10,12 @@ export default {
           active: true,
         },
         include: {
-          colors: true,
           prod_accessories: true,
           prod_categories: true,
-          prod_colors: true,
           prod_functionalities: true,
+        },
+        orderBy: {
+          name: "asc",
         },
       });
 
@@ -33,20 +34,17 @@ export default {
       const products = await prisma.products.findMany({
         where: {
           active: true,
-          prod_colors: {
-            some: {
-              quantity: {
-                gt: 1,
-              },
-            },
+          quantity: {
+            gt: 1,
           },
         },
         include: {
-          colors: true,
           prod_accessories: true,
           prod_categories: true,
-          prod_colors: true,
           prod_functionalities: true,
+        },
+        orderBy: {
+          name: "asc",
         },
       });
 
@@ -64,11 +62,10 @@ export default {
     const { id } = req.params;
 
     try {
-      const product = await prisma.products.findFirst({
+      const products = await prisma.products.findFirst({
         include: {
           prod_accessories: true,
           prod_categories: true,
-          prod_colors: true,
           prod_functionalities: true,
         },
         where: {
@@ -76,9 +73,16 @@ export default {
         },
       });
 
+      const categories = await prisma.prod_categories.findMany({
+        orderBy: {
+          name: "asc",
+        },
+      });
+
       return res.json({
-        product: product,
-        message: "Produto carregado com sucesso!",
+        products: products,
+        categories: categories,
+        message: "Dados carregados com sucesso!",
       });
     } catch (error) {
       return res.json({ message: error.message });
@@ -90,6 +94,9 @@ export default {
       const products = await prisma.products.findMany({
         where: {
           active: false,
+        },
+        orderBy: {
+          name: "asc",
         },
       });
 
@@ -122,6 +129,23 @@ export default {
       return res.json({
         products: products,
         message: "Produtos em trânsito carregados com sucesso!",
+      });
+    } catch (error) {
+      return res.json({ message: error.message });
+    }
+  },
+
+  async loadOfCreate(req, res) {
+    try {
+      const categories = await prisma.prod_categories.findMany({
+        orderBy: {
+          name: "asc",
+        },
+      });
+
+      return res.json({
+        categories: categories,
+        message: "Dados carregados com sucesso!",
       });
     } catch (error) {
       return res.json({ message: error.message });

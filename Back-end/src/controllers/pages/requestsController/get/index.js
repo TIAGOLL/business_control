@@ -66,6 +66,9 @@ export default {
             },
           },
         },
+        orderBy: {
+          created_at: "desc",
+        },
       });
 
       return res.json({
@@ -105,6 +108,9 @@ export default {
             },
           },
         },
+        orderBy: {
+          created_at: "desc",
+        },
       });
 
       return res.json({
@@ -141,6 +147,9 @@ export default {
               products: true,
             },
           },
+        },
+        orderBy: {
+          created_at: "desc",
         },
       });
 
@@ -179,6 +188,9 @@ export default {
             },
           },
         },
+        orderBy: {
+          created_at: "desc",
+        },
       });
 
       return res.json({
@@ -215,6 +227,9 @@ export default {
             },
           },
         },
+        orderBy: {
+          created_at: "desc",
+        },
       });
 
       return res.json({
@@ -250,38 +265,8 @@ export default {
         },
       });
 
-      const products = await prisma.products.findMany({
-        include: {
-          prod_categories: true,
-          prod_functionalities: true,
-          prod_accessories: true,
-        },
-      });
-
-      const accounts = await prisma.accounts.findMany({
-        include: {
-          platforms: true,
-        },
-      });
-
-      const status_tracking = await prisma.status_tracking.findMany();
-
-      const platforms = await prisma.platforms.findMany();
-
-      const colors = await prisma.prod_colors.findMany({
-        select: {
-          color: true,
-          products_id: true,
-        },
-      });
-
       return res.json({
         requests: requests,
-        products: products,
-        accounts: accounts,
-        platforms: platforms,
-        colors: colors,
-        status_tracking: status_tracking,
         message: "Pedido carregado com sucesso!",
       });
     } catch (error) {
@@ -290,30 +275,43 @@ export default {
     }
   },
 
-  async loadOfCreateRequest(req, res) {
+  async loadOfCreate(req, res) {
     try {
       const products = await prisma.products.findMany({
+        where: {
+          active: true,
+        },
         include: {
           prod_categories: true,
           prod_functionalities: true,
           prod_accessories: true,
         },
-      });
-
-      const accounts = await prisma.accounts.findMany({
-        include: {
-          platforms: true,
+        orderBy: {
+          name: "asc",
         },
       });
 
-      const status_tracking = await prisma.status_tracking.findMany();
+      const accounts = await prisma.accounts.findMany({
+        where: {
+          active: true,
+        },
+        include: {
+          platforms: true,
+        },
+        orderBy: {
+          name: "asc",
+        },
+      });
 
-      const platforms = await prisma.platforms.findMany();
+      const status_tracking = await prisma.status_tracking.findMany({
+        orderBy: {
+          name: "asc",
+        },
+      });
 
-      const colors = await prisma.prod_colors.findMany({
-        select: {
-          color: true,
-          products_id: true,
+      const platforms = await prisma.platforms.findMany({
+        orderBy: {
+          name: "asc",
         },
       });
 
@@ -321,7 +319,6 @@ export default {
         products: products,
         accounts: accounts,
         platforms: platforms,
-        colors: colors,
         status_tracking: status_tracking,
         message: "Dados carregado com sucesso!",
       });

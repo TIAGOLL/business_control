@@ -16,7 +16,6 @@ function Requests() {
   let currentDate = new Date();
   let initialDate = new Date();
   initialDate.setDate(currentDate.getDate() - 30); // Adiciona 3 dias
-
   const dispatch = useDispatch()
   dispatch(ChangePage('requests'))
 
@@ -27,7 +26,7 @@ function Requests() {
   const [date2, setDate2] = useState(currentDate)
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/api/requests/${filter}`,
+    await axios.get(`http://localhost:3030/api/requests/load/${filter}`,
       {
         params: {
           date1: date1,

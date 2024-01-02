@@ -1,18 +1,13 @@
 import axios from "axios";
-import { ArrowBigLeft, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { ChangePage } from "../../redux/features/activePage";
+import { ArrowBigLeft, Plus, Trash2 } from "lucide-react";
 import moment from "moment";
-import { Oval } from 'svg-loaders-react';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Oval } from 'svg-loaders-react';
 import { formStyle } from "../../styles/global.css";
-import { Plus } from "lucide-react";
 
 function RequestsCreate() {
-  const { page } = useSelector(state => state.page)
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
@@ -23,30 +18,26 @@ function RequestsCreate() {
   const [date, setDate] = useState(new Date());
 
   //current data
-  const [currentStatusTracking, setCurrentStatusTracking] = useState('');
   const [currentAccount, setCurrentAccount] = useState('');
   const [currentPlatform, setCurrentPlatform] = useState('');
   const [currentProducts, setCurrentProducts] = useState([]);
 
   //datas
-  const [statusTrackingData, setStatusTrackingData] = useState([]);
   const [accountData, setAccountData] = useState([]);
   const [platformData, setPlatformData] = useState([]);
   const [productsData, setProductsData] = useState([]);
-  const [colorsData, setColorsData] = useState([]);
 
 
   async function createRequest() {
     setLoading(true);
-    axios.post(`http://localhost:3030/api/requests/post`, {
+    await axios.post(`http://localhost:3030/api/requests/post`, {
       data: {
         accounts_id: currentAccount.id,
-        status_tracking_id: currentStatusTracking.id,
+        status_tracking_id: 1,
         store_name: storeName,
         tracking_id: trackingId,
         prod_requests: currentProducts.map(item => {
           return {
-            color: item.color,
             products_id: item.products_id,
             quantity: item.quantity,
             purchase_price: item.purchase_price
@@ -55,7 +46,6 @@ function RequestsCreate() {
       }
     })
       .then(res => {
-        console.log(res.data.data);
         navigate('/dashboard/requests')
         toast.success(res.data.message);
       })
@@ -70,13 +60,11 @@ function RequestsCreate() {
 
   async function loadData() {
     // carrega os dados do pedido
-    axios.get('http://localhost:3030/api/requests/ofcreate')
+    await axios.get('http://localhost:3030/api/requests/load/ofcreate')
       .then(res => {
         setAccountData(res.data.accounts);
         setPlatformData(res.data.platforms);
-        setStatusTrackingData(res.data.status_tracking);
         setProductsData(res.data.products);
-        setColorsData(res.data.colors);
       })
       .catch(err => {
         console.log(err);
@@ -106,14 +94,6 @@ function RequestsCreate() {
     });
   }
 
-  function handleStatusTracking(e) {
-    e.preventDefault();
-    setCurrentStatusTracking({
-      id: e.target.value,
-      name: e.target.options[e.target.selectedIndex].text
-    });
-  }
-
   function addProduct(e) {
     e.preventDefault();
 
@@ -125,6 +105,7 @@ function RequestsCreate() {
 
     setCurrentProducts([...currentProducts, {
       products_id: '',
+      prod_color_id: '',
       name: '',
       quantity: '',
       purchase_price: '',
@@ -133,9 +114,6 @@ function RequestsCreate() {
 
   function handleTypeProduct(e, index) {
     e.preventDefault();
-
-    //Não seleciona o produto se ele ja estiver sido selecionado
-    if (currentProducts.map((item) => item.products_id).includes(e.target.value)) return toast.error('Esse Produto ja está incluído!'), deleteProduct(e, index)
 
     currentProducts[index].products_id = e.target.value;
     currentProducts[index].name = e.target.options[e.target.selectedIndex].text;
@@ -154,12 +132,6 @@ function RequestsCreate() {
     setCurrentProducts([...currentProducts]);
   }
 
-  function handleColorProduct(e, index) {
-    e.preventDefault();
-    currentProducts[index].color = e.target.value;
-    setCurrentProducts([...currentProducts]);
-  }
-
   function deleteProduct(e, index) {
     e.preventDefault();
     currentProducts.splice(index, 1);
@@ -170,7 +142,6 @@ function RequestsCreate() {
   useEffect(() => {
     setLoading(true);
     loadData();
-    dispatch(ChangePage('createRequest'));
   }, []);
 
   if (loading) return (
@@ -269,15 +240,8 @@ function RequestsCreate() {
             {/* Status tracking */}
             <div className='flex flex-col w-5/12'>
               <div className='flex relative w-full items-center justify-center'>
-                <select id="statusTracking" onChange={e => handleStatusTracking(e)} className={formStyle.input} >
-                  <option htmlFor="statusTracking" disabled selected hidden value={''}>Selecione</option>
-                  {
-                    statusTrackingData.map((item) => {
-                      return (
-                        <option htmlFor='statusTracking' key={item.id} value={item.id}>{item.name}</option>
-                      )
-                    })
-                  }
+                <select id="statusTracking" disabled className={formStyle.input} >
+                  <option htmlFor="statusTracking" disabled selected value={2}>Em trânsito</option>
                 </select>
                 <label htmlFor='statusTracking' className={formStyle.label}>Status</label>
               </div>
@@ -302,7 +266,7 @@ function RequestsCreate() {
                             {
                               productsData.map((item) => {
                                 return (
-                                  <option htmlFor={`products${index + 1}`} key={item.id} value={item.id}>{item.name}</option>
+                                  <option htmlFor={`products${index + 1}`} key={item.id} value={item.id}>{item.full_name}</option>
                                 )
                               })
                             }
@@ -310,22 +274,7 @@ function RequestsCreate() {
                           <label htmlFor={`products${index + 1}`} className={formStyle.label}>{`Produto ${index + 1}`}</label>
                         </div>
                       </div>
-                      <div className='flex flex-col w-4/12'>
-                        <div className='flex relative w-full items-center justify-center'>
-                          <select id={`colorproduct${index + 1}`} onChange={e => handleColorProduct(e, index)} value={item2.color} className={formStyle.input} >
-                            <option htmlFor={`colorproduct${index + 1}`} disabled selected hidden value={''}>Selecione</option>
-                            {
-                              colorsData.map((item) => {
-                                if (item2.products_id == item.products_id)
-                                  return (
-                                    <option htmlFor={`colorproduct${index + 1}`} key={item.id} value={item.id}>{item.color}</option>
-                                  )
-                              })
-                            }
-                          </select>
-                          <label htmlFor={`products${index + 1}`} className={formStyle.label}>Cor</label>
-                        </div>
-                      </div>
+                      {console.log(currentProducts)}
                       <div className='flex flex-col w-2/12'>
                         <div className='flex relative w-full items-center justify-center'>
                           <input required onChange={e => handleQuantityProduct(e, index)} onClick={e => handleQuantityProduct(e, index)} value={item2.quantity} id={`quantityProduct${index}`} className={formStyle.input} type='text' />
@@ -339,7 +288,7 @@ function RequestsCreate() {
                         </div>
                       </div>
                       <div className='flex relative items-center justify-start'>
-                        <button className={formStyle.redButton + ' !w-10 !h-8'} onClick={e => deleteProduct(e, index)}><Trash2 width={20} height={20} color="white" /></button>
+                        <button className={formStyle.redButton + ' !w-10 !h-8'} onClick={e => deleteProduct(e, index)}><Trash2 width={20} height={20} /></button>
                       </div>
                     </div>
                   )

@@ -1,22 +1,19 @@
 
-import AvaibColorsCard from "../AvaibColorsCard/index";
 import { productCard } from "./styles.css";
 
 function ProductCard(props) {
+  console.log(props)
   if (props.prod_requests) {
     return (
       props.prod_requests.map((item) => {
         return (
           <a href={`/dashboard/products/${item.products_id}`} key={item.products_id} className={productCard.container} >
             <div className={productCard.image}>
-              <img className="rounded-2xl" width={180} src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
-              <div className={productCard.info + ' !flex-col !items-start'}>
-                Cores: <span className="font-semibold">{item.color}</span>
-              </div>
+              <img className="rounded-2xl w-24" width={180} src={item.products.photo_url || '/images/empty.png'} alt="Foto do produto" />
             </div>
 
             <div className={productCard.tittle}>
-              {item.products.name}
+              {item.products.full_name}
             </div>
 
             <div className={productCard.info}>
@@ -25,35 +22,25 @@ function ProductCard(props) {
           </a>
         )
       })
-
     )
   }
 
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
-        <img className="rounded-2xl" width={180} src="https://images-americanas.b2w.io/produtos/4475559609/imagens/fone-de-ouvido-bluetooth-i12-tws-sem-fio-touch-recarregavel/4475559617_1_large.jpg" alt="Foto do produto" />
-        <div className={productCard.info + ' !flex-wrap !items-start'}>
-          {
-            props.prod_colors.length > 0 &&
-            <span className="font-semibold">{props.prod_colors.map((item) => {
-              if (item.quantity > 0) {
-                return <AvaibColorsCard key={item.id} {...item} />
-              }
-            }
-            )}</span>
-          }
-
-
-        </div>
+        <img className="rounded-2xl w-24" src={props.photo_url ? props.photo_url : '/images/empty.png'} alt="Foto do produto" />
       </div>
 
       <div className={productCard.tittle}>
-        {props.name}
+        {props.full_name}
       </div>
 
       <div className={productCard.info}>
         Preço: <span className="font-semibold">R${props.sale_price.toFixed(2)}</span>
+      </div>
+
+      <div className={productCard.info}>
+        Estoque: <span className="font-semibold">{props.quantity}</span>
       </div>
 
 

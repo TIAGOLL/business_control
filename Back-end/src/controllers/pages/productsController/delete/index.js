@@ -3,20 +3,45 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default {
-  async deleteProduct(req, res) {
+  async delete(req, res) {
     const { id } = req.params;
 
     try {
-      await prisma.product
-        .deleteMany({
-          where: {
-            id: parseInt(id),
-          },
-        })
-        .catch((error) => {
-          console.log(error.message);
-          return res.json(error.message);
-        });
+      await prisma.products.updateMany({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          active: false,
+        },
+      });
+
+      await prisma.prod_colors.updateMany({
+        where: {
+          products_id: parseInt(id),
+        },
+        data: {
+          active: false,
+        },
+      });
+
+      await prisma.prod_functionalities.updateMany({
+        where: {
+          products_id: parseInt(id),
+        },
+        data: {
+          active: false,
+        },
+      });
+
+      await prisma.prod_accessories.updateMany({
+        where: {
+          products_id: parseInt(id),
+        },
+        data: {
+          active: false,
+        },
+      });
 
       return res.json({
         message: "Produto deletado com sucesso",
