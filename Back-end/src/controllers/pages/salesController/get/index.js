@@ -31,6 +31,36 @@ export default {
     });
   },
 
+  async loadNotPaid(req, res) {
+    const { date1, date2 } = req.query;
+
+    const sales = await prisma.purchases.findMany({
+      where: {
+        active: true,
+        created_at: {
+          gte: new Date(date1).toISOString(),
+          lte: new Date(date2).toISOString(),
+        },
+        paid: false,
+      },
+      include: {
+        clients: true,
+        payment_types: true,
+        coupons: true,
+        collaborators: true,
+        prod_purchases: true,
+      },
+      orderBy: {
+        id: "desc",
+      },
+    });
+
+    return res.json({
+      sales: sales,
+      message: "Dados carregados com sucesso",
+    });
+  },
+
   async loadOfCreate(req, res) {
     const products = await prisma.products.findMany({
       where: {
@@ -86,6 +116,32 @@ export default {
       payment_types: payment_types,
       cupons: cupons,
       collaborators: collaborators,
+      message: "Dados carregados com sucesso",
+    });
+  },
+
+  async loadById(req, res) {
+    const { id } = req.params;
+
+    const sale = await prisma.purchases.findFirst({
+      where: {
+        id: Number(id),
+      },
+      include: {
+        clients: true,
+        payment_types: true,
+        coupons: true,
+        collaborators: true,
+        prod_purchases: {
+          include: {
+            products: true,
+          },
+        },
+      },
+    });
+
+    return res.json({
+      sale,
       message: "Dados carregados com sucesso",
     });
   },

@@ -51,14 +51,13 @@ function SalesCreate() {
     setLoading(true)
     await axios.get('http://localhost:3030/api/sales/load/ofcreate')
       .then((res) => {
-        console.log(res.data)
         setProductsData(res.data.products)
         setPaymentsTypesData(res.data.payment_types)
         setCouponsData(res.data.cupons)
         setCollaboratorsData(res.data.collaborators)
         setClientsData(res.data.clients)
         setLoading(false)
-      })
+      })  
       .catch((err) => {
         console.log(err)
       })

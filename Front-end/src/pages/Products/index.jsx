@@ -34,11 +34,6 @@ function Products() {
   }
 
   useEffect(() => {
-<<<<<<< HEAD
-    dispatch(ChangePage('products'))
-    loadProducts();
-  }, [])
-=======
     if (!loading) {
       setSearchData(data.products.filter((item) =>
         item.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -87,7 +82,6 @@ function Products() {
       </div>
     )
   }
->>>>>>> 47974382efdaad48d2939a038e2b7628c69b500d
 
   return (
     <div className={container.main}>

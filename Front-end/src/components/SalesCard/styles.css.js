@@ -7,9 +7,9 @@ const stylesSalesCard = {
 
   tableLines: 'items-center justify-center bg-slate-600 w-full text-md text-zinc-100 flex flex-row hover:bg-slate-500 xl:h-12 2xl:h-8',
 
-  cellHead: 'w-1/6 border h-full items-center border-slate-700 flex justify-center hover:bg-slate-900',
+  cellHead: 'w-2/6 border h-full items-center border-slate-700 flex justify-center hover:bg-slate-900',
 
-  cellLine: 'w-1/6 border h-full items-center border-slate-700 flex justify-center',
+  cellLine: 'w-2/6 border h-full items-center border-slate-700 flex justify-center',
 
 }
 
