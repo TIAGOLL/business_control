@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ArrowBigLeft, Trash2 } from "lucide-react";
+import { ArrowBigLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { formStyle } from "../../../styles/global.css";
@@ -117,7 +117,6 @@ function RequestsById() {
             name: item.products.full_name,
             quantity: item.quantity,
             purchase_price: item.purchase_price,
-            color: item.color,
           };
         })
         );

@@ -7,8 +7,7 @@ import { toast } from "react-toastify";
 import { Plus } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { Oval } from 'svg-loaders-react';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db, storage } from "../../services/auth";
+import { storage } from "../../services/auth";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 
 
@@ -55,7 +54,7 @@ function ProductsCreate() {
 
     setLoading(true);
 
-    const uploadRef = ref(storage, `photos/products/${prodName}`)
+    const uploadRef = ref(storage, `photos/products/${prodName}/${prodColor}`)
 
     await uploadBytes(uploadRef, prodPhoto)
       .then((snapshot) => {
@@ -145,7 +144,6 @@ function ProductsCreate() {
 
   function deleteFuncionality(e, index) {
     e.preventDefault();
-    alert();
     currentFuncionalities.splice(index, 1);
     setCurrentFuncionalities([...currentFuncionalities]);
   }

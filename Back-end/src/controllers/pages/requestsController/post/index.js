@@ -13,7 +13,7 @@ export default {
 
     try {
       // cria o pedido
-      await prisma.requests
+      const request = await prisma.requests
         .create({
           data: {
             store_name: store_name,
@@ -41,26 +41,34 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          return res.json({ message: "Erro ao cadastrar pedido" });
+          return res.status(500).json({ message: "Erro ao cadastrar pedido" });
         });
-        //atualiza o estoque e o preço de compra dos produtos
+
+      //atualiza o estoque e o preço de compra dos produtos
       prod_requests.map(async (prod) => {
-        await prisma.products.update({
-          where: {
-            id: parseInt(prod.products_id),
-          },
-          data: {
-            quantity: {
-              increment: parseInt(prod.quantity),
+        await prisma.products
+          .update({
+            where: {
+              id: parseInt(prod.products_id),
             },
-            purchase_price: parseFloat(prod.purchase_price),
-          },
-        });
+            data: {
+              purchase_price: parseFloat(prod.purchase_price),
+            },
+          })
+          .catch((error) => {
+            console.log(error);
+            return res
+              .status(500)
+              .json({ message: "Erro ao atualizar preço do produto" });
+          });
       });
 
-      return res.json({ message: "Pedido cadastrado com sucesso" });
+      return res
+        .status(201)
+        .json({ message: "Pedido cadastrado com sucesso", request: request });
     } catch (error) {
-      return console.log(error.message);
+      console.log(error);
+      return res.status(500).json({ message: "Erro ao cadastrar pedido" });
     }
   },
 };

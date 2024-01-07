@@ -17,7 +17,7 @@ export default {
       porcent_rate,
       created_at,
     } = req.body;
-
+    console.log(req.body);
     let { paid } = req.body;
 
     if (paid === "true") {
@@ -50,9 +50,7 @@ export default {
             },
           },
           created_at: new Date(created_at).toISOString(),
-          total_comission:
-            (parseFloat(total_sold) - parseInt(total_invested)) *
-            parseFloat(comission),
+          total_comission: parseFloat(total_sold) * parseFloat(comission),
           total_sold: parseFloat(total_sold),
           paid: paid,
           prod_purchases: {
@@ -69,9 +67,8 @@ export default {
             parseFloat(total_sold) -
             parseFloat(total_invested) -
             parseFloat(porcent_rate) * parseFloat(total_sold) -
-            (parseFloat(total_sold) - parseInt(total_invested)) *
-              parseFloat(comission) -
-            parseFloat(total_sold) * parseFloat(coupon_discount),
+            parseFloat(total_sold) * parseFloat(coupon_discount) -
+            parseFloat(total_sold) * parseFloat(comission),
         },
       })
       .catch((err) => {
@@ -79,6 +76,46 @@ export default {
         return res.status(500).json({
           message: "Erro ao realizar o faturamento!",
         });
+      });
+
+    //atualiza o estoque dos produtos
+    prod_purchases.map(async (prod) => {
+      await prisma.products
+        .update({
+          where: {
+            id: parseInt(prod.products_id),
+          },
+          data: {
+            quantity: {
+              decrement: parseInt(prod.quantity),
+            },
+          },
+        })
+        .catch((error) => {
+          console.log(error);
+          return res
+            .status(500)
+            .json({ message: "Erro ao atualizar estoque do produto" });
+        });
+    });
+
+    //atualiza o total comprado pelo cliente
+    await prisma.clients
+      .update({
+        where: {
+          id: parseInt(client_id),
+        },
+        data: {
+          total_purchased: {
+            increment: parseFloat(total_sold),
+          },
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+        return res
+          .status(500)
+          .json({ message: "Erro ao atualizar total comprado pelo cliente" });
       });
 
     return res.status(201).json({

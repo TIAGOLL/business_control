@@ -56,6 +56,6 @@ router.get("/api/sales/load/ofcreate", salesGET.loadOfCreate);
 router.get("/api/sales/load/byid/:id", salesGET.loadById);
 router.post("/api/sales/post", salesPOST.post);
 router.put("/api/sales/put/markaspaid/:id", salesPUT.markAsPaid);
-router.post("/api/sales/delete/:id", salesDEL.delete);
+router.delete("/api/sales/delete/:id", salesDEL.delete);
 
 export { router };

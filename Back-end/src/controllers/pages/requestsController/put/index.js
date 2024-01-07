@@ -6,7 +6,7 @@ export default {
     const { prod_requests } = req.body.data || req.body;
     const { id } = req.params;
 
-    await prisma.requests
+    const request = await prisma.requests
       .update({
         where: {
           id: parseInt(id),
@@ -17,9 +17,10 @@ export default {
       })
       .catch((error) => {
         console.log(error);
-        return res.json({ message: error.message });
+        return res.status(500).json({ message: "Erro ao atualizar pedido" });
       });
 
+    //atualiza o estoque dos produtos
     prod_requests.map(async (prod) => {
       await prisma.products
         .update({
@@ -33,12 +34,12 @@ export default {
           },
         })
         .catch((error) => {
-          console.log(error);
-          return res.json({ message: error.message });
+          return res.status(500).json({ message: "Erro ao atualizar pedido" });
         });
     });
-    return res.json({
+    return res.status(200).json({
       message: "Pedido atualizado com sucesso",
+      request: request,
     });
   },
 
@@ -46,14 +47,19 @@ export default {
     const { prod_requests } = req.body.data || req.body;
     const { id } = req.params;
 
-    await prisma.requests.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        status_tracking_id: 3,
-      },
-    });
+    const request = await prisma.requests
+      .update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          status_tracking_id: 3,
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).json({ message: "Erro ao atualizar pedido" });
+      });
 
     prod_requests.map(async (prod) => {
       await prisma.products
@@ -69,29 +75,36 @@ export default {
         })
         .catch((error) => {
           console.log(error);
-          return res.json({ message: error.message });
+          return res.status(500).json({ message: "Erro ao atualizar pedido" });
         });
     });
 
-    return res.json({
+    return res.status(200).json({
       message: "Pedido atualizado com sucesso",
+      request: request,
     });
   },
 
   async putForRefunded(req, res) {
     const { id } = req.params;
 
-    await prisma.requests.update({
-      where: {
-        id: parseInt(id),
-      },
-      data: {
-        status_tracking_id: 4,
-      },
-    });
+    const request = await prisma.requests
+      .update({
+        where: {
+          id: parseInt(id),
+        },
+        data: {
+          status_tracking_id: 4,
+        },
+      })
+      .catch((error) => {
+        console.log(error);
+        return res.status(500).json({ message: "Erro ao atualizar pedido" });
+      });
 
-    return res.json({
+    return res.status(200).json({
       message: "Pedido atualizado com sucesso",
+      request: request,
     });
   },
 };

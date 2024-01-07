@@ -5,8 +5,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Trash2 } from "lucide-react";
-import { Plus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 
@@ -68,18 +66,22 @@ function SaleById() {
     e.preventDefault()
     setLoading(true)
     await axios.put(`http://localhost:3030/api/sales/put/markaspaid/${id}`)
-    .then((res) => {
-      toast.success(res.data.message)
-      navigate('/dashboard/sales')
-    })
-    .catch((err) => {
-      toast.error(err.message)
-    })
+      .then((res) => {
+        toast.success(res.data.message)
+        navigate('/dashboard/sales')
+      })
+      .catch((err) => {
+        toast.error(err.message)
+      })
   }
 
   async function deleteSale(e) {
     e.preventDefault()
-    await axios.delete(`http://localhost:3030/api/sales/delete/${id}`)
+    await axios.delete(`http://localhost:3030/api/sales/delete/${id}`, {
+      data: {
+        prod_purchases: currentProducts
+      }
+    })
   }
 
   useEffect(() => {

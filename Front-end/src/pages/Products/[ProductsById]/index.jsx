@@ -88,7 +88,7 @@ function ProductsById() {
 
     setLoading(true);
 
-    const uploadRef = ref(storage, `photos/products/${prodName}`)
+    const uploadRef = ref(storage, `photos/products/${prodName}/${prodColor}`)
 
     await uploadBytes(uploadRef, prodPhoto)
       .then((snapshot) => {
@@ -192,7 +192,6 @@ function ProductsById() {
 
   function deleteFuncionality(e, index) {
     e.preventDefault();
-    alert();
     currentFuncionalities.splice(index, 1);
     setCurrentFuncionalities([...currentFuncionalities]);
   }

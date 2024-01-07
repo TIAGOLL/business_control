@@ -51,15 +51,15 @@ export default {
         ])
         .catch((error) => {
           console.log(error);
-          return res.json({ message: "Erro ao atualizar Produto" });
+          return res.status(500).json({ message: "Erro ao criar Produto" });
         })
         .then(() => {
-          return res.json({
-            message: "Produto atualizado com sucesso",
+          return res.status(201).json({
+            message: "Produto criado com sucesso",
           });
         });
     } catch (error) {
-      return error.message;
+      return res.status(500).json({ message: "Erro ao criar Produto" });
     }
   },
 };

@@ -65,16 +65,15 @@ export default {
         ])
         .catch((error) => {
           console.log(error);
-          return res.json({ message: "Erro ao atualizar Produto" });
+          return res.status(500).json({ message: "Erro ao atualizar Produto" });
         })
         .then(() => {
-          return res.json({
+          return res.status(200).json({
             message: "Produto atualizado com sucesso",
           });
         });
     } catch (error) {
-      console.log(error.message);
-      return res.json(error.message);
+      return res.status(500).json({ message: "Erro ao atualizar Produto" });
     }
   },
 };

@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 import { header } from './styles.css'
 import { useEffect, useState } from 'react';
-import { Search } from 'lucide-react';
 
 function Header() {
 
