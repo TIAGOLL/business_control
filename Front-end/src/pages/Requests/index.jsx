@@ -10,20 +10,18 @@ import SideBar from './../../components/SideBar';
 import { Oval } from 'svg-loaders-react';
 import { header } from "../../components/Header/styles.css";
 import { Search } from "lucide-react";
+import moment from "moment";
 
 
 function Requests() {
-  let currentDate = new Date();
-  let initialDate = new Date();
-  initialDate.setDate(currentDate.getDate() - 30); // Adiciona 3 dias
   const dispatch = useDispatch()
   dispatch(ChangePage('requests'))
 
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState('actives')
-  const [date1, setDate1] = useState(initialDate)
-  const [date2, setDate2] = useState(currentDate)
+  const [filter, setFilter] = useState('intransit')
+  const [date1, setDate1] = useState('2010-01-01')
+  const [date2, setDate2] = useState('2030-01-01')
 
   async function loadData() {
     await axios.get(`http://localhost:3030/api/requests/load/${filter}`,
@@ -132,9 +130,28 @@ function Requests() {
     }
   }
 
+  function handleDate(e, type) {
+    e.preventDefault()
+    if (type == 'all') {
+      setDate1('2010-01-01')
+      setDate2('2030-01-01')
+    }
+    if (type == 'lastThirtiethDays') {
+      let currentDate = new Date();
+      currentDate = moment(currentDate).format('YYYY-MM-DD');
+
+      let initialDate = new Date();
+      initialDate = moment(initialDate).add(-30, 'days').format('YYYY-MM-DD');
+
+      setDate1(initialDate)
+      setDate2(currentDate)
+    }
+  }
+
   useEffect(() => {
     loadData();
   }, [])
+
 
   if (loading) {
     return (
@@ -181,16 +198,24 @@ function Requests() {
       <section className="w-full items-center justify-center flex flex-col">
         <Header />
 
-        <fieldset className="w-10/12 border-2 bg-zinc-200 p-4 shadow-md rounded-xl border-zinc-500 flex flex-row justify-center items-center gap-10 font-semibold text-md">
-          <input type="date" className={header.input + " !w-2/12"} value={date1} onChange={(e) => setDate1(e.target.value)} />
-          <p className="font-semibold text-md">Até</p>
-          <input type="date" className={header.input + " !w-2/12"} value={date2} onChange={(e) => setDate2(e.target.value)} />
+        <fieldset className="w-11/12 border-2 bg-zinc-200 p-4 shadow-md rounded-xl border-zinc-500 flex flex-row justify-center items-center gap-8 font-semibold text-md">
+          <div className="w-4/12 flex flex-col justify-center items-center gap-2">
+            <div className="w-full flex flex-row justify-center items-center gap-2">
+              <input type="date" className={header.input + " !w-5/12"} value={date1} onChange={(e) => setDate1(e.target.value)} />
+              <p className="font-semibold text-md">Até</p>
+              <input type="date" className={header.input + " !w-5/12"} value={date2} onChange={(e) => setDate2(e.target.value)} />
+            </div>
+            <div className="w-11/12 flex flex-row gap-8 items-center justify-center">
+              <button className={formStyle.blueButton + " !p-0"} onClick={(e) => handleDate(e, "all")}>Todas as datas</button>
+              <button className={formStyle.blueButton + " !p-0"} onClick={(e) => handleDate(e, "lastThirtiethDays")}>Últimos 30 dias</button>
+            </div>
+          </div>
           <div className="gap-2 flex">
-            <input type="radio" name="filter" checked={filter == 'actives'}  id="filterActive" value='actives' onChange={(e) => setFilter(e.target.value)} />
+            <input type="radio" name="filter" checked={filter == 'actives'} id="filterActive" value='actives' onChange={(e) => setFilter(e.target.value)} />
             <label htmlFor="filterActive">Ativos</label>
           </div>
           <div className="gap-2 flex">
-            <input type="radio" name="filter" id="filterInTransit" value='intransit' onChange={(e) => setFilter(e.target.value)} />
+            <input type="radio" name="filter" checked={filter == 'intransit'} id="filterInTransit" value='intransit' onChange={(e) => setFilter(e.target.value)} />
             <label htmlFor="filterInTransit">Em trânsito</label>
           </div>
           <div className="gap-2 flex">
@@ -205,8 +230,8 @@ function Requests() {
             <input type="radio" name="filter" id="filterCanceleds" value='canceled' onChange={(e) => setFilter(e.target.value)} />
             <label htmlFor="filterCanceleds">Deletados</label>
           </div>
-          <div className="gap-2 w-20 h-10 flex">
-            <button onClick={() => loadData()} className={formStyle.blueButton}><Search width={20} height={20} /></button>
+          <div className="gap-2 w-36 h-10 flex justify-center items-center">
+            <button onClick={() => loadData()} className={formStyle.blueButton}><Search width={20} /></button>
           </div>
         </fieldset>
 

@@ -14,10 +14,10 @@ function RequestsCard(props) {
         {props.accounts.platforms.name}
       </div>
       <div className={stylesRequestCard.cellLine}>
-        {props.store_name}
+        {props.store_name.length > 18 ? props.store_name.substring(0, 18) + '...' : props.store_name}
       </div>
       <div className={stylesRequestCard.cellLine}>
-        {props.tracking_id}
+        {props.tracking_id.length > 18 ? props.tracking_id.substring(0, 18) + '...' : props.tracking_id}
       </div>
       <div className={stylesRequestCard.cellLine}>
         {new Date(props.created_at).toLocaleDateString('pt-br') + ' ' + new Date(props.created_at).toLocaleTimeString('pt-br')}

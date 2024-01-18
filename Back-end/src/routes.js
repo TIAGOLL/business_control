@@ -15,6 +15,8 @@ import salesPUT from "./controllers/pages/salesController/put";
 import salesDEL from "./controllers/pages/salesController/delete";
 import salesPOST from "./controllers/pages/salesController/post";
 
+import dashboardGET from "./controllers/pages/dashboardController/get";
+
 const router = Router();
 
 //products
@@ -57,5 +59,8 @@ router.get("/api/sales/load/byid/:id", salesGET.loadById);
 router.post("/api/sales/post", salesPOST.post);
 router.put("/api/sales/put/markaspaid/:id", salesPUT.markAsPaid);
 router.delete("/api/sales/delete/:id", salesDEL.delete);
+
+//dashboard
+router.get("/api/dashboard/load/infos", dashboardGET.loadInfos);
 
 export { router };

@@ -1,11 +1,12 @@
 const productCard = {
   container:
-    "flex w-2/12 h-72 items-center justify-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer",
+    "flex w-2/12 h-72 items-center justify-center text-center flex-col bg-white rounded-xl shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer",
 
   image:
     "w-full pl-6 rounded-xl flex flex-row items-center justify-center gap-10",
 
-  tittle: "text-lg font-semibold text-gray-700 pt-8",
+  tittle:
+    "text-lg font-semibold text-gray-700 pt-8 justify-center flex items-center",
 
   info: "flex w-full items-center justify-center p-1 gap-1 flex-row",
 

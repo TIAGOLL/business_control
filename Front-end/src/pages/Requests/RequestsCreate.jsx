@@ -36,6 +36,7 @@ function RequestsCreate() {
         status_tracking_id: 1,
         store_name: storeName,
         tracking_id: trackingId,
+        created_at: date,
         prod_requests: currentProducts.map(item => {
           return {
             products_id: item.products_id,

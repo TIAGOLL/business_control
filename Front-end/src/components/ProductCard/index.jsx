@@ -13,11 +13,14 @@ function ProductCard(props) {
             </div>
 
             <div className={productCard.tittle}>
-              {item.products.full_name}
+              {item.products.name}
             </div>
 
             <div className={productCard.info}>
               Preço: <span className="font-semibold">R${item.products.sale_price.toFixed(2)}</span>
+            </div>
+            <div className={productCard.info}>
+              Quantidade: <span className="font-semibold">{item.quantity}</span>
             </div>
           </a>
         )
@@ -28,11 +31,11 @@ function ProductCard(props) {
   return (
     <a href={`/dashboard/products/${props.id}`} key={props.id} className={productCard.container} >
       <div className={productCard.image}>
-        <img className="rounded-2xl w-24" src={props.photo_url ? props.photo_url : '/images/empty.png'} alt="Foto do produto" />
+        <img className="rounded-2xl w-28" src={props.photo_url ? props.photo_url : '/images/empty.png'} alt="Foto do produto" />
       </div>
 
       <div className={productCard.tittle}>
-        {props.full_name}
+        {props.name}
       </div>
 
       <div className={productCard.info}>

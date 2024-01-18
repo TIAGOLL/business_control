@@ -9,6 +9,7 @@ export default {
       store_name,
       tracking_id,
       prod_requests,
+      created_at,
     } = req.body.data;
 
     try {
@@ -18,6 +19,7 @@ export default {
           data: {
             store_name: store_name,
             tracking_id: tracking_id,
+            created_at: new Date(created_at),
             accounts: {
               connect: {
                 id: parseInt(accounts_id),

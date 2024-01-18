@@ -79,9 +79,19 @@ function SaleById() {
     e.preventDefault()
     await axios.delete(`http://localhost:3030/api/sales/delete/${id}`, {
       data: {
-        prod_purchases: currentProducts
+        prod_purchases: currentProducts,
+        client_id: currentClient.id,
+        total_sold: totalSold,
+        coupom_discount: currentCoupom.discount,
       }
     })
+      .then((res) => {
+        toast.success(res.data.message)
+        navigate('/dashboard/sales')
+      })
+      .catch((err) => {
+        toast.error(err.message)
+      })
   }
 
   useEffect(() => {

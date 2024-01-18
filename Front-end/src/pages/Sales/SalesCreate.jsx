@@ -57,7 +57,7 @@ function SalesCreate() {
         setCollaboratorsData(res.data.collaborators)
         setClientsData(res.data.clients)
         setLoading(false)
-      })  
+      })
       .catch((err) => {
         console.log(err)
       })

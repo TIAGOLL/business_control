@@ -8,6 +8,7 @@ import ProductCard from './../../components/ProductCard/index';
 import Header from './../../components/Header/index';
 import SideBar from './../../components/SideBar/index';
 import { Search } from "lucide-react";
+import { removeAcents } from "../../components/Masks";
 
 function Products() {
   const dispatch = useDispatch()
@@ -36,9 +37,10 @@ function Products() {
   useEffect(() => {
     if (!loading) {
       setSearchData(data.products.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.prod_categories.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.color.toLowerCase().includes(search.toLowerCase())
+        removeAcents(item.name).includes(removeAcents(search)) ||
+        removeAcents(item.prod_categories.name).includes(removeAcents(search)) ||
+        removeAcents(item.color).includes(removeAcents(search)) ||
+        removeAcents(item.prod_categories.name).includes(removeAcents(search))
       ))
     }
   }, [search])
