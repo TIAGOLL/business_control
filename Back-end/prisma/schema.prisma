@@ -175,13 +175,14 @@ model prod_purchases {
 }
 
 model prod_requests {
-  requests_id    Int
-  products_id    Int
-  quantity       Int
-  purchase_price Float    @db.Float
-  active         Boolean  @default(dbgenerated("b'1'")) @db.Bit(1)
-  products       products @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_products10")
-  requests       requests @relation(fields: [requests_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_requests10")
+  requests_id     Int
+  products_id     Int
+  quantity        Int
+  purchase_price  Float    @db.Float
+  active          Boolean  @default(dbgenerated("b'1'")) @db.Bit(1)
+  total_purchased Float?   @db.Float
+  products        products @relation(fields: [products_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_products10")
+  requests        requests @relation(fields: [requests_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prod_requests_requests10")
 
   @@id([requests_id, products_id])
   @@index([products_id], map: "fk_prod_requests_products1_idx")

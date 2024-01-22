@@ -13,8 +13,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 1).toISOString(),
+              gte: new Date(year, month - 2, 0).toISOString(),
+              lte: new Date(year, month - 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_sold_with_coupon: true,
@@ -28,8 +30,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 1).toISOString(),
+              gte: new Date(year, month - 1, 0).toISOString(),
+              lte: new Date(year, month, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_sold_with_coupon: true,
@@ -43,8 +47,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 1).toISOString(),
+              gte: new Date(year, month, 0).toISOString(),
+              lte: new Date(year, month + 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_sold_with_coupon: true,
@@ -56,13 +62,15 @@ export default {
         }),
     ];
 
-    const investedMonths = [
+    const costMonths = [
       await prisma.purchases
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 1).toISOString(),
+              gte: new Date(year, month - 2, 0).toISOString(),
+              lte: new Date(year, month - 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_invested: true,
@@ -76,8 +84,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 1).toISOString(),
+              gte: new Date(year, month - 1, 0).toISOString(),
+              lte: new Date(year, month, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_invested: true,
@@ -92,8 +102,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 1).toISOString(),
+              gte: new Date(year, month, 0).toISOString(),
+              lte: new Date(year, month + 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_invested: true,
@@ -110,8 +122,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 1).toISOString(),
+              gte: new Date(year, month - 2, 0).toISOString(),
+              lte: new Date(year, month - 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_profit: true,
@@ -125,8 +139,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 1).toISOString(),
+              gte: new Date(year, month - 1, 0).toISOString(),
+              lte: new Date(year, month, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_profit: true,
@@ -141,8 +157,10 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 1).toISOString(),
+              gte: new Date(year, month, 0).toISOString(),
+              lte: new Date(year, month + 1, 0).toISOString(),
             },
+            active: true,
           },
           _sum: {
             total_profit: true,
@@ -152,6 +170,55 @@ export default {
           console.log(err);
           return res.status(500).json({ error: err });
         }),
+    ];
+
+    const investedMonths = [
+      await prisma.prod_requests
+        .aggregate({
+          where: {
+            requests: {
+              created_at: {
+                gte: new Date(year, month - 2, 0).toISOString(),
+                lte: new Date(year, month - 1, 0).toISOString(),
+              },
+            },
+            active: true,
+          },
+          _sum: { total_purchased: true },
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).json({ error: err });
+        }),
+      await prisma.prod_requests
+        .aggregate({
+          where: {
+            requests: {
+              created_at: {
+                gte: new Date(year, month - 1, 0).toISOString(),
+                lte: new Date(year, month, 0).toISOString(),
+              },
+            },
+            active: true,
+          },
+          _sum: { total_purchased: true },
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).json({ error: err });
+        }),
+      await prisma.prod_requests.aggregate({
+        where: {
+          requests: {
+            created_at: {
+              gte: new Date(year, month, 0).toISOString(),
+              lte: new Date(year, month + 1, 0).toISOString(),
+            },
+          },
+          active: true,
+        },
+        _sum: { total_purchased: true },
+      }),
     ];
 
     const productsWithCriticalStock = await prisma.products
@@ -207,6 +274,10 @@ export default {
       ),
 
       totalMonthsInvested: investedMonths.map((invested) =>
+        parseFloat(invested._sum.total_purchased.toFixed(2))
+      ),
+
+      totalMonthsCost: costMonths.map((invested) =>
         parseFloat(invested._sum.total_invested.toFixed(2))
       ),
       totalRequestsInTransit: parseFloat(totalRequestsInTransit._count),
