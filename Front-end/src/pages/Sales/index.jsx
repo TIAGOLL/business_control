@@ -146,7 +146,7 @@ function Sales() {
   return (
     <div className={container.main}>
       <SideBar />
-      <section className="w-full items-center justify-center flex flex-col">
+      <section className="w-full h-screen items-center justify-center flex flex-col">
         <Header />
 
         <fieldset className="w-11/12 border-2 bg-zinc-200 p-4 shadow-md rounded-xl border-zinc-500 flex flex-row justify-center items-center gap-8 font-semibold text-md">

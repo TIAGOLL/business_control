@@ -17,11 +17,17 @@ function Requests() {
   const dispatch = useDispatch()
   dispatch(ChangePage('requests'))
 
+  let currentDate = new Date();
+  currentDate = moment(currentDate).format('YYYY-MM-DD');
+
+  let initialDate = new Date();
+  initialDate = moment(initialDate).add(-30, 'days').format('YYYY-MM-DD');
+
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState('intransit')
-  const [date1, setDate1] = useState('2010-01-01')
-  const [date2, setDate2] = useState('2030-01-01')
+  const [date1, setDate1] = useState(initialDate)
+  const [date2, setDate2] = useState(currentDate)
 
   async function loadData() {
     await axios.get(`http://localhost:3030/api/requests/load/${filter}`,
@@ -195,9 +201,8 @@ function Requests() {
   return (
     <div className={container.main}>
       <SideBar />
-      <section className="w-full items-center justify-center flex flex-col">
+      <section className="w-full h-screen items-center justify-center flex flex-col">
         <Header />
-
         <fieldset className="w-11/12 border-2 bg-zinc-200 p-4 shadow-md rounded-xl border-zinc-500 flex flex-row justify-center items-center gap-8 font-semibold text-md">
           <div className="w-4/12 flex flex-col justify-center items-center gap-2">
             <div className="w-full flex flex-row justify-center items-center gap-2">

@@ -32,7 +32,8 @@ function Dashboard() {
 
   const dispatch = useDispatch()
 
-  const [totalMonthInvested, setTotalMonthInvested] = useState(0)
+  const [totalInvestedMonths, setTotalInvestedMonths] = useState(0)
+  const [totalMonthCost, setTotalMonthCost] = useState(0)
   const [totalMonthSaled, setTotalMonthSaled] = useState(0)
   const [totalProfitMonths, setTotalProfitMonths] = useState(0)
   const [totalRequestsInTransit, setTotalRequestsInTransit] = useState(0)
@@ -46,13 +47,13 @@ function Dashboard() {
     await axios.get('http://localhost:3030/api/dashboard/load/infos')
       .then((res) => {
         setTotalMonthSaled(res.data.totalMonthsSaled)
-        setTotalMonthInvested(res.data.totalMonthsInvested)
+        setTotalMonthCost(res.data.totalMonthsCost)
         setTotalRequestsInTransit(res.data.totalRequestsInTransit)
         setTotalProfitMonths(res.data.profitMonths)
         setProductsWithCriticalStock(res.data.productsWithCriticalStock)
         setTotalMonthComission(res.data.totalMonthComission)
         setLabelChart(res.data.months)
-
+        setTotalInvestedMonths(res.data.totalMonthsInvested)
       })
       .catch((error) => {
         console.log(error)
@@ -62,7 +63,7 @@ function Dashboard() {
       })
   }
 
-  const optionsChartInvestedSaled = {
+  const optionsChartCostSaled = {
     responsive: true,
     plugins: {
       legend: {
@@ -75,12 +76,12 @@ function Dashboard() {
     },
   };
 
-  const dataChartInvestedSaled = {
+  const dataChartCostSaled = {
     labels: labelChart,
     datasets: [
       {
-        label: "Investimento",
-        data: totalMonthInvested,
+        label: "Custo",
+        data: totalMonthCost,
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
@@ -114,6 +115,34 @@ function Dashboard() {
       },
     },
   }
+  const dataChartInvested = {
+    labels: labelChart,
+    datasets: [
+      {
+        label: "Investimento",
+        data: totalInvestedMonths,
+        backgroundColor: "rgba(200, 150, 0, 0.5)",
+      },
+      {
+        label: "Faturamento",
+        data: totalMonthSaled,
+        backgroundColor: "rgba(53, 162, 235, 0.5)",
+      },
+    ],
+  };
+
+  const optionsChartInvested = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "bottom",
+      },
+      title: {
+        display: true,
+        text: "Investimentos",
+      },
+    },
+  }
 
   useEffect(() => {
     dispatch(ChangePage('dashboard'))
@@ -135,13 +164,13 @@ function Dashboard() {
   return (
     <div className={container.main}>
       <SideBar />
-      <section className="w-full">
-        <section className="items-start justify-center flex w-full gap-8 flex-wrap overflow-x-auto py-10">
-          <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
-            <Bar options={optionsChartInvestedSaled} data={dataChartInvestedSaled} />
+      <div className="w-full">
+        <section className="items-start justify-center flex w-full h-screen gap-8 flex-wrap overflow-x-auto py-10">
+          <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl">
+            <Bar options={optionsChartCostSaled} data={dataChartCostSaled} />
           </div>
           <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
-            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
                 <p className="text-2xl px-4">Comissão a ser paga</p>
               </div>
@@ -149,7 +178,7 @@ function Dashboard() {
                 <p className="text-xl">R$ {totalMonthComission}</p>
               </div>
             </div>
-            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
                 <p className="text-2xl px-4">Total de pedidos em trânsito</p>
               </div>
@@ -159,25 +188,56 @@ function Dashboard() {
             </a>
           </div>
 
-          <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
+          <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl">
             <Bar options={optionsChartProfit} data={dataChartProfit} />
           </div>
-          <div className="flex w-4/12 items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl hover:scale-105 transition duration-500 ease-in-out cursor-pointer">
-            <div className="font-semibold flex">
-              <p className="text-2xl m-0 p-0">Produtos com estoque crítico</p>
+          <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+              <div className="font-semibold flex">
+                <p className="text-2xl m-0 p-0">Produtos com estoque crítico</p>
+              </div>
+              <div className="font-semibold flex w-full text-left">
+                <ul className="flex flex-col w-11/12 p-2 pl-10 text-md list-disc">
+                  {productsWithCriticalStock.map((product) => {
+                    return (
+                      <li key={product.id}><a href={`/dashboard/products/${product.id}`} className="hover:underline">{product.full_name}</a></li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
-            <div className="font-semibold flex w-full text-left">
-              <ul className="flex flex-col w-11/12 p-2 pl-10 text-md list-disc">
-                {productsWithCriticalStock.map((product) => {
-                  return (
-                    <li key={product.id}><a href={`/dashboard/products/${product.id}`} className="hover:underline">{product.full_name}</a></li>
-                  )
-                })}
-              </ul>
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+              <div className="font-semibold flex">
+                <p className="text-2xl m-0 p-0"></p>
+              </div>
+              <div className="font-semibold flex w-full text-left">
+
+              </div>
             </div>
           </div>
+          <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl">
+            <Bar options={optionsChartInvested} data={dataChartInvested} />
+          </div>
+          <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+              <div className="font-semibold flex">
+                <p className="text-2xl px-4"></p>
+              </div>
+              <div className="font-semibold">
+                <p className="text-xl"></p>
+              </div>
+            </div>
+            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+              <div className="font-semibold flex">
+                <p className="text-2xl px-4"></p>
+              </div>
+              <div className="font-semibold">
+                <p className="text-xl"></p>
+              </div>
+            </a>
+          </div>
         </section>
-      </section >
+      </div >
     </div >
   );
 }
