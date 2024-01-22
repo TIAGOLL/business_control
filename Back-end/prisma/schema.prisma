@@ -15,121 +15,6 @@ model status_tracking {
   requests requests[]
 }
 
-model accounts {
-  id          Int        @unique(map: "id_UNIQUE") @default(autoincrement())
-  platform_id Int
-  name        String     @db.VarChar(45)
-  owner       String     @db.VarChar(45)
-  cpf         String?    @db.VarChar(11)
-  email       String?    @db.VarChar(45)
-  active      Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
-  platforms   platforms  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_platform1")
-  requests    requests[]
-
-  @@id([id, platform_id])
-  @@index([platform_id], map: "fk_account_platform1_idx")
-}
-
-model clients {
-  id              Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name            String      @db.VarChar(45)
-  gender          String      @db.VarChar(1)
-  cpf             String?     @db.VarChar(45)
-  adress          String?     @db.VarChar(45)
-  place_work      String?     @db.VarChar(45)
-  description     String?     @db.VarChar(100)
-  active          Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
-  total_purchased Float       @default(0) @db.Float
-  entry_date      DateTime    @default(now()) @db.Timestamp(0)
-  purchases       purchases[]
-}
-
-model collaborators {
-  id                Int            @unique(map: "id_UNIQUE") @default(autoincrement())
-  marital_status_id Int
-  functions_id      Int
-  name              String         @db.VarChar(45)
-  gender            String         @db.VarChar(1)
-  entry_date        DateTime       @default(now()) @db.Timestamp(0)
-  cpf               String?        @db.VarChar(45)
-  adress            String?        @db.VarChar(45)
-  active            Boolean        @default(dbgenerated("b'1'")) @db.Bit(1)
-  comission         Float          @db.Float
-  functions         functions      @relation(fields: [functions_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_collaborators_functions1")
-  marital_status    marital_status @relation(fields: [marital_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salespersons_marital status1")
-  purchases         purchases[]
-
-  @@id([id, marital_status_id, functions_id])
-  @@index([functions_id], map: "fk_collaborators_functions1_idx")
-  @@index([marital_status_id], map: "fk_salespersons_marital status1_idx")
-}
-
-model coupons {
-  id           Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name         String      @db.VarChar(45)
-  discount     Float       @db.Float
-  active       Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
-  initial_date DateTime    @db.Date
-  final_date   DateTime    @db.Date
-  purchases    purchases[]
-}
-
-model functions {
-  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name          String          @db.VarChar(45)
-  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
-  collaborators collaborators[]
-}
-
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model marital_status {
-  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name          String          @db.VarChar(45)
-  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
-  collaborators collaborators[]
-}
-
-model moviments {
-  id           Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  mov_id       Int
-  date         DateTime @default(now()) @db.Timestamp(0)
-  type         String   @db.VarChar(45)
-  author_id    String   @db.VarChar(45)
-  author_name  String   @db.VarChar(45)
-  mov_stock    Decimal  @db.Decimal(10, 0)
-  product_id   Int
-  product_name String   @db.VarChar(45)
-
-  @@index([mov_id], map: "fk_moviments_prod_purchases1_idx")
-}
-
-model payment_processors {
-  id            Int             @id @default(autoincrement())
-  name          String          @db.VarChar(45)
-  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
-  payment_types payment_types[]
-}
-
-model payment_types {
-  id                   Int                @unique(map: "id_UNIQUE") @default(autoincrement())
-  payment_processor_id Int
-  name                 String             @db.VarChar(45)
-  porcent_rate         Float              @db.Float
-  active               Boolean            @default(dbgenerated("b'1'")) @db.Bit(1)
-  payment_processors   payment_processors @relation(fields: [payment_processor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_payment_type_payment processor1")
-  purchases            purchases[]
-
-  @@id([id, payment_processor_id])
-  @@index([payment_processor_id], map: "fk_payment_type_payment processor1_idx")
-}
-
-model platforms {
-  id       Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
-  name     String     @db.VarChar(45)
-  active   Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
-  accounts accounts[]
-}
-
 model prod_accessories {
   id          Int      @unique(map: "id_UNIQUE") @default(autoincrement())
   products_id Int
@@ -257,4 +142,119 @@ model requests {
   @@id([id, status_tracking_id, accounts_id])
   @@index([accounts_id], map: "fk_requests_accounts1_idx")
   @@index([status_tracking_id], map: "fk_requests_status_tracking1_idx")
+}
+
+model accounts {
+  id          Int        @unique(map: "id_UNIQUE") @default(autoincrement())
+  platform_id Int
+  name        String     @db.VarChar(45)
+  owner       String     @db.VarChar(45)
+  cpf         String?    @db.VarChar(11)
+  email       String?    @db.VarChar(45)
+  active      Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  platforms   platforms  @relation(fields: [platform_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_account_platform1")
+  requests    requests[]
+
+  @@id([id, platform_id])
+  @@index([platform_id], map: "fk_account_platform1_idx")
+}
+
+model clients {
+  id              Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name            String      @db.VarChar(45)
+  gender          String      @db.VarChar(1)
+  cpf             String?     @db.VarChar(45)
+  adress          String?     @db.VarChar(45)
+  place_work      String?     @db.VarChar(45)
+  description     String?     @db.VarChar(100)
+  active          Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
+  total_purchased Float       @default(0) @db.Float
+  entry_date      DateTime    @default(now()) @db.Timestamp(0)
+  purchases       purchases[]
+}
+
+model collaborators {
+  id                Int            @unique(map: "id_UNIQUE") @default(autoincrement())
+  marital_status_id Int
+  functions_id      Int
+  name              String         @db.VarChar(45)
+  gender            String         @db.VarChar(1)
+  entry_date        DateTime       @default(now()) @db.Timestamp(0)
+  cpf               String?        @db.VarChar(45)
+  adress            String?        @db.VarChar(45)
+  active            Boolean        @default(dbgenerated("b'1'")) @db.Bit(1)
+  comission         Float          @db.Float
+  functions         functions      @relation(fields: [functions_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_collaborators_functions1")
+  marital_status    marital_status @relation(fields: [marital_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_salespersons_marital status1")
+  purchases         purchases[]
+
+  @@id([id, marital_status_id, functions_id])
+  @@index([functions_id], map: "fk_collaborators_functions1_idx")
+  @@index([marital_status_id], map: "fk_salespersons_marital status1_idx")
+}
+
+model coupons {
+  id           Int         @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name         String      @db.VarChar(45)
+  discount     Float       @db.Float
+  active       Boolean     @default(dbgenerated("b'1'")) @db.Bit(1)
+  initial_date DateTime    @db.Date
+  final_date   DateTime    @db.Date
+  purchases    purchases[]
+}
+
+model functions {
+  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  collaborators collaborators[]
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model marital_status {
+  id            Int             @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  collaborators collaborators[]
+}
+
+model moviments {
+  id           Int      @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  mov_id       Int
+  date         DateTime @default(now()) @db.Timestamp(0)
+  type         String   @db.VarChar(45)
+  author_id    String   @db.VarChar(45)
+  author_name  String   @db.VarChar(45)
+  mov_stock    Decimal  @db.Decimal(10, 0)
+  product_id   Int
+  product_name String   @db.VarChar(45)
+
+  @@index([mov_id], map: "fk_moviments_prod_purchases1_idx")
+}
+
+model payment_processors {
+  id            Int             @id @default(autoincrement())
+  name          String          @db.VarChar(45)
+  active        Boolean         @default(dbgenerated("b'1'")) @db.Bit(1)
+  payment_types payment_types[]
+}
+
+model payment_types {
+  id                   Int                @unique(map: "id_UNIQUE") @default(autoincrement())
+  payment_processor_id Int
+  name                 String             @db.VarChar(45)
+  porcent_rate         Float              @db.Float
+  active               Boolean            @default(dbgenerated("b'1'")) @db.Bit(1)
+  payment_processors   payment_processors @relation(fields: [payment_processor_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_payment_type_payment processor1")
+  purchases            purchases[]
+
+  @@id([id, payment_processor_id])
+  @@index([payment_processor_id], map: "fk_payment_type_payment processor1_idx")
+}
+
+model platforms {
+  id       Int        @id @unique(map: "id_UNIQUE") @default(autoincrement())
+  name     String     @db.VarChar(45)
+  active   Boolean    @default(dbgenerated("b'1'")) @db.Bit(1)
+  accounts accounts[]
 }

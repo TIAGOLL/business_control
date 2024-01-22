@@ -30,6 +30,7 @@ function Requests() {
   const [date2, setDate2] = useState(currentDate)
 
   async function loadData() {
+    setLoading(true)
     await axios.get(`http://localhost:3030/api/requests/load/${filter}`,
       {
         params: {

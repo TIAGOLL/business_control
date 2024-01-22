@@ -21,6 +21,7 @@ function Products() {
   const [searchData, setSearchData] = useState([])
 
   async function loadData() {
+    setLoading(true)
     await axios.get(`http://localhost:3030/api/products/load/${filter}`)
       .then((res) => {
         setData(res.data)
@@ -57,24 +58,20 @@ function Products() {
           <Header />
           <fieldset className="w-10/12 border-2 bg-zinc-200 p-4 shadow-md rounded-xl border-zinc-500 flex flex-row justify-center items-center gap-10 font-semibold text-md">
             <div className="gap-2 flex">
-              <input type="radio" name="filter" id="filterActive" value='actives' onChange={(e) => setFilter(e.target.value)} />
+              <input type="radio" name="filter" id="filterActive" value='actives' />
               <label htmlFor="filterActive">Ativos</label>
             </div>
             <div className="gap-2 flex">
-              <input type="radio" name="filter" id="filterAvaibles" value='avaibles' onChange={(e) => setFilter(e.target.value)} />
+              <input type="radio" name="filter" id="filterAvaibles" value='avaibles' />
               <label htmlFor="filterAvaibles">Disponíveis</label>
             </div>
             <div className="gap-2 flex">
-              <input type="radio" name="filter" id="filterInTransit" value='intransit' onChange={(e) => setFilter(e.target.value)} />
+              <input type="radio" name="filter" id="filterInTransit" value='intransit' />
               <label htmlFor="filterInTransit">Em trânsito</label>
             </div>
             <div className="gap-2 flex">
-              <input type="radio" name="filter" id="filterDeleted" value='deleted' onChange={(e) => setFilter(e.target.value)} />
+              <input type="radio" name="filter" id="filterDeleted" value='deleted' />
               <label htmlFor="filterDeleted">Deletados</label>
-            </div>
-
-            <div className="gap-2 w-20 h-10 flex">
-              <button onClick={() => loadData()} className={formStyle.blueButton}>{loading ? <Oval width={20} strokeWidth={40} /> : <Search width={20} height={20} />}</button>
             </div>
           </fieldset>
           <div className="p-4 items-start justify-center flex w-full h-[calc(100vh-100px)] gap-4 flex-wrap overflow-x-auto ">
