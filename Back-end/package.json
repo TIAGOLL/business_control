@@ -1,5 +1,5 @@
 {
-  "name": "tinnyimportssystem_backend",
+  "name": "business_control",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx src/server.js",
     "build": "tsup src",
-    "start": "node dist/server.js"
+    "start": "tsx dist/server.js"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +17,8 @@
     "@prisma/client": "^5.7.1",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "node": "18.19.0"
   },
   "devDependencies": {
     "prisma": "^5.7.1",
