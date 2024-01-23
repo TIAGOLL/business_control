@@ -8,6 +8,8 @@ export default {
     const month = date.getMonth();
     const year = date.getFullYear();
 
+    console.log(month, year);
+
     const saledMonths = [
       await prisma.purchases
         .aggregate({
