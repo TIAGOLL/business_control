@@ -18,8 +18,8 @@ dependencies:
     specifier: ^2.29.4
     version: 2.29.4
   node:
-    specifier: '18'
-    version: 18.18.2
+    specifier: ^21.6.0
+    version: 21.6.0
 
 devDependencies:
   prisma:
@@ -952,8 +952,8 @@ packages:
     resolution: {integrity: sha512-opgw9iSCAzT2+6wJOETCpeRYAQxSopqQ2z+N6BXwIMsQQ7Zj5M8MaafQY8JMlolRR6R1UXg2WmhKp0p9lSOivg==}
     dev: false
 
-  /node@18.18.2:
-    resolution: {integrity: sha512-PzYRrHnY79DWyjkV2HtE2xl2gTaMGU/Taupl751nnC4NBSzSR3mvsGUAm2MYhYDeVloQuFhyyAcO5SXlcYNQyw==}
+  /node@21.6.0:
+    resolution: {integrity: sha512-9kaKu3UjMmJZ8o9o9LjUsFOOA5OF4f+d6ADPvf+/4E3R0cUvnx6PIU/6DVPxp3OjIMbF9Nmsez0ulM7QEJPvMw==}
     engines: {npm: '>=5.0.0'}
     hasBin: true
     requiresBuild: true
