@@ -22,7 +22,7 @@ function Products() {
 
   async function loadData() {
     setLoading(true)
-    await axios.get(`http://localhost:3030/api/products/load/${filter}`)
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/load/${filter}`)
       .then((res) => {
         setData(res.data)
         setSearchData(res.data.products)

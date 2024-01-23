@@ -31,7 +31,7 @@ function Requests() {
 
   async function loadData() {
     setLoading(true)
-    await axios.get(`http://localhost:3030/api/requests/load/${filter}`,
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/load/${filter}`,
       {
         params: {
           date1: date1,

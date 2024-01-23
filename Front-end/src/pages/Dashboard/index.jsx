@@ -42,9 +42,8 @@ function Dashboard() {
   const [labelChart, setLabelChart] = useState([])
   const [loading, setLoading] = useState(true)
 
-
   async function loadData() {
-    await axios.get('http://localhost:3030/api/dashboard/load/infos')
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/dashboard/load/infos`)
       .then((res) => {
         setTotalMonthSaled(res.data.totalMonthsSaled)
         setTotalMonthCost(res.data.totalMonthsCost)

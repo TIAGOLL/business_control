@@ -49,7 +49,7 @@ function SalesCreate() {
 
   async function loadData() {
     setLoading(true)
-    await axios.get('http://localhost:3030/api/sales/load/ofcreate')
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/load/ofcreate`)
       .then((res) => {
         setProductsData(res.data.products)
         setPaymentsTypesData(res.data.payment_types)
@@ -70,7 +70,7 @@ function SalesCreate() {
     e.preventDefault();
     setLoading(true)
     console.log(currentPaid)
-    await axios.post('http://localhost:3030/api/sales/post', {
+    await axios.post(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/post`, {
       created_at: date,
       client_id: currentClient,
       payment_type_id: currentPaymentsTypes.id,

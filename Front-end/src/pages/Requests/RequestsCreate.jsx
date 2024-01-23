@@ -30,7 +30,7 @@ function RequestsCreate() {
 
   async function createRequest() {
     setLoading(true);
-    await axios.post(`http://localhost:3030/api/requests/post`, {
+    await axios.post(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/post`, {
       data: {
         accounts_id: currentAccount.id,
         status_tracking_id: 1,
@@ -61,7 +61,7 @@ function RequestsCreate() {
 
   async function loadData() {
     // carrega os dados do pedido
-    await axios.get('http://localhost:3030/api/requests/load/ofcreate')
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/load/ofcreate`)
       .then(res => {
         setAccountData(res.data.accounts);
         setPlatformData(res.data.platforms);

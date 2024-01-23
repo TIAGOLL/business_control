@@ -27,7 +27,7 @@ function Sales() {
   const [searchData, setSearchData] = useState([])
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/api/sales/load/${filter}`,
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/load/${filter}`,
       {
         params: {
           date1: date1,

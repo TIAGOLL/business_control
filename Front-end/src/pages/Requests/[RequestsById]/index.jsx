@@ -27,7 +27,7 @@ function RequestsById() {
   async function deleteRequest(e) {
     setLoading(true);
     e.preventDefault();
-    await axios.delete(`http://localhost:3030/api/requests/delete/${id}`)
+    await axios.delete(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/delete/${id}`)
       .then(res => {
         console.log(res.data.message);
         navigate('/dashboard/requests')
@@ -45,7 +45,7 @@ function RequestsById() {
   async function markAsDelivered(e) {
     setLoading(true);
     e.preventDefault();
-    await axios.put(`http://localhost:3030/api/requests/put/delivered/${id}`, {
+    await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/put/delivered/${id}`, {
       status_tracking_id: 2,
       prod_requests: currentProducts.map((item) => {
         return {
@@ -70,7 +70,7 @@ function RequestsById() {
 
   async function markAsWaitingRefund(e) {
     e.preventDefault();
-    await axios.put(`http://localhost:3030/api/requests/put/waitingforrefund/${id}`, {
+    await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/put/waitingforrefund/${id}`, {
       prod_requests: currentProducts.map((item) => {
         return {
           products_id: item.products_id,
@@ -91,7 +91,7 @@ function RequestsById() {
 
   async function markAsRefunded(e) {
     e.preventDefault();
-    await axios.put(`http://localhost:3030/api/requests/put/refunded/${id}`)
+    await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/put/refunded/${id}`)
       .then(res => {
         navigate('/dashboard/requests')
         toast.success(res.data.message);
@@ -104,7 +104,7 @@ function RequestsById() {
 
   async function loadData() {
     // carrega os dados do pedido
-    await axios.get(`http://localhost:3030/api/requests/load/byid/${id}`)
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/load/byid/${id}`)
       .then(res => {
         console.log(res.data);
         setTrackingId(res.data.requests.tracking_id);

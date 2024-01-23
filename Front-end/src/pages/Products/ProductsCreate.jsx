@@ -36,7 +36,7 @@ function ProductsCreate() {
   const [currentFuncionalities, setCurrentFuncionalities] = useState([]);
 
   async function loadData() {
-    await axios.get('http://localhost:3030/api/products/load/ofcreate')
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/load/ofcreate`)
       .then(res => {
         setCategorysData(res.data.categories)
       })
@@ -59,7 +59,7 @@ function ProductsCreate() {
     await uploadBytes(uploadRef, prodPhoto)
       .then((snapshot) => {
         getDownloadURL(snapshot.ref).then(async (downloadURL) => {
-          await axios.post("http://localhost:3030/api/products/post", {
+          await axios.post(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/post`, {
             data: {
               name: prodName,
               category_id: currentCategoryId,

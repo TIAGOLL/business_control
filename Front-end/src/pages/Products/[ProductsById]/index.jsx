@@ -44,7 +44,7 @@ function ProductsById() {
   const [currentFuncionalities, setCurrentFuncionalities] = useState([]);
 
   async function loadData() {
-    await axios.get(`http://localhost:3030/api/products/load/byid/${id}`)
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/load/byid/${id}`)
       .then(res => {
         console.log(res.data);
         setProdActive(res.data.products.active)
@@ -93,7 +93,7 @@ function ProductsById() {
     await uploadBytes(uploadRef, prodPhoto)
       .then((snapshot) => {
         getDownloadURL(snapshot.ref).then(async (downloadURL) => {
-          await axios.put(`http://localhost:3030/api/products/put/${id}`, {
+          await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/put/${id}`, {
             data: {
               name: prodName,
               photo_url: downloadURL,
@@ -123,7 +123,7 @@ function ProductsById() {
 
   async function deleteProduct(e) {
     e.preventDefault();
-    await axios.delete(`http://localhost:3030/api/products/delete/${id}`)
+    await axios.delete(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/products/delete/${id}`)
       .then(res => {
         console.log(res.data);
         toast.success(res.data.message);

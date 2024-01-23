@@ -42,7 +42,7 @@ function SaleById() {
 
   async function loadData() {
     setLoading(true)
-    await axios.get(`http://localhost:3030/api/sales/load/byid/${id}`)
+    await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/load/byid/${id}`)
       .then((res) => {
         console.log(res.data)
         setDate(res.data.sale.created_at)
@@ -65,7 +65,7 @@ function SaleById() {
   async function markAsPaid(e) {
     e.preventDefault()
     setLoading(true)
-    await axios.put(`http://localhost:3030/api/sales/put/markaspaid/${id}`)
+    await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/put/markaspaid/${id}`)
       .then((res) => {
         toast.success(res.data.message)
         navigate('/dashboard/sales')
@@ -77,7 +77,7 @@ function SaleById() {
 
   async function deleteSale(e) {
     e.preventDefault()
-    await axios.delete(`http://localhost:3030/api/sales/delete/${id}`, {
+    await axios.delete(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/sales/delete/${id}`, {
       data: {
         prod_purchases: currentProducts,
         client_id: currentClient.id,
