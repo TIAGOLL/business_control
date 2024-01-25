@@ -22,7 +22,7 @@ import ClientsById from './../pages/Clients/[ClientsById]/index';
 import Admin from './../pages/admin/index';
 import RequestsCreate from '../pages/Requests/RequestsCreate';
 import ProductsCreate from '../pages/Products/ProductsCreate';
-import SalesCreate from '../pages/Sales/salesCreate';
+import SalesCreate from './../pages/Sales/SalesCreate';
 
 
 
