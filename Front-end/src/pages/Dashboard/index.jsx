@@ -197,7 +197,7 @@ function Dashboard() {
               </div>
               <div className="font-semibold flex w-full text-left">
                 <ul className="flex flex-col w-11/12 p-2 pl-10 text-md list-disc">
-                  {productsWithCriticalStock.map((product) => {
+                  {productsWithCriticalStock?.map((product) => {
                     return (
                       <li key={product.id}><a href={`/dashboard/products/${product.id}`} className="hover:underline">{product.full_name}</a></li>
                     )
