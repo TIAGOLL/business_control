@@ -5,7 +5,7 @@ function ProductCard(props) {
   console.log(props)
   if (props.prod_requests) {
     return (
-      props.prod_requests.map((item) => {
+      props.prod_requests?.map((item) => {
         return (
           <a href={`/dashboard/products/${item.products_id}`} key={item.products_id} className={productCard.container} >
             <div className={productCard.image}>

@@ -1,14 +1,13 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Oval } from 'svg-loaders-react';
+import { removeAcents } from "../../components/Masks";
 import { ChangePage } from "../../redux/features/activePage";
 import { container, formStyle } from "../../styles/global.css";
-import axios from "axios";
-import { Oval } from 'svg-loaders-react';
-import ProductCard from './../../components/ProductCard/index';
 import Header from './../../components/Header/index';
+import ProductCard from './../../components/ProductCard/index';
 import SideBar from './../../components/SideBar/index';
-import { Search } from "lucide-react";
-import { removeAcents } from "../../components/Masks";
 
 function Products() {
   const dispatch = useDispatch()
@@ -110,7 +109,7 @@ function Products() {
         </fieldset>
         <div className="p-4 items-start justify-center flex w-full h-[calc(100vh-172px)] gap-4 flex-wrap overflow-x-auto ">
           {
-            searchData.map((item) => (
+            searchData?.map((item) => (
               <ProductCard key={item.id} {...item} />
             ))
           }

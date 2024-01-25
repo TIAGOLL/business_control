@@ -1,13 +1,11 @@
-import { ArrowBigLeft } from "lucide-react";
-import { formStyle } from "../../styles/global.css";
-import { Oval } from 'svg-loaders-react';
+import axios from "axios";
+import { ArrowBigLeft, Plus, Trash2 } from "lucide-react";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { Trash2 } from "lucide-react";
-import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Oval } from 'svg-loaders-react';
+import { formStyle } from "../../styles/global.css";
 
 
 function SalesCreate() {
@@ -82,7 +80,7 @@ function SalesCreate() {
       total_sold: totalSold,
       paid: currentPaid,
       total_invested: currentProducts.reduce((acc, item) => acc + (item.purchase_price * item.quantity), 0).toFixed(2),
-      prod_purchases: currentProducts.map((item) => {
+      prod_purchases: currentProducts?.map((item) => {
         return {
           products_id: item.products_id,
           quantity: item.quantity,
@@ -107,7 +105,7 @@ function SalesCreate() {
     e.preventDefault();
 
     //Não adiciona mais produtos se o ultimo produto adicionado não tiver sido selecionado
-    if (currentProducts.map((item) => item.products_id).includes('')) return toast.error('Preencha todos os campos do produto antes de adicionar outro!');
+    if (currentProducts?.map((item) => item.products_id).includes('')) return toast.error('Preencha todos os campos do produto antes de adicionar outro!');
 
     setCurrentProducts([...currentProducts, {
       products_id: '',
@@ -235,7 +233,7 @@ function SalesCreate() {
                 <select id="client" onChange={e => setCurrentClient(e.target.value)} className={formStyle.input} >
                   <option htmlFor="client" disabled selected hidden value={''}>Selecione</option>
                   {
-                    clientsData.map((item) => {
+                    clientsData?.map((item) => {
                       return (
                         <option htmlFor='client' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -252,7 +250,7 @@ function SalesCreate() {
                 <select id="paymentType" onChange={e => handlePaymentType(e)} className={formStyle.input} >
                   <option htmlFor="paymentType" disabled selected hidden value={''}>Selecione</option>
                   {
-                    paymentsTypesData.map((item) => {
+                    paymentsTypesData?.map((item) => {
                       return (
                         <option htmlFor='paymentType' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -269,7 +267,7 @@ function SalesCreate() {
                 <select id="coupom" onChange={e => handleCoupom(e)} className={formStyle.input} >
                   <option htmlFor="coupom" disabled selected hidden value={''}>Selecione</option>
                   {
-                    couponsData.map((item) => {
+                    couponsData?.map((item) => {
                       return (
                         <option htmlFor='coupom' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -286,7 +284,7 @@ function SalesCreate() {
                 <select id="collaborator" onChange={e => handleCollaborator(e)} className={formStyle.input} >
                   <option htmlFor="collaborator" disabled selected hidden value={''}>Selecione</option>
                   {
-                    collaboratorsData.map((item) => {
+                    collaboratorsData?.map((item) => {
                       return (
                         <option htmlFor='collaborator' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -311,7 +309,7 @@ function SalesCreate() {
 
             <div className="flex w-full flex-wrap px-14 justify-center items-center gap-8 border-2 border-zinc-400 rounded-xl p-14">
               {
-                currentProducts.map((item2, index) => {
+                currentProducts?.map((item2, index) => {
                   return (
                     <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.products_id}>
                       <div className='flex flex-col w-4/12'>
@@ -319,7 +317,7 @@ function SalesCreate() {
                           <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} value={item2.products_id} className={formStyle.input} >
                             <option htmlFor={`products${index + 1}`} disabled selected hidden value={''}>Selecione</option>
                             {
-                              productsData.map((item) => {
+                              productsData?.map((item) => {
                                 return (
                                   <option htmlFor={`products${index + 1}`} key={item.id} value={item.id}>{item.full_name}</option>
                                 )
@@ -384,7 +382,7 @@ function SalesCreate() {
         </form>
         {
           <div>
-            <p>{currentProducts.map((item) => {
+            <p>{currentProducts?.map((item) => {
               return (
                 <div className="flex gap-8" key={item.products_id} >
                   <p>{item.products_id}</p>

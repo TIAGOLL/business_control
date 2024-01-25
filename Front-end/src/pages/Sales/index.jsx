@@ -1,16 +1,16 @@
-import { useDispatch } from "react-redux";
-import { container, formStyle } from "../../styles/global.css";
-import Header from "../../components/Header";
-import SideBar from "../../components/SideBar";
-import { useEffect, useState } from "react";
-import { ChangePage } from "../../redux/features/activePage";
-import { Oval } from 'svg-loaders-react';
 import axios from "axios";
-import stylesSalesCard from './../../components/SalesCard/styles.css';
-import { header } from "../../components/Header/styles.css";
 import { Search } from "lucide-react";
-import SalesCard from "../../components/SalesCard";
 import moment from "moment";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Oval } from 'svg-loaders-react';
+import Header from "../../components/Header";
+import { header } from "../../components/Header/styles.css";
+import SalesCard from "../../components/SalesCard";
+import SideBar from "../../components/SideBar";
+import { ChangePage } from "../../redux/features/activePage";
+import { container, formStyle } from "../../styles/global.css";
+import stylesSalesCard from './../../components/SalesCard/styles.css';
 
 
 
@@ -196,7 +196,7 @@ function Sales() {
             </button>
           </div>
           {
-            searchData.map((item) => (
+            searchData?.map((item) => (
               <SalesCard key={item.id} {...item} />
             ))
           }

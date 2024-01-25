@@ -1,11 +1,11 @@
+import axios from "axios";
 import { ArrowBigLeft } from "lucide-react";
-import { formStyle } from "../../../styles/global.css";
-import { Oval } from 'svg-loaders-react';
 import moment from "moment";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Oval } from 'svg-loaders-react';
+import { formStyle } from "../../../styles/global.css";
 
 
 function SaleById() {
@@ -197,7 +197,7 @@ function SaleById() {
 
             <div className="flex w-full flex-wrap px-14 justify-center items-center gap-8 border-2 border-zinc-400 rounded-xl p-14">
               {
-                currentProducts.map((item2, index) => {
+                currentProducts?.map((item2, index) => {
                   return (
                     <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.products_id}>
                       <div className='flex flex-col w-4/12'>

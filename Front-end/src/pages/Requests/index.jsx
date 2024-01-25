@@ -1,16 +1,16 @@
 import axios from "axios";
+import { Search } from "lucide-react";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { Oval } from 'svg-loaders-react';
+import { header } from "../../components/Header/styles.css";
 import RequestsCard from "../../components/RequestsCard";
 import stylesRequestCard from "../../components/RequestsCard/styles.css";
 import { ChangePage } from "../../redux/features/activePage";
 import { container, formStyle } from "../../styles/global.css";
 import Header from './../../components/Header/index';
 import SideBar from './../../components/SideBar';
-import { Oval } from 'svg-loaders-react';
-import { header } from "../../components/Header/styles.css";
-import { Search } from "lucide-react";
-import moment from "moment";
 
 
 function Requests() {
@@ -266,7 +266,7 @@ function Requests() {
             </button>
           </div>
           {
-            data.requests.map((item) => (
+            data.requests?.map((item) => (
               <RequestsCard key={item.id} {...item} />
             ))
           }

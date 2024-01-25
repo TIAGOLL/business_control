@@ -37,7 +37,7 @@ function RequestsCreate() {
         store_name: storeName,
         tracking_id: trackingId,
         created_at: date,
-        prod_requests: currentProducts.map(item => {
+        prod_requests: currentProducts?.map(item => {
           return {
             products_id: item.products_id,
             quantity: item.quantity,
@@ -102,7 +102,7 @@ function RequestsCreate() {
     if (currentProducts.length >= productsData.length) return toast.error('Não há mais produtos para adicionar!');
 
     //Não adiciona mais produtos se o ultimo produto adicionado não tiver sido selecionado
-    if (currentProducts.map((item) => item.products_id).includes('')) return toast.error('Preencha todos os campos do produto antes de adicionar outro!');
+    if (currentProducts?.map((item) => item.products_id).includes('')) return toast.error('Preencha todos os campos do produto antes de adicionar outro!');
 
     setCurrentProducts([...currentProducts, {
       products_id: '',
@@ -193,7 +193,7 @@ function RequestsCreate() {
                 <select id="platform" onChange={e => handlePlatform(e)} className={formStyle.input} >
                   <option htmlFor="platform" disabled selected hidden value={''}>Selecione</option>
                   {
-                    platformData.map((item) => {
+                    platformData?.map((item) => {
                       return (
                         <option htmlFor='platform' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -210,7 +210,7 @@ function RequestsCreate() {
                 <select id="accountName" className={formStyle.input} disabled={!currentPlatform} onChange={e => handleAccount(e)}>
                   <option htmlFor="accountName" disabled selected hidden value={''}>Selecione</option>
                   {
-                    accountData.map((item) => {
+                    accountData?.map((item) => {
                       if (item.platform_id == currentPlatform.id) {
                         return <option htmlFor='accountName' key={item.id} value={item.id}>{item.name}</option>
                       }
@@ -257,7 +257,7 @@ function RequestsCreate() {
                 </div>
               </div>
               {
-                currentProducts.map((item2, index) => {
+                currentProducts?.map((item2, index) => {
                   return (
                     <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.products_id}>
                       <div className='flex flex-col w-4/12'>
@@ -265,7 +265,7 @@ function RequestsCreate() {
                           <select id={`products${index + 1}`} onChange={e => handleTypeProduct(e, index)} value={item2.products_id} className={formStyle.input} >
                             <option htmlFor={`products${index + 1}`} disabled selected hidden value={''}>Selecione</option>
                             {
-                              productsData.map((item) => {
+                              productsData?.map((item) => {
                                 return (
                                   <option htmlFor={`products${index + 1}`} key={item.id} value={item.id}>{item.full_name}</option>
                                 )
@@ -313,7 +313,7 @@ function RequestsCreate() {
         </form>
         {
           <div>
-            <p>{currentProducts.map((item) => {
+            <p>{currentProducts?.map((item) => {
               return (
                 <div className="flex gap-8" key={item.products_id} >
                   <p>{item.products_id}</p>

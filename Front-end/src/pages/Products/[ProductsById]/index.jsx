@@ -1,14 +1,12 @@
 import axios from "axios";
-import { ArrowBigLeft } from "lucide-react";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { ArrowBigLeft, Plus, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { formStyle } from "../../../styles/global.css";
 import { toast } from "react-toastify";
-import { Plus } from "lucide-react";
-import { Trash2 } from "lucide-react";
 import { Oval } from 'svg-loaders-react';
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../../../services/auth";
+import { formStyle } from "../../../styles/global.css";
 
 
 function ProductsById() {
@@ -60,13 +58,13 @@ function ProductsById() {
         setCurrentFuncionalities(res.data.prod_funcionalities)
         setProdQuantity(res.data.products.quantity)
 
-        setCurrentAccessories(res.data.products.prod_accessories.map((item) => {
+        setCurrentAccessories(res.data.products.prod_accessories?.map((item) => {
           return {
             name: item.name,
           }
         }))
 
-        setCurrentFuncionalities(res.data.products.prod_functionalities.map((item) => {
+        setCurrentFuncionalities(res.data.products.prod_functionalities?.map((item) => {
           return {
             description: item.description,
           }
@@ -166,7 +164,7 @@ function ProductsById() {
     e.preventDefault();
 
     //Não adiciona mais produtos se o ultimo produto adicionado não tiver sido selecionado
-    if (currentAccessories.map((item) => item.name).includes('')) return toast.error('Preencha todos os campos do acessório antes de adicionar outra!');
+    if (currentAccessories?.map((item) => item.name).includes('')) return toast.error('Preencha todos os campos do acessório antes de adicionar outra!');
 
     setCurrentAccessories([...currentAccessories, {
       name: '',
@@ -177,7 +175,7 @@ function ProductsById() {
     e.preventDefault();
 
     //Não adiciona mais produtos se o ultimo produto adicionado não tiver sido selecionado
-    if (currentFuncionalities.map((item) => item.description).includes('')) return toast.error('Preencha todos os campos da funcionalidade antes de adicionar outra!');
+    if (currentFuncionalities?.map((item) => item.description).includes('')) return toast.error('Preencha todos os campos da funcionalidade antes de adicionar outra!');
 
     setCurrentFuncionalities([...currentFuncionalities, {
       name: '',
@@ -285,7 +283,7 @@ function ProductsById() {
                 <select id="category" onChange={e => setCurrentCategoryId(e.target.value)} className={formStyle.input} >
                   <option htmlFor='category' key={currentCategoryId} value={currentCategoryId}>{currentCategoryName}</option>
                   {
-                    categorysData.map((item) => {
+                    categorysData?.map((item) => {
                       return (
                         <option htmlFor='category' key={item.id} value={item.id}>{item.name}</option>
                       )
@@ -325,7 +323,7 @@ function ProductsById() {
               <h1>Acessórios</h1>
               <div className="flex w-full flex-wrap justify-center items-center gap-8 ">
                 {
-                  currentAccessories.map((item, index) => {
+                  currentAccessories?.map((item, index) => {
                     return (
                       <div className="flex flex-row w-2/12 items-center justify-center" key={item.id}>
                         <div className='flex flex-col w-full'>
@@ -355,7 +353,7 @@ function ProductsById() {
               <h1>Funcionalidades</h1>
               <div className="flex w-full flex-wrap justify-center items-center gap-8">
                 {
-                  currentFuncionalities.map((item, index) => {
+                  currentFuncionalities?.map((item, index) => {
                     return (
                       <div className="flex flex-row w-5/12 h-full items-center justify-center p-2" key={item.id}>
                         <div className='flex flex-col w-full'>

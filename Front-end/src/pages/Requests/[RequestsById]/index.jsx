@@ -1,11 +1,11 @@
 import axios from "axios";
 import { ArrowBigLeft } from "lucide-react";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { formStyle } from "../../../styles/global.css";
-import moment from "moment";
-import { Oval } from 'svg-loaders-react';
 import { toast } from "react-toastify";
+import { Oval } from 'svg-loaders-react';
+import { formStyle } from "../../../styles/global.css";
 
 function RequestsById() {
   const { id } = useParams();
@@ -47,7 +47,7 @@ function RequestsById() {
     e.preventDefault();
     await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/put/delivered/${id}`, {
       status_tracking_id: 2,
-      prod_requests: currentProducts.map((item) => {
+      prod_requests: currentProducts?.map((item) => {
         return {
           products_id: item.products_id,
           quantity: item.quantity,
@@ -71,7 +71,7 @@ function RequestsById() {
   async function markAsWaitingRefund(e) {
     e.preventDefault();
     await axios.put(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/requests/put/waitingforrefund/${id}`, {
-      prod_requests: currentProducts.map((item) => {
+      prod_requests: currentProducts?.map((item) => {
         return {
           products_id: item.products_id,
           quantity: item.quantity,
@@ -111,7 +111,7 @@ function RequestsById() {
         setStoreName(res.data.requests.store_name);
         setDate(res.data.created_at);
 
-        setCurrentProducts(res.data.requests.prod_requests.map(item => {
+        setCurrentProducts(res.data.requests.prod_requests?.map(item => {
           return {
             products_id: item.products_id,
             name: item.products.full_name,
@@ -244,7 +244,7 @@ function RequestsById() {
               </div>
 
               {
-                currentProducts.map((item2, index) => {
+                currentProducts?.map((item2, index) => {
                   console.log(item2);
                   return (
                     <div className="flex flex-row w-full gap-8 items-center justify-center" key={item2.products_id}>
