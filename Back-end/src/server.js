@@ -1,5 +1,5 @@
 import express from "express";
-var cors = require('cors')
+var cors = require("cors");
 
 import { router } from "./routes";
 
@@ -11,4 +11,4 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(3030, () => console.log("Server is running!"));
+app.listen(process.env.PORT || 3030, () => console.log("Server is running!"));
