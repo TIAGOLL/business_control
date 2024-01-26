@@ -37,7 +37,7 @@
     "@vitejs/plugin-react-swc": "^3.3.2",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.30",
-    "vite": "^4.4.5"
+    "vite": "^5.0.12"
   },
   "browserslist": {
     "production": [
