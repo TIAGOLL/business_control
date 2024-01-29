@@ -11,4 +11,4 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(3030, () => console.log("Server is running!"));
+app.listen(3030, () => console.log("Server is running!"))

@@ -42,7 +42,6 @@ function Dashboard() {
   const [labelChart, setLabelChart] = useState([])
   const [loading, setLoading] = useState(true)
 
-  console.log(import.meta.env)
 
   async function loadData() {
     await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/dashboard/load/infos`)

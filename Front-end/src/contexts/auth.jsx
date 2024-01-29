@@ -85,7 +85,7 @@ function AuthProvider({ children }) {
 
   async function signInWithGoogle() {
     const provider = new GoogleAuthProvider();
-    let result = await signInWithPopup(auth, provider)
+    await signInWithPopup(auth, provider)
       .then(async (value) => {
         let data = {
           uid: value.user.uid,

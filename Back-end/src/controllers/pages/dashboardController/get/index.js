@@ -8,12 +8,14 @@ export default {
     const month = date.getMonth();
     const year = date.getFullYear();
 
+    console.log(new Date(year, month - 2, 1).toISOString(), new Date(year, month - 1, 0).toISOString());
+
     const saledMonths = [
       await prisma.purchases
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 0).toISOString(),
+              gte: new Date(year, month - 2, 1).toISOString(),
               lte: new Date(year, month - 1, 0).toISOString(),
             },
             active: true,
@@ -30,7 +32,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 0).toISOString(),
+              gte: new Date(year, month - 1, 1).toISOString(),
               lte: new Date(year, month, 0).toISOString(),
             },
             active: true,
@@ -47,7 +49,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 0).toISOString(),
+              gte: new Date(year, month, 1).toISOString(),
               lte: new Date(year, month + 1, 0).toISOString(),
             },
             active: true,
@@ -67,7 +69,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 0).toISOString(),
+              gte: new Date(year, month - 2, 1).toISOString(),
               lte: new Date(year, month - 1, 0).toISOString(),
             },
             active: true,
@@ -84,7 +86,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 0).toISOString(),
+              gte: new Date(year, month - 1, 1).toISOString(),
               lte: new Date(year, month, 0).toISOString(),
             },
             active: true,
@@ -102,7 +104,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 0).toISOString(),
+              gte: new Date(year, month, 1).toISOString(),
               lte: new Date(year, month + 1, 0).toISOString(),
             },
             active: true,
@@ -122,7 +124,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 2, 0).toISOString(),
+              gte: new Date(year, month - 2, 1).toISOString(),
               lte: new Date(year, month - 1, 0).toISOString(),
             },
             active: true,
@@ -139,7 +141,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month - 1, 0).toISOString(),
+              gte: new Date(year, month - 1, 1).toISOString(),
               lte: new Date(year, month, 0).toISOString(),
             },
             active: true,
@@ -157,7 +159,7 @@ export default {
         .aggregate({
           where: {
             created_at: {
-              gte: new Date(year, month, 0).toISOString(),
+              gte: new Date(year, month, 1).toISOString(),
               lte: new Date(year, month + 1, 0).toISOString(),
             },
             active: true,
@@ -178,7 +180,7 @@ export default {
           where: {
             requests: {
               created_at: {
-                gte: new Date(year, month - 2, 0).toISOString(),
+                gte: new Date(year, month - 2, 1).toISOString(),
                 lte: new Date(year, month - 1, 0).toISOString(),
               },
             },
@@ -195,7 +197,7 @@ export default {
           where: {
             requests: {
               created_at: {
-                gte: new Date(year, month - 1, 0).toISOString(),
+                gte: new Date(year, month - 1, 1).toISOString(),
                 lte: new Date(year, month, 0).toISOString(),
               },
             },
@@ -211,7 +213,7 @@ export default {
         where: {
           requests: {
             created_at: {
-              gte: new Date(year, month, 0).toISOString(),
+              gte: new Date(year, month, 1).toISOString(),
               lte: new Date(year, month + 1, 0).toISOString(),
             },
           },
