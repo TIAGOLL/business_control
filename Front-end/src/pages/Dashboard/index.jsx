@@ -46,6 +46,7 @@ function Dashboard() {
   async function loadData() {
     await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/dashboard/load/infos`)
       .then((res) => {
+        console.log(res.data)
         setTotalMonthSaled(res.data.totalMonthsSaled)
         setTotalMonthCost(res.data.totalMonthsCost)
         setTotalRequestsInTransit(res.data.totalRequestsInTransit)

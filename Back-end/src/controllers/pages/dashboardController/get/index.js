@@ -8,8 +8,6 @@ export default {
     const month = date.getMonth();
     const year = date.getFullYear();
 
-    console.log(new Date(year, month - 2, 1).toISOString(), new Date(year, month - 1, 0).toISOString());
-
     const saledMonths = [
       await prisma.purchases
         .aggregate({
@@ -222,7 +220,6 @@ export default {
         _sum: { total_purchased: true },
       }),
     ];
-
     const productsWithCriticalStock = await prisma.products
       .findMany({
         where: {
@@ -275,13 +272,16 @@ export default {
         parseFloat(saled._sum.total_sold_with_coupon.toFixed(2))
       ),
 
-      totalMonthsInvested: investedMonths.map((invested) =>
-        parseFloat(invested._sum.total_purchased.toFixed(2))
-      ),
+      totalMonthsInvested: investedMonths.map((invested) => {
+        if (invested._sum.total_purchased == null) {
+          return 0;
+        }
+        return parseFloat(invested._sum.total_purchased.toFixed(2));
+      }),
 
-      totalMonthsCost: costMonths.map((invested) =>
-        parseFloat(invested._sum.total_invested.toFixed(2))
-      ),
+      totalMonthsCost: costMonths.map((invested) => {
+        return parseFloat(invested._sum.total_invested.toFixed(2));
+      }),
       totalRequestsInTransit: parseFloat(totalRequestsInTransit._count),
       profitMonths: profitMonths.map((profit) =>
         parseFloat(profit._sum.total_profit.toFixed(2))
