@@ -8,6 +8,16 @@ export default {
     const month = date.getMonth();
     const year = date.getFullYear();
 
+    const howMuchToReceive = await prisma.purchases.aggregate({
+      where: {
+        active: true,
+        paid: false,
+      },
+      _sum: {
+        total_sold_with_coupon: true,
+      },
+    });
+
     const saledMonths = [
       await prisma.purchases
         .aggregate({
@@ -272,7 +282,7 @@ export default {
         if (saled._sum.total_sold_with_coupon == null) {
           return 0;
         }
-        parseFloat(saled._sum.total_sold_with_coupon.toFixed(2));
+        return parseFloat(saled._sum.total_sold_with_coupon.toFixed(2));
       }),
 
       totalMonthsInvested: investedMonths.map((invested) => {
@@ -283,15 +293,21 @@ export default {
       }),
 
       totalMonthsCost: costMonths.map((invested) => {
+        if (invested._sum.total_invested == null) {
+          return 0;
+        }
         return parseFloat(invested._sum.total_invested.toFixed(2));
       }),
       totalRequestsInTransit: parseFloat(totalRequestsInTransit._count),
-      profitMonths: profitMonths.map((profit) =>
-        parseFloat(profit._sum.total_profit.toFixed(2))
-      ),
-      totalMonthComission: parseFloat(
-        totalMonthComission._sum.total_comission.toFixed(2)
-      ),
+      profitMonths: profitMonths.map((profit) => {
+        if (profit._sum.total_profit == null) {
+          return 0;
+        }
+        return parseFloat(profit._sum.total_profit.toFixed(2));
+      }),
+      totalMonthComission: totalMonthComission._sum.total_comission
+        ? parseFloat(totalMonthComission._sum.total_comission.toFixed(2))
+        : 0,
       months: [
         new Date(year, month - 2, 1).toLocaleDateString("day", {
           month: "long",
@@ -303,6 +319,7 @@ export default {
           month: "long",
         }),
       ],
+      howMuchToReceive: howMuchToReceive._sum.total_sold_with_coupon,
       productsWithCriticalStock: productsWithCriticalStock,
       message: "Dados carregados com sucesso",
     });

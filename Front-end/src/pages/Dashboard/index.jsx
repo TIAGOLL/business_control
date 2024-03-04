@@ -41,6 +41,7 @@ function Dashboard() {
   const [totalMonthComission, setTotalMonthComission] = useState(0)
   const [labelChart, setLabelChart] = useState([])
   const [loading, setLoading] = useState(true)
+  const [howMuchToReceive, setHowMuchToReceive] = useState(0)
 
 
   async function loadData() {
@@ -55,6 +56,7 @@ function Dashboard() {
         setTotalMonthComission(res.data.totalMonthComission)
         setLabelChart(res.data.months)
         setTotalInvestedMonths(res.data.totalMonthsInvested)
+        setHowMuchToReceive(res.data.howMuchToReceive)
       })
       .catch((error) => {
         console.log(error)
@@ -173,20 +175,20 @@ function Dashboard() {
           <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
             <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
+                <p className="text-2xl m-0 p-0">Total a receber</p>
+              </div>
+              <div className="font-semibold flex w-full justify-center">
+                <p className="text-xl font-bold text-green-800">R$ {howMuchToReceive.toFixed(2)}</p>
+              </div>
+            </div>
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+              <div className="font-semibold flex">
                 <p className="text-2xl px-4">Comissão a ser paga</p>
               </div>
               <div className="font-semibold">
                 <p className="text-xl">R$ {totalMonthComission}</p>
               </div>
             </div>
-            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
-              <div className="font-semibold flex">
-                <p className="text-2xl px-4">Total de pedidos em trânsito</p>
-              </div>
-              <div className="font-semibold">
-                <p className="text-xl">{totalRequestsInTransit}</p>
-              </div>
-            </a>
           </div>
 
           <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl">
@@ -207,14 +209,14 @@ function Dashboard() {
                 </ul>
               </div>
             </div>
-            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
-                <p className="text-2xl m-0 p-0"></p>
+                <p className="text-2xl px-4">Total de pedidos em trânsito</p>
               </div>
-              <div className="font-semibold flex w-full text-left">
-
+              <div className="font-semibold">
+                <p className="text-xl">{totalRequestsInTransit}</p>
               </div>
-            </div>
+            </a>
           </div>
           <div className="flex w-7/12 h-96 items-center justify-center flex-col bg-white rounded-md shadow-xl">
             <Bar options={optionsChartInvested} data={dataChartInvested} />
