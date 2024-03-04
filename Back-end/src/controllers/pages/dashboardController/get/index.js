@@ -268,9 +268,12 @@ export default {
     });
 
     return res.status(200).json({
-      totalMonthsSaled: saledMonths.map((saled) =>
-        parseFloat(saled._sum.total_sold_with_coupon.toFixed(2))
-      ),
+      totalMonthsSaled: saledMonths.map((saled) => {
+        if (saled._sum.total_sold_with_coupon == null) {
+          return 0;
+        }
+        parseFloat(saled._sum.total_sold_with_coupon.toFixed(2));
+      }),
 
       totalMonthsInvested: investedMonths.map((invested) => {
         if (invested._sum.total_purchased == null) {
