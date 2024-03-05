@@ -15,13 +15,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.7.1",
+    "@prisma/client": "^5.10.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "moment": "^2.29.4"
   },
   "devDependencies": {
-    "prisma": "^5.7.1",
+    "prisma": "^5.10.2",
     "tsup": "^7.2.0",
     "tsx": "^3.13.0"
   }
