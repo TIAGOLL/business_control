@@ -1,13 +1,5 @@
 import axios from "axios";
-import {
-  BarElement,
-  CategoryScale,
-  Chart as ChartJS,
-  Legend,
-  LinearScale,
-  Title,
-  Tooltip,
-} from 'chart.js';
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip, } from 'chart.js';
 import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { useDispatch } from "react-redux";
@@ -74,7 +66,7 @@ function Dashboard() {
       },
       title: {
         display: true,
-        text: "Investimento X faturamento",
+        text: "Custo X Faturamento",
       },
     },
   };
@@ -142,7 +134,7 @@ function Dashboard() {
       },
       title: {
         display: true,
-        text: "Investimentos",
+        text: "Investimento X Faturamento",
       },
     },
   }
