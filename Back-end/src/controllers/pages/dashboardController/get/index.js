@@ -230,6 +230,7 @@ export default {
         _sum: { total_purchased: true },
       }),
     ];
+
     const productsWithCriticalStock = await prisma.products
       .findMany({
         where: {
@@ -277,6 +278,9 @@ export default {
       },
     });
 
+    const totalMoneyInStock =
+      await prisma.$queryRaw`SELECT SUM(purchase_price * quantity) AS total FROM products;`;
+
     return res.status(200).json({
       totalMonthsSaled: saledMonths.map((saled) => {
         if (saled._sum.total_sold_with_coupon == null) {
@@ -284,6 +288,13 @@ export default {
         }
         return parseFloat(saled._sum.total_sold_with_coupon.toFixed(2));
       }),
+
+      totalMoneyInStock: totalMoneyInStock.map((total) => {
+        if (total.total == null) {
+          return 0;
+        }
+        return parseFloat(total.total.toFixed(2));
+      })[0],
 
       totalMonthsInvested: investedMonths.map((invested) => {
         if (invested._sum.total_purchased == null) {

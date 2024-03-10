@@ -42,14 +42,18 @@ function Dashboard() {
   const [labelChart, setLabelChart] = useState([])
   const [loading, setLoading] = useState(true)
   const [howMuchToReceive, setHowMuchToReceive] = useState(0)
+  const [totalMoneyInStock, setTotalMoneyInStock] = useState(0)
 
 
   async function loadData() {
     await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/dashboard/load/infos`)
       .then((res) => {
         console.log(res.data)
+        console.log(res.request.responseURL)
+        console.log(res.data.totalMoneyInStock)
         setTotalMonthSaled(res.data.totalMonthsSaled)
         setTotalMonthCost(res.data.totalMonthsCost)
+        setTotalMoneyInStock(res.data.totalMoneyInStock)
         setTotalRequestsInTransit(res.data.totalRequestsInTransit)
         setTotalProfitMonths(res.data.profitMonths)
         setProductsWithCriticalStock(res.data.productsWithCriticalStock)
@@ -224,10 +228,14 @@ function Dashboard() {
           <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
             <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
-                <p className="text-2xl px-4"></p>
+                <p className="text-2xl px-4">
+                  Valor total do estoque físico
+                </p>
               </div>
               <div className="font-semibold">
-                <p className="text-xl"></p>
+                <p className="text-xl">
+                  R$ {totalMoneyInStock?.toFixed(2)}
+                </p>
               </div>
             </div>
             <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
