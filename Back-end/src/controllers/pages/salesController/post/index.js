@@ -45,12 +45,7 @@ export default {
       total_coupon_discount -
       total_comission;
 
-    const total_profit =
-      parseFloat(total_sold) -
-      parseFloat(total_invested) -
-      total_rate -
-      total_coupon_discount -
-      total_comission;
+    const total_profit = parseFloat(total_sold) - total_sold_with_coupon;
 
     const sale = await prisma.purchases
       .create({

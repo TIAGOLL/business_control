@@ -138,13 +138,15 @@ export default {
             active: true,
           },
           _sum: {
-            total_profit: true,
+            total_sold_with_coupon: true,
+            total_invested: true,
           },
         })
         .catch((err) => {
           console.log(err);
           return res.status(500).json({ error: err });
         }),
+
       await prisma.purchases
         .aggregate({
           where: {
@@ -155,7 +157,8 @@ export default {
             active: true,
           },
           _sum: {
-            total_profit: true,
+            total_sold_with_coupon: true,
+            total_invested: true,
           },
         })
         .catch((err) => {
@@ -173,7 +176,8 @@ export default {
             active: true,
           },
           _sum: {
-            total_profit: true,
+            total_sold_with_coupon: true,
+            total_invested: true,
           },
         })
         .catch((err) => {
@@ -311,10 +315,16 @@ export default {
       }),
       totalRequestsInTransit: parseFloat(totalRequestsInTransit._count),
       profitMonths: profitMonths.map((profit) => {
-        if (profit._sum.total_profit == null) {
+        if (
+          profit._sum.total_invested == null ||
+          profit._sum.total_sold_with_coupon == null
+        ) {
           return 0;
         }
-        return parseFloat(profit._sum.total_profit.toFixed(2));
+        const total =
+          parseFloat(profit._sum.total_sold_with_coupon.toFixed(2)) -
+          parseFloat(profit._sum.total_invested.toFixed(2));
+        return total;
       }),
       totalMonthComission: totalMonthComission._sum.total_comission
         ? parseFloat(totalMonthComission._sum.total_comission.toFixed(2))
