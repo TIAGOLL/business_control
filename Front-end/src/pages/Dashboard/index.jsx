@@ -35,6 +35,8 @@ function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [howMuchToReceive, setHowMuchToReceive] = useState(0)
   const [totalMoneyInStock, setTotalMoneyInStock] = useState(0)
+  const [totalGeralInvested, setTotalGeralInvested] = useState(0)
+  const [totalVendasXInvestimento, setTotalVendasXInvestimento] = useState(0)
 
 
   async function loadData() {
@@ -53,6 +55,8 @@ function Dashboard() {
         setLabelChart(res.data.months)
         setTotalInvestedMonths(res.data.totalMonthsInvested)
         setHowMuchToReceive(res.data.howMuchToReceive)
+        setTotalGeralInvested(res.data.totalGeral)
+        setTotalVendasXInvestimento(res.data.totalVendasXInvestimento)
       })
       .catch((error) => {
         console.log(error)
@@ -193,16 +197,15 @@ function Dashboard() {
           <div className="w-4/12 flex flex-col gap-8 h-96 items-start justify-center">
             <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
-                <p className="text-2xl m-0 p-0">Produtos com estoque crítico</p>
+                <p className="text-2xl px-4">Investimento X Faturamento (Vendas)</p>
               </div>
-              <div className="font-semibold flex w-full text-left">
-                <ul className="flex flex-col w-11/12 p-2 pl-10 text-md list-disc">
-                  {productsWithCriticalStock?.map((product) => {
-                    return (
-                      <li key={product.id}><a href={`/dashboard/products/${product.id}`} className="hover:underline">{product.full_name}</a></li>
-                    )
-                  })}
-                </ul>
+              <div className="font-semibold">
+                <p className="text-xl">
+                  <span className="text-red-600">R$ {totalVendasXInvestimento?._sum?.total_invested?.toFixed(2)}</span> X <span className="text-green-600">R$ {totalVendasXInvestimento?._sum?.total_sold_with_coupon?.toFixed(2)}</span>
+                </p>
+                <p className="text-md mt-4">
+                  Lucro total: {(totalVendasXInvestimento?._sum?.total_sold_with_coupon - totalVendasXInvestimento?._sum?.total_invested).toFixed(2)}
+                </p>
               </div>
             </div>
             <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
@@ -230,14 +233,16 @@ function Dashboard() {
                 </p>
               </div>
             </div>
-            <a href="/dashboard/requests" className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
+            <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
               <div className="font-semibold flex">
-                <p className="text-2xl px-4"></p>
+                <p className="text-2xl px-4">Investimento X Faturamento (Geral)</p>
               </div>
               <div className="font-semibold">
-                <p className="text-xl"></p>
+                <p className="text-xl">
+                  R$ {totalGeralInvested?.requested[0].total.toFixed(2)} X R$ {totalGeralInvested?.purchased[0].total.toFixed(2)}
+                </p>
               </div>
-            </a>
+            </div>
           </div>
         </section>
       </div >

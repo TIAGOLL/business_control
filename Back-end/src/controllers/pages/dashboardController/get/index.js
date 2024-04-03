@@ -127,6 +127,23 @@ export default {
         }),
     ];
 
+    const totalGeral = {
+      purchased:
+        await prisma.$queryRaw`select sum(total_sold_with_coupon) as total from purchases where active = 1;`,
+      requested:
+        await prisma.$queryRaw`select sum(purchase_price*quantity) as total from prod_requests where active = 1`,
+    };
+
+    const totalVendasXInvestimento = await prisma.purchases.aggregate({
+      where: {
+        active: true,
+      },
+      _sum: {
+        total_sold_with_coupon: true,
+        total_invested: true,
+      },
+    });
+
     const profitMonths = [
       await prisma.purchases
         .aggregate({
@@ -343,6 +360,8 @@ export default {
       howMuchToReceive: howMuchToReceive._sum.total_sold_with_coupon,
       productsWithCriticalStock: productsWithCriticalStock,
       message: "Dados carregados com sucesso",
+      totalGeral,
+      totalVendasXInvestimento,
     });
   },
 };
