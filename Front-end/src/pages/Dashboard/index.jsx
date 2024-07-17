@@ -42,9 +42,6 @@ function Dashboard() {
   async function loadData() {
     await axios.get(`${import.meta.env.VITE_REACT_BASE_API_URL}/api/dashboard/load/infos`)
       .then((res) => {
-        console.log(res.data)
-        console.log(res.request.responseURL)
-        console.log(res.data.totalMoneyInStock)
         setTotalMonthSaled(res.data.totalMonthsSaled)
         setTotalMonthCost(res.data.totalMonthsCost)
         setTotalMoneyInStock(res.data.totalMoneyInStock)
@@ -178,7 +175,7 @@ function Dashboard() {
                 <p className="text-2xl m-0 p-0">Total a receber</p>
               </div>
               <div className="font-semibold flex w-full justify-center">
-                <p className="text-xl font-bold text-green-800">R$ {howMuchToReceive.toFixed(2)}</p>
+                <p className="text-xl font-bold text-green-800">R$ {howMuchToReceive?.toFixed(2) ?? 0}</p>
               </div>
             </div>
             <div className="flex w-full h-full items-center text-center gap-12 justify-center flex-col bg-white rounded-md shadow-xl">
